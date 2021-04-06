@@ -7,6 +7,7 @@ import { TransformControls } from 'three/examples/jsm/controls/TransformControls
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
 import { Interaction } from 'three.interaction';
 import {ObjectControls} from 'threeJS-object-controls';
+const TWEEN = require('@tweenjs/tween.js')
 
 const scene = new THREE.Scene();
 const camera = new THREE.PerspectiveCamera( 75, window.innerWidth / window.innerHeight, 0.1, 1000 );
@@ -74,26 +75,38 @@ loader.load( 'assets/main.glb', function ( gltf ) {
 } );
 
 const objects = [];
+const dragControls = new DragControls( objects, camera, renderer.domElement );
 
 loader.load( 'assets/pullIt.glb', function ( gltf ) {
 	var pullIt = gltf.scene.children[0];
 	scene.add( gltf.scene );
 	pullIt.userData.limit = {
-		min: new THREE.Vector3(-0.05, -0.16302920877933502, 0.08229061961174011),
+		min: new THREE.Vector3(-0.08, -0.16302920877933502, 0.08229061961174011),
 	  	max: new THREE.Vector3(0, -0.16302920877933502, 0.08229061961174011)
 	};
+	var pulledIt = false;
 	pullIt.userData.update = function(){
 		pullIt.position.clamp(pullIt.userData.limit.min, pullIt.userData.limit.max);
-		if(pullIt.position.x <= -0.045) {
-			pullIt.position.setX(0);
+		if(pullIt.position.x < -0.075 && pulledIt == true) {
+			var position = { x : pullIt.position.x };
+			var target = { x : 0 };
+			var tween = new TWEEN.Tween(position).to(target, 250);
+			tween.onUpdate(function(){
+				pullIt.position.x = position.x;
+			});
+			if(pulledIt == true) {
+				tween.start();
+			}
 		}
 	}
 	objects.push(pullIt);
-	pullIt.on('mouseover', function(ev) {
+	dragControls.addEventListener( 'dragstart', function ( event ) {
 		controls.enabled = false;
-	});	
-	pullIt.on('mouseout', function(ev) {
+		pulledIt = true;
+	});
+	dragControls.addEventListener( 'dragend', function ( event ) {
 		controls.enabled = true;
+		pulledIt = false;
 	});
 
 }, undefined, function ( error ) {
@@ -151,7 +164,6 @@ function toRadians(angle) {
 	return angle * (Math.PI / 180);
 }
 
-const dragControls = new DragControls( objects, camera, renderer.domElement );
 
 const ambientLight = new THREE.AmbientLight( 0x404040 ); // soft white light
 const pointLight = new THREE.SpotLight(0x404040, 5, 0, Math.PI/2); // soft white light
@@ -169,6 +181,7 @@ const animate = function () {
 		o.userData.update();
 	})
 	requestAnimationFrame( animate );
+	TWEEN.update();
 	renderer.render( scene, camera );
 };
 animate();

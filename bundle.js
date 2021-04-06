@@ -1,4 +1,1155 @@
 (function(){function r(e,n,t){function o(i,f){if(!n[i]){if(!e[i]){var c="function"==typeof require&&require;if(!f&&c)return c(i,!0);if(u)return u(i,!0);var a=new Error("Cannot find module '"+i+"'");throw a.code="MODULE_NOT_FOUND",a}var p=n[i]={exports:{}};e[i][0].call(p.exports,function(r){var n=e[i][1][r];return o(n||r)},p,p.exports,r,e,n,t)}return n[i].exports}for(var u="function"==typeof require&&require,i=0;i<t.length;i++)o(t[i]);return o}return r})()({1:[function(require,module,exports){
+(function (process){(function (){
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.update = exports.removeAll = exports.remove = exports.now = exports.nextId = exports.getAll = exports.add = exports.VERSION = exports.Tween = exports.Sequence = exports.Interpolation = exports.Group = exports.Easing = exports.default = void 0;
+
+/**
+ * The Ease class provides a collection of easing functions for use with tween.js.
+ */
+var Easing = {
+  Linear: {
+    None: function (amount) {
+      return amount;
+    }
+  },
+  Quadratic: {
+    In: function (amount) {
+      return amount * amount;
+    },
+    Out: function (amount) {
+      return amount * (2 - amount);
+    },
+    InOut: function (amount) {
+      if ((amount *= 2) < 1) {
+        return 0.5 * amount * amount;
+      }
+
+      return -0.5 * (--amount * (amount - 2) - 1);
+    }
+  },
+  Cubic: {
+    In: function (amount) {
+      return amount * amount * amount;
+    },
+    Out: function (amount) {
+      return --amount * amount * amount + 1;
+    },
+    InOut: function (amount) {
+      if ((amount *= 2) < 1) {
+        return 0.5 * amount * amount * amount;
+      }
+
+      return 0.5 * ((amount -= 2) * amount * amount + 2);
+    }
+  },
+  Quartic: {
+    In: function (amount) {
+      return amount * amount * amount * amount;
+    },
+    Out: function (amount) {
+      return 1 - --amount * amount * amount * amount;
+    },
+    InOut: function (amount) {
+      if ((amount *= 2) < 1) {
+        return 0.5 * amount * amount * amount * amount;
+      }
+
+      return -0.5 * ((amount -= 2) * amount * amount * amount - 2);
+    }
+  },
+  Quintic: {
+    In: function (amount) {
+      return amount * amount * amount * amount * amount;
+    },
+    Out: function (amount) {
+      return --amount * amount * amount * amount * amount + 1;
+    },
+    InOut: function (amount) {
+      if ((amount *= 2) < 1) {
+        return 0.5 * amount * amount * amount * amount * amount;
+      }
+
+      return 0.5 * ((amount -= 2) * amount * amount * amount * amount + 2);
+    }
+  },
+  Sinusoidal: {
+    In: function (amount) {
+      return 1 - Math.cos(amount * Math.PI / 2);
+    },
+    Out: function (amount) {
+      return Math.sin(amount * Math.PI / 2);
+    },
+    InOut: function (amount) {
+      return 0.5 * (1 - Math.cos(Math.PI * amount));
+    }
+  },
+  Exponential: {
+    In: function (amount) {
+      return amount === 0 ? 0 : Math.pow(1024, amount - 1);
+    },
+    Out: function (amount) {
+      return amount === 1 ? 1 : 1 - Math.pow(2, -10 * amount);
+    },
+    InOut: function (amount) {
+      if (amount === 0) {
+        return 0;
+      }
+
+      if (amount === 1) {
+        return 1;
+      }
+
+      if ((amount *= 2) < 1) {
+        return 0.5 * Math.pow(1024, amount - 1);
+      }
+
+      return 0.5 * (-Math.pow(2, -10 * (amount - 1)) + 2);
+    }
+  },
+  Circular: {
+    In: function (amount) {
+      return 1 - Math.sqrt(1 - amount * amount);
+    },
+    Out: function (amount) {
+      return Math.sqrt(1 - --amount * amount);
+    },
+    InOut: function (amount) {
+      if ((amount *= 2) < 1) {
+        return -0.5 * (Math.sqrt(1 - amount * amount) - 1);
+      }
+
+      return 0.5 * (Math.sqrt(1 - (amount -= 2) * amount) + 1);
+    }
+  },
+  Elastic: {
+    In: function (amount) {
+      if (amount === 0) {
+        return 0;
+      }
+
+      if (amount === 1) {
+        return 1;
+      }
+
+      return -Math.pow(2, 10 * (amount - 1)) * Math.sin((amount - 1.1) * 5 * Math.PI);
+    },
+    Out: function (amount) {
+      if (amount === 0) {
+        return 0;
+      }
+
+      if (amount === 1) {
+        return 1;
+      }
+
+      return Math.pow(2, -10 * amount) * Math.sin((amount - 0.1) * 5 * Math.PI) + 1;
+    },
+    InOut: function (amount) {
+      if (amount === 0) {
+        return 0;
+      }
+
+      if (amount === 1) {
+        return 1;
+      }
+
+      amount *= 2;
+
+      if (amount < 1) {
+        return -0.5 * Math.pow(2, 10 * (amount - 1)) * Math.sin((amount - 1.1) * 5 * Math.PI);
+      }
+
+      return 0.5 * Math.pow(2, -10 * (amount - 1)) * Math.sin((amount - 1.1) * 5 * Math.PI) + 1;
+    }
+  },
+  Back: {
+    In: function (amount) {
+      var s = 1.70158;
+      return amount * amount * ((s + 1) * amount - s);
+    },
+    Out: function (amount) {
+      var s = 1.70158;
+      return --amount * amount * ((s + 1) * amount + s) + 1;
+    },
+    InOut: function (amount) {
+      var s = 1.70158 * 1.525;
+
+      if ((amount *= 2) < 1) {
+        return 0.5 * (amount * amount * ((s + 1) * amount - s));
+      }
+
+      return 0.5 * ((amount -= 2) * amount * ((s + 1) * amount + s) + 2);
+    }
+  },
+  Bounce: {
+    In: function (amount) {
+      return 1 - Easing.Bounce.Out(1 - amount);
+    },
+    Out: function (amount) {
+      if (amount < 1 / 2.75) {
+        return 7.5625 * amount * amount;
+      } else if (amount < 2 / 2.75) {
+        return 7.5625 * (amount -= 1.5 / 2.75) * amount + 0.75;
+      } else if (amount < 2.5 / 2.75) {
+        return 7.5625 * (amount -= 2.25 / 2.75) * amount + 0.9375;
+      } else {
+        return 7.5625 * (amount -= 2.625 / 2.75) * amount + 0.984375;
+      }
+    },
+    InOut: function (amount) {
+      if (amount < 0.5) {
+        return Easing.Bounce.In(amount * 2) * 0.5;
+      }
+
+      return Easing.Bounce.Out(amount * 2 - 1) * 0.5 + 0.5;
+    }
+  }
+};
+exports.Easing = Easing;
+var now; // Include a performance.now polyfill.
+// In node.js, use process.hrtime.
+// eslint-disable-next-line
+// @ts-ignore
+
+if (typeof self === 'undefined' && typeof process !== 'undefined' && process.hrtime) {
+  now = function () {
+    // eslint-disable-next-line
+    // @ts-ignore
+    var time = process.hrtime(); // Convert [seconds, nanoseconds] to milliseconds.
+
+    return time[0] * 1000 + time[1] / 1000000;
+  };
+} // In a browser, use self.performance.now if it is available.
+else if (typeof self !== 'undefined' && self.performance !== undefined && self.performance.now !== undefined) {
+    // This must be bound, because directly assigning this function
+    // leads to an invocation exception in Chrome.
+    now = self.performance.now.bind(self.performance);
+  } // Use Date.now if it is available.
+  else if (Date.now !== undefined) {
+      now = Date.now;
+    } // Otherwise, use 'new Date().getTime()'.
+    else {
+        now = function () {
+          return new Date().getTime();
+        };
+      }
+
+var now$1 = now;
+/**
+ * Controlling groups of tweens
+ *
+ * Using the TWEEN singleton to manage your tweens can cause issues in large apps with many components.
+ * In these cases, you may want to create your own smaller groups of tween
+ */
+
+exports.now = now$1;
+
+var Group =
+/** @class */
+function () {
+  function Group() {
+    this._tweens = {};
+    this._tweensAddedDuringUpdate = {};
+  }
+
+  Group.prototype.getAll = function () {
+    var _this = this;
+
+    return Object.keys(this._tweens).map(function (tweenId) {
+      return _this._tweens[tweenId];
+    });
+  };
+
+  Group.prototype.removeAll = function () {
+    this._tweens = {};
+  };
+
+  Group.prototype.add = function (tween) {
+    this._tweens[tween.getId()] = tween;
+    this._tweensAddedDuringUpdate[tween.getId()] = tween;
+  };
+
+  Group.prototype.remove = function (tween) {
+    delete this._tweens[tween.getId()];
+    delete this._tweensAddedDuringUpdate[tween.getId()];
+  };
+
+  Group.prototype.update = function (time, preserve) {
+    if (time === void 0) {
+      time = now$1();
+    }
+
+    if (preserve === void 0) {
+      preserve = false;
+    }
+
+    var tweenIds = Object.keys(this._tweens);
+
+    if (tweenIds.length === 0) {
+      return false;
+    } // Tweens are updated in "batches". If you add a new tween during an
+    // update, then the new tween will be updated in the next batch.
+    // If you remove a tween during an update, it may or may not be updated.
+    // However, if the removed tween was added during the current batch,
+    // then it will not be updated.
+
+
+    while (tweenIds.length > 0) {
+      this._tweensAddedDuringUpdate = {};
+
+      for (var i = 0; i < tweenIds.length; i++) {
+        var tween = this._tweens[tweenIds[i]];
+        var autoStart = !preserve;
+
+        if (tween && tween.update(time, autoStart) === false && !preserve) {
+          delete this._tweens[tweenIds[i]];
+        }
+      }
+
+      tweenIds = Object.keys(this._tweensAddedDuringUpdate);
+    }
+
+    return true;
+  };
+
+  return Group;
+}();
+/**
+ *
+ */
+
+
+exports.Group = Group;
+var Interpolation = {
+  Linear: function (v, k) {
+    var m = v.length - 1;
+    var f = m * k;
+    var i = Math.floor(f);
+    var fn = Interpolation.Utils.Linear;
+
+    if (k < 0) {
+      return fn(v[0], v[1], f);
+    }
+
+    if (k > 1) {
+      return fn(v[m], v[m - 1], m - f);
+    }
+
+    return fn(v[i], v[i + 1 > m ? m : i + 1], f - i);
+  },
+  Bezier: function (v, k) {
+    var b = 0;
+    var n = v.length - 1;
+    var pw = Math.pow;
+    var bn = Interpolation.Utils.Bernstein;
+
+    for (var i = 0; i <= n; i++) {
+      b += pw(1 - k, n - i) * pw(k, i) * v[i] * bn(n, i);
+    }
+
+    return b;
+  },
+  CatmullRom: function (v, k) {
+    var m = v.length - 1;
+    var f = m * k;
+    var i = Math.floor(f);
+    var fn = Interpolation.Utils.CatmullRom;
+
+    if (v[0] === v[m]) {
+      if (k < 0) {
+        i = Math.floor(f = m * (1 + k));
+      }
+
+      return fn(v[(i - 1 + m) % m], v[i], v[(i + 1) % m], v[(i + 2) % m], f - i);
+    } else {
+      if (k < 0) {
+        return v[0] - (fn(v[0], v[0], v[1], v[1], -f) - v[0]);
+      }
+
+      if (k > 1) {
+        return v[m] - (fn(v[m], v[m], v[m - 1], v[m - 1], f - m) - v[m]);
+      }
+
+      return fn(v[i ? i - 1 : 0], v[i], v[m < i + 1 ? m : i + 1], v[m < i + 2 ? m : i + 2], f - i);
+    }
+  },
+  Utils: {
+    Linear: function (p0, p1, t) {
+      return (p1 - p0) * t + p0;
+    },
+    Bernstein: function (n, i) {
+      var fc = Interpolation.Utils.Factorial;
+      return fc(n) / fc(i) / fc(n - i);
+    },
+    Factorial: function () {
+      var a = [1];
+      return function (n) {
+        var s = 1;
+
+        if (a[n]) {
+          return a[n];
+        }
+
+        for (var i = n; i > 1; i--) {
+          s *= i;
+        }
+
+        a[n] = s;
+        return s;
+      };
+    }(),
+    CatmullRom: function (p0, p1, p2, p3, t) {
+      var v0 = (p2 - p0) * 0.5;
+      var v1 = (p3 - p1) * 0.5;
+      var t2 = t * t;
+      var t3 = t * t2;
+      return (2 * p1 - 2 * p2 + v0 + v1) * t3 + (-3 * p1 + 3 * p2 - 2 * v0 - v1) * t2 + v0 * t + p1;
+    }
+  }
+};
+/**
+ * Utils
+ */
+
+exports.Interpolation = Interpolation;
+
+var Sequence =
+/** @class */
+function () {
+  function Sequence() {}
+
+  Sequence.nextId = function () {
+    return Sequence._nextId++;
+  };
+
+  Sequence._nextId = 0;
+  return Sequence;
+}();
+
+exports.Sequence = Sequence;
+var mainGroup = new Group();
+/**
+ * Tween.js - Licensed under the MIT license
+ * https://github.com/tweenjs/tween.js
+ * ----------------------------------------------
+ *
+ * See https://github.com/tweenjs/tween.js/graphs/contributors for the full list of contributors.
+ * Thank you all, you're awesome!
+ */
+
+var Tween =
+/** @class */
+function () {
+  function Tween(_object, _group) {
+    if (_group === void 0) {
+      _group = mainGroup;
+    }
+
+    this._object = _object;
+    this._group = _group;
+    this._isPaused = false;
+    this._pauseStart = 0;
+    this._valuesStart = {};
+    this._valuesEnd = {};
+    this._valuesStartRepeat = {};
+    this._duration = 1000;
+    this._initialRepeat = 0;
+    this._repeat = 0;
+    this._yoyo = false;
+    this._isPlaying = false;
+    this._reversed = false;
+    this._delayTime = 0;
+    this._startTime = 0;
+    this._easingFunction = Easing.Linear.None;
+    this._interpolationFunction = Interpolation.Linear;
+    this._chainedTweens = [];
+    this._onStartCallbackFired = false;
+    this._id = Sequence.nextId();
+    this._isChainStopped = false;
+    this._goToEnd = false;
+  }
+
+  Tween.prototype.getId = function () {
+    return this._id;
+  };
+
+  Tween.prototype.isPlaying = function () {
+    return this._isPlaying;
+  };
+
+  Tween.prototype.isPaused = function () {
+    return this._isPaused;
+  };
+
+  Tween.prototype.to = function (properties, duration) {
+    // TODO? restore this, then update the 07_dynamic_to example to set fox
+    // tween's to on each update. That way the behavior is opt-in (there's
+    // currently no opt-out).
+    // for (const prop in properties) this._valuesEnd[prop] = properties[prop]
+    this._valuesEnd = Object.create(properties);
+
+    if (duration !== undefined) {
+      this._duration = duration;
+    }
+
+    return this;
+  };
+
+  Tween.prototype.duration = function (d) {
+    this._duration = d;
+    return this;
+  };
+
+  Tween.prototype.start = function (time) {
+    if (this._isPlaying) {
+      return this;
+    } // eslint-disable-next-line
+
+
+    this._group && this._group.add(this);
+    this._repeat = this._initialRepeat;
+
+    if (this._reversed) {
+      // If we were reversed (f.e. using the yoyo feature) then we need to
+      // flip the tween direction back to forward.
+      this._reversed = false;
+
+      for (var property in this._valuesStartRepeat) {
+        this._swapEndStartRepeatValues(property);
+
+        this._valuesStart[property] = this._valuesStartRepeat[property];
+      }
+    }
+
+    this._isPlaying = true;
+    this._isPaused = false;
+    this._onStartCallbackFired = false;
+    this._isChainStopped = false;
+    this._startTime = time !== undefined ? typeof time === 'string' ? now$1() + parseFloat(time) : time : now$1();
+    this._startTime += this._delayTime;
+
+    this._setupProperties(this._object, this._valuesStart, this._valuesEnd, this._valuesStartRepeat);
+
+    return this;
+  };
+
+  Tween.prototype._setupProperties = function (_object, _valuesStart, _valuesEnd, _valuesStartRepeat) {
+    for (var property in _valuesEnd) {
+      var startValue = _object[property];
+      var startValueIsArray = Array.isArray(startValue);
+      var propType = startValueIsArray ? 'array' : typeof startValue;
+      var isInterpolationList = !startValueIsArray && Array.isArray(_valuesEnd[property]); // If `to()` specifies a property that doesn't exist in the source object,
+      // we should not set that property in the object
+
+      if (propType === 'undefined' || propType === 'function') {
+        continue;
+      } // Check if an Array was provided as property value
+
+
+      if (isInterpolationList) {
+        var endValues = _valuesEnd[property];
+
+        if (endValues.length === 0) {
+          continue;
+        } // handle an array of relative values
+
+
+        endValues = endValues.map(this._handleRelativeValue.bind(this, startValue)); // Create a local copy of the Array with the start value at the front
+
+        _valuesEnd[property] = [startValue].concat(endValues);
+      } // handle the deepness of the values
+
+
+      if ((propType === 'object' || startValueIsArray) && startValue && !isInterpolationList) {
+        _valuesStart[property] = startValueIsArray ? [] : {}; // eslint-disable-next-line
+
+        for (var prop in startValue) {
+          // eslint-disable-next-line
+          // @ts-ignore FIXME?
+          _valuesStart[property][prop] = startValue[prop];
+        }
+
+        _valuesStartRepeat[property] = startValueIsArray ? [] : {}; // TODO? repeat nested values? And yoyo? And array values?
+        // eslint-disable-next-line
+        // @ts-ignore FIXME?
+
+        this._setupProperties(startValue, _valuesStart[property], _valuesEnd[property], _valuesStartRepeat[property]);
+      } else {
+        // Save the starting value, but only once.
+        if (typeof _valuesStart[property] === 'undefined') {
+          _valuesStart[property] = startValue;
+        }
+
+        if (!startValueIsArray) {
+          // eslint-disable-next-line
+          // @ts-ignore FIXME?
+          _valuesStart[property] *= 1.0; // Ensures we're using numbers, not strings
+        }
+
+        if (isInterpolationList) {
+          // eslint-disable-next-line
+          // @ts-ignore FIXME?
+          _valuesStartRepeat[property] = _valuesEnd[property].slice().reverse();
+        } else {
+          _valuesStartRepeat[property] = _valuesStart[property] || 0;
+        }
+      }
+    }
+  };
+
+  Tween.prototype.stop = function () {
+    if (!this._isChainStopped) {
+      this._isChainStopped = true;
+      this.stopChainedTweens();
+    }
+
+    if (!this._isPlaying) {
+      return this;
+    } // eslint-disable-next-line
+
+
+    this._group && this._group.remove(this);
+    this._isPlaying = false;
+    this._isPaused = false;
+
+    if (this._onStopCallback) {
+      this._onStopCallback(this._object);
+    }
+
+    return this;
+  };
+
+  Tween.prototype.end = function () {
+    this._goToEnd = true;
+    this.update(Infinity);
+    return this;
+  };
+
+  Tween.prototype.pause = function (time) {
+    if (time === void 0) {
+      time = now$1();
+    }
+
+    if (this._isPaused || !this._isPlaying) {
+      return this;
+    }
+
+    this._isPaused = true;
+    this._pauseStart = time; // eslint-disable-next-line
+
+    this._group && this._group.remove(this);
+    return this;
+  };
+
+  Tween.prototype.resume = function (time) {
+    if (time === void 0) {
+      time = now$1();
+    }
+
+    if (!this._isPaused || !this._isPlaying) {
+      return this;
+    }
+
+    this._isPaused = false;
+    this._startTime += time - this._pauseStart;
+    this._pauseStart = 0; // eslint-disable-next-line
+
+    this._group && this._group.add(this);
+    return this;
+  };
+
+  Tween.prototype.stopChainedTweens = function () {
+    for (var i = 0, numChainedTweens = this._chainedTweens.length; i < numChainedTweens; i++) {
+      this._chainedTweens[i].stop();
+    }
+
+    return this;
+  };
+
+  Tween.prototype.group = function (group) {
+    this._group = group;
+    return this;
+  };
+
+  Tween.prototype.delay = function (amount) {
+    this._delayTime = amount;
+    return this;
+  };
+
+  Tween.prototype.repeat = function (times) {
+    this._initialRepeat = times;
+    this._repeat = times;
+    return this;
+  };
+
+  Tween.prototype.repeatDelay = function (amount) {
+    this._repeatDelayTime = amount;
+    return this;
+  };
+
+  Tween.prototype.yoyo = function (yoyo) {
+    this._yoyo = yoyo;
+    return this;
+  };
+
+  Tween.prototype.easing = function (easingFunction) {
+    this._easingFunction = easingFunction;
+    return this;
+  };
+
+  Tween.prototype.interpolation = function (interpolationFunction) {
+    this._interpolationFunction = interpolationFunction;
+    return this;
+  };
+
+  Tween.prototype.chain = function () {
+    var tweens = [];
+
+    for (var _i = 0; _i < arguments.length; _i++) {
+      tweens[_i] = arguments[_i];
+    }
+
+    this._chainedTweens = tweens;
+    return this;
+  };
+
+  Tween.prototype.onStart = function (callback) {
+    this._onStartCallback = callback;
+    return this;
+  };
+
+  Tween.prototype.onUpdate = function (callback) {
+    this._onUpdateCallback = callback;
+    return this;
+  };
+
+  Tween.prototype.onRepeat = function (callback) {
+    this._onRepeatCallback = callback;
+    return this;
+  };
+
+  Tween.prototype.onComplete = function (callback) {
+    this._onCompleteCallback = callback;
+    return this;
+  };
+
+  Tween.prototype.onStop = function (callback) {
+    this._onStopCallback = callback;
+    return this;
+  };
+  /**
+   * @returns true if the tween is still playing after the update, false
+   * otherwise (calling update on a paused tween still returns true because
+   * it is still playing, just paused).
+   */
+
+
+  Tween.prototype.update = function (time, autoStart) {
+    if (time === void 0) {
+      time = now$1();
+    }
+
+    if (autoStart === void 0) {
+      autoStart = true;
+    }
+
+    if (this._isPaused) return true;
+    var property;
+    var elapsed;
+    var endTime = this._startTime + this._duration;
+
+    if (!this._goToEnd && !this._isPlaying) {
+      if (time > endTime) return false;
+      if (autoStart) this.start(time);
+    }
+
+    this._goToEnd = false;
+
+    if (time < this._startTime) {
+      return true;
+    }
+
+    if (this._onStartCallbackFired === false) {
+      if (this._onStartCallback) {
+        this._onStartCallback(this._object);
+      }
+
+      this._onStartCallbackFired = true;
+    }
+
+    elapsed = (time - this._startTime) / this._duration;
+    elapsed = this._duration === 0 || elapsed > 1 ? 1 : elapsed;
+
+    var value = this._easingFunction(elapsed); // properties transformations
+
+
+    this._updateProperties(this._object, this._valuesStart, this._valuesEnd, value);
+
+    if (this._onUpdateCallback) {
+      this._onUpdateCallback(this._object, elapsed);
+    }
+
+    if (elapsed === 1) {
+      if (this._repeat > 0) {
+        if (isFinite(this._repeat)) {
+          this._repeat--;
+        } // Reassign starting values, restart by making startTime = now
+
+
+        for (property in this._valuesStartRepeat) {
+          if (!this._yoyo && typeof this._valuesEnd[property] === 'string') {
+            this._valuesStartRepeat[property] = // eslint-disable-next-line
+            // @ts-ignore FIXME?
+            this._valuesStartRepeat[property] + parseFloat(this._valuesEnd[property]);
+          }
+
+          if (this._yoyo) {
+            this._swapEndStartRepeatValues(property);
+          }
+
+          this._valuesStart[property] = this._valuesStartRepeat[property];
+        }
+
+        if (this._yoyo) {
+          this._reversed = !this._reversed;
+        }
+
+        if (this._repeatDelayTime !== undefined) {
+          this._startTime = time + this._repeatDelayTime;
+        } else {
+          this._startTime = time + this._delayTime;
+        }
+
+        if (this._onRepeatCallback) {
+          this._onRepeatCallback(this._object);
+        }
+
+        return true;
+      } else {
+        if (this._onCompleteCallback) {
+          this._onCompleteCallback(this._object);
+        }
+
+        for (var i = 0, numChainedTweens = this._chainedTweens.length; i < numChainedTweens; i++) {
+          // Make the chained tweens start exactly at the time they should,
+          // even if the `update()` method was called way past the duration of the tween
+          this._chainedTweens[i].start(this._startTime + this._duration);
+        }
+
+        this._isPlaying = false;
+        return false;
+      }
+    }
+
+    return true;
+  };
+
+  Tween.prototype._updateProperties = function (_object, _valuesStart, _valuesEnd, value) {
+    for (var property in _valuesEnd) {
+      // Don't update properties that do not exist in the source object
+      if (_valuesStart[property] === undefined) {
+        continue;
+      }
+
+      var start = _valuesStart[property] || 0;
+      var end = _valuesEnd[property];
+      var startIsArray = Array.isArray(_object[property]);
+      var endIsArray = Array.isArray(end);
+      var isInterpolationList = !startIsArray && endIsArray;
+
+      if (isInterpolationList) {
+        _object[property] = this._interpolationFunction(end, value);
+      } else if (typeof end === 'object' && end) {
+        // eslint-disable-next-line
+        // @ts-ignore FIXME?
+        this._updateProperties(_object[property], start, end, value);
+      } else {
+        // Parses relative end values with start as base (e.g.: +10, -3)
+        end = this._handleRelativeValue(start, end); // Protect against non numeric properties.
+
+        if (typeof end === 'number') {
+          // eslint-disable-next-line
+          // @ts-ignore FIXME?
+          _object[property] = start + (end - start) * value;
+        }
+      }
+    }
+  };
+
+  Tween.prototype._handleRelativeValue = function (start, end) {
+    if (typeof end !== 'string') {
+      return end;
+    }
+
+    if (end.charAt(0) === '+' || end.charAt(0) === '-') {
+      return start + parseFloat(end);
+    } else {
+      return parseFloat(end);
+    }
+  };
+
+  Tween.prototype._swapEndStartRepeatValues = function (property) {
+    var tmp = this._valuesStartRepeat[property];
+    var endValue = this._valuesEnd[property];
+
+    if (typeof endValue === 'string') {
+      this._valuesStartRepeat[property] = this._valuesStartRepeat[property] + parseFloat(endValue);
+    } else {
+      this._valuesStartRepeat[property] = this._valuesEnd[property];
+    }
+
+    this._valuesEnd[property] = tmp;
+  };
+
+  return Tween;
+}();
+
+exports.Tween = Tween;
+var VERSION = '18.6.4';
+/**
+ * Tween.js - Licensed under the MIT license
+ * https://github.com/tweenjs/tween.js
+ * ----------------------------------------------
+ *
+ * See https://github.com/tweenjs/tween.js/graphs/contributors for the full list of contributors.
+ * Thank you all, you're awesome!
+ */
+
+exports.VERSION = VERSION;
+var nextId = Sequence.nextId;
+/**
+ * Controlling groups of tweens
+ *
+ * Using the TWEEN singleton to manage your tweens can cause issues in large apps with many components.
+ * In these cases, you may want to create your own smaller groups of tweens.
+ */
+
+exports.nextId = nextId;
+var TWEEN = mainGroup; // This is the best way to export things in a way that's compatible with both ES
+// Modules and CommonJS, without build hacks, and so as not to break the
+// existing API.
+// https://github.com/rollup/rollup/issues/1961#issuecomment-423037881
+
+var getAll = TWEEN.getAll.bind(TWEEN);
+exports.getAll = getAll;
+var removeAll = TWEEN.removeAll.bind(TWEEN);
+exports.removeAll = removeAll;
+var add = TWEEN.add.bind(TWEEN);
+exports.add = add;
+var remove = TWEEN.remove.bind(TWEEN);
+exports.remove = remove;
+var update = TWEEN.update.bind(TWEEN);
+exports.update = update;
+var _exports = {
+  Easing: Easing,
+  Group: Group,
+  Interpolation: Interpolation,
+  now: now$1,
+  Sequence: Sequence,
+  nextId: nextId,
+  Tween: Tween,
+  VERSION: VERSION,
+  getAll: getAll,
+  removeAll: removeAll,
+  add: add,
+  remove: remove,
+  update: update
+};
+var _default = _exports;
+exports.default = _default;
+
+}).call(this)}).call(this,require('_process'))
+},{"_process":2}],2:[function(require,module,exports){
+// shim for using process in browser
+var process = module.exports = {};
+
+// cached from whatever global is present so that test runners that stub it
+// don't break things.  But we need to wrap it in a try catch in case it is
+// wrapped in strict mode code which doesn't define any globals.  It's inside a
+// function because try/catches deoptimize in certain engines.
+
+var cachedSetTimeout;
+var cachedClearTimeout;
+
+function defaultSetTimout() {
+    throw new Error('setTimeout has not been defined');
+}
+function defaultClearTimeout () {
+    throw new Error('clearTimeout has not been defined');
+}
+(function () {
+    try {
+        if (typeof setTimeout === 'function') {
+            cachedSetTimeout = setTimeout;
+        } else {
+            cachedSetTimeout = defaultSetTimout;
+        }
+    } catch (e) {
+        cachedSetTimeout = defaultSetTimout;
+    }
+    try {
+        if (typeof clearTimeout === 'function') {
+            cachedClearTimeout = clearTimeout;
+        } else {
+            cachedClearTimeout = defaultClearTimeout;
+        }
+    } catch (e) {
+        cachedClearTimeout = defaultClearTimeout;
+    }
+} ())
+function runTimeout(fun) {
+    if (cachedSetTimeout === setTimeout) {
+        //normal enviroments in sane situations
+        return setTimeout(fun, 0);
+    }
+    // if setTimeout wasn't available but was latter defined
+    if ((cachedSetTimeout === defaultSetTimout || !cachedSetTimeout) && setTimeout) {
+        cachedSetTimeout = setTimeout;
+        return setTimeout(fun, 0);
+    }
+    try {
+        // when when somebody has screwed with setTimeout but no I.E. maddness
+        return cachedSetTimeout(fun, 0);
+    } catch(e){
+        try {
+            // When we are in I.E. but the script has been evaled so I.E. doesn't trust the global object when called normally
+            return cachedSetTimeout.call(null, fun, 0);
+        } catch(e){
+            // same as above but when it's a version of I.E. that must have the global object for 'this', hopfully our context correct otherwise it will throw a global error
+            return cachedSetTimeout.call(this, fun, 0);
+        }
+    }
+
+
+}
+function runClearTimeout(marker) {
+    if (cachedClearTimeout === clearTimeout) {
+        //normal enviroments in sane situations
+        return clearTimeout(marker);
+    }
+    // if clearTimeout wasn't available but was latter defined
+    if ((cachedClearTimeout === defaultClearTimeout || !cachedClearTimeout) && clearTimeout) {
+        cachedClearTimeout = clearTimeout;
+        return clearTimeout(marker);
+    }
+    try {
+        // when when somebody has screwed with setTimeout but no I.E. maddness
+        return cachedClearTimeout(marker);
+    } catch (e){
+        try {
+            // When we are in I.E. but the script has been evaled so I.E. doesn't  trust the global object when called normally
+            return cachedClearTimeout.call(null, marker);
+        } catch (e){
+            // same as above but when it's a version of I.E. that must have the global object for 'this', hopfully our context correct otherwise it will throw a global error.
+            // Some versions of I.E. have different rules for clearTimeout vs setTimeout
+            return cachedClearTimeout.call(this, marker);
+        }
+    }
+
+
+
+}
+var queue = [];
+var draining = false;
+var currentQueue;
+var queueIndex = -1;
+
+function cleanUpNextTick() {
+    if (!draining || !currentQueue) {
+        return;
+    }
+    draining = false;
+    if (currentQueue.length) {
+        queue = currentQueue.concat(queue);
+    } else {
+        queueIndex = -1;
+    }
+    if (queue.length) {
+        drainQueue();
+    }
+}
+
+function drainQueue() {
+    if (draining) {
+        return;
+    }
+    var timeout = runTimeout(cleanUpNextTick);
+    draining = true;
+
+    var len = queue.length;
+    while(len) {
+        currentQueue = queue;
+        queue = [];
+        while (++queueIndex < len) {
+            if (currentQueue) {
+                currentQueue[queueIndex].run();
+            }
+        }
+        queueIndex = -1;
+        len = queue.length;
+    }
+    currentQueue = null;
+    draining = false;
+    runClearTimeout(timeout);
+}
+
+process.nextTick = function (fun) {
+    var args = new Array(arguments.length - 1);
+    if (arguments.length > 1) {
+        for (var i = 1; i < arguments.length; i++) {
+            args[i - 1] = arguments[i];
+        }
+    }
+    queue.push(new Item(fun, args));
+    if (queue.length === 1 && !draining) {
+        runTimeout(drainQueue);
+    }
+};
+
+// v8 likes predictible objects
+function Item(fun, array) {
+    this.fun = fun;
+    this.array = array;
+}
+Item.prototype.run = function () {
+    this.fun.apply(null, this.array);
+};
+process.title = 'browser';
+process.browser = true;
+process.env = {};
+process.argv = [];
+process.version = ''; // empty string to avoid regexp issues
+process.versions = {};
+
+function noop() {}
+
+process.on = noop;
+process.addListener = noop;
+process.once = noop;
+process.off = noop;
+process.removeListener = noop;
+process.removeAllListeners = noop;
+process.emit = noop;
+process.prependListener = noop;
+process.prependOnceListener = noop;
+
+process.listeners = function (name) { return [] }
+
+process.binding = function (name) {
+    throw new Error('process.binding is not supported');
+};
+
+process.cwd = function () { return '/' };
+process.chdir = function (dir) {
+    throw new Error('process.chdir is not supported');
+};
+process.umask = function() { return 0; };
+
+},{}],3:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -4267,7 +5418,7 @@ var Interaction = function (_InteractionManager) {
 
 exports.Interaction = Interaction;
 
-},{"three":3}],2:[function(require,module,exports){
+},{"three":5}],4:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -4637,7 +5788,7 @@ function ObjectControls(camera, domElement, objectToMove) {
 
 ;
 
-},{}],3:[function(require,module,exports){
+},{}],5:[function(require,module,exports){
 "use strict";Object.defineProperty(exports,"__esModule",{value:true});exports.AxisHelper=AxisHelper;exports.BinaryTextureLoader=BinaryTextureLoader;exports.Bone=Bone;exports.BoundingBoxHelper=BoundingBoxHelper;exports.BufferAttribute=BufferAttribute;exports.BufferGeometry=BufferGeometry;exports.Camera=Camera;exports.CanvasRenderer=CanvasRenderer;exports.CompressedTextureLoader=CompressedTextureLoader;exports.CubicInterpolant=CubicInterpolant;exports.Curve=Curve;exports.DataTextureLoader=DataTextureLoader;exports.DiscreteInterpolant=DiscreteInterpolant;exports.DynamicBufferAttribute=DynamicBufferAttribute;exports.EdgesHelper=EdgesHelper;exports.EventDispatcher=EventDispatcher;exports.FileLoader=FileLoader;exports.Float16BufferAttribute=Float16BufferAttribute;exports.Float32Attribute=Float32Attribute;exports.Float32BufferAttribute=Float32BufferAttribute;exports.Float64Attribute=Float64Attribute;exports.Float64BufferAttribute=Float64BufferAttribute;exports.GLBufferAttribute=GLBufferAttribute;exports.ImageBitmapLoader=ImageBitmapLoader;exports.ImmediateRenderObject=ImmediateRenderObject;exports.InstancedBufferAttribute=InstancedBufferAttribute;exports.InstancedBufferGeometry=InstancedBufferGeometry;exports.InstancedInterleavedBuffer=InstancedInterleavedBuffer;exports.InstancedMesh=InstancedMesh;exports.Int16Attribute=Int16Attribute;exports.Int16BufferAttribute=Int16BufferAttribute;exports.Int32Attribute=Int32Attribute;exports.Int32BufferAttribute=Int32BufferAttribute;exports.Int8Attribute=Int8Attribute;exports.Int8BufferAttribute=Int8BufferAttribute;exports.InterleavedBuffer=InterleavedBuffer;exports.InterleavedBufferAttribute=InterleavedBufferAttribute;exports.Interpolant=Interpolant;exports.JSONLoader=JSONLoader;exports.LensFlare=LensFlare;exports.Line=Line;exports.LineSegments=LineSegments;exports.LinearInterpolant=LinearInterpolant;exports.Loader=Loader;exports.LoadingManager=LoadingManager;exports.Material=Material;exports.Mesh=Mesh;exports.MeshFaceMaterial=MeshFaceMaterial;exports.MeshPhysicalMaterial=MeshPhysicalMaterial;exports.MeshStandardMaterial=MeshStandardMaterial;exports.MultiMaterial=MultiMaterial;exports.Object3D=Object3D;exports.ParametricGeometry=exports.ParametricBufferGeometry=ParametricGeometry;exports.Particle=Particle;exports.ParticleBasicMaterial=ParticleBasicMaterial;exports.ParticleSystem=ParticleSystem;exports.ParticleSystemMaterial=ParticleSystemMaterial;exports.PerspectiveCamera=PerspectiveCamera;exports.PointCloud=PointCloud;exports.PointCloudMaterial=PointCloudMaterial;exports.Points=Points;exports.PropertyBinding=PropertyBinding;exports.QuaternionLinearInterpolant=QuaternionLinearInterpolant;exports.Raycaster=Raycaster;exports.ShaderMaterial=ShaderMaterial;exports.SkinnedMesh=SkinnedMesh;exports.TextureLoader=TextureLoader;exports.Uint16Attribute=Uint16Attribute;exports.Uint16BufferAttribute=Uint16BufferAttribute;exports.Uint32Attribute=Uint32Attribute;exports.Uint32BufferAttribute=Uint32BufferAttribute;exports.Uint8Attribute=Uint8Attribute;exports.Uint8BufferAttribute=Uint8BufferAttribute;exports.Uint8ClampedAttribute=Uint8ClampedAttribute;exports.Uint8ClampedBufferAttribute=Uint8ClampedBufferAttribute;exports.Vertex=Vertex;exports.WebGLRenderTargetCube=WebGLRenderTargetCube;exports.WebGLRenderer=WebGLRenderer;exports.WebGLUtils=WebGLUtils;exports.WireframeHelper=WireframeHelper;exports.XHRLoader=XHRLoader;exports.FlatShading=exports.FaceColors=exports.ExtrudeGeometry=exports.ExtrudeBufferGeometry=exports.Euler=exports.EquirectangularRefractionMapping=exports.EquirectangularReflectionMapping=exports.EqualStencilFunc=exports.EqualDepth=exports.EllipseCurve=exports.EdgesGeometry=exports.DynamicReadUsage=exports.DynamicDrawUsage=exports.DynamicCopyUsage=exports.DstColorFactor=exports.DstAlphaFactor=exports.DoubleSide=exports.DodecahedronGeometry=exports.DodecahedronBufferGeometry=exports.DirectionalLightHelper=exports.DirectionalLight=exports.DepthTexture=exports.DepthStencilFormat=exports.DepthFormat=exports.DefaultLoadingManager=exports.DecrementWrapStencilOp=exports.DecrementStencilOp=exports.DataUtils=exports.DataTexture3D=exports.DataTexture2DArray=exports.DataTexture=exports.Cylindrical=exports.CylinderGeometry=exports.CylinderBufferGeometry=exports.CustomToneMapping=exports.CustomBlending=exports.CurvePath=exports.CullFaceNone=exports.CullFaceFrontBack=exports.CullFaceFront=exports.CullFaceBack=exports.CubicBezierCurve3=exports.CubicBezierCurve=exports.CubeUVRefractionMapping=exports.CubeUVReflectionMapping=exports.CubeTextureLoader=exports.CubeTexture=exports.CubeRefractionMapping=exports.CubeReflectionMapping=exports.CubeCamera=exports.ConeGeometry=exports.ConeBufferGeometry=exports.CompressedTexture=exports.ColorKeyframeTrack=exports.Color=exports.Clock=exports.ClampToEdgeWrapping=exports.CircleGeometry=exports.CircleBufferGeometry=exports.CineonToneMapping=exports.CatmullRomCurve3=exports.CanvasTexture=exports.CameraHelper=exports.Cache=exports.ByteType=exports.BufferGeometryLoader=exports.BoxHelper=exports.BoxGeometry=exports.BoxBufferGeometry=exports.Box3Helper=exports.Box3=exports.Box2=exports.BooleanKeyframeTrack=exports.BasicShadowMap=exports.BasicDepthPacking=exports.BackSide=exports.AxesHelper=exports.AudioLoader=exports.AudioListener=exports.AudioContext=exports.AudioAnalyser=exports.Audio=exports.ArrowHelper=exports.ArrayCamera=exports.ArcCurve=exports.AnimationUtils=exports.AnimationObjectGroup=exports.AnimationMixer=exports.AnimationLoader=exports.AnimationClip=exports.AmbientLightProbe=exports.AmbientLight=exports.AlwaysStencilFunc=exports.AlwaysDepth=exports.AlphaFormat=exports.AdditiveBlending=exports.AdditiveAnimationBlendMode=exports.AddOperation=exports.AddEquation=exports.ACESFilmicToneMapping=void 0;exports.NumberKeyframeTrack=exports.NotEqualStencilFunc=exports.NotEqualDepth=exports.NormalBlending=exports.NormalAnimationBlendMode=exports.NoToneMapping=exports.NoColors=exports.NoBlending=exports.NeverStencilFunc=exports.NeverDepth=exports.NearestMipmapNearestFilter=exports.NearestMipmapLinearFilter=exports.NearestMipMapNearestFilter=exports.NearestMipMapLinearFilter=exports.NearestFilter=exports.MultiplyOperation=exports.MultiplyBlending=exports.MixOperation=exports.MirroredRepeatWrapping=exports.MinEquation=exports.MeshToonMaterial=exports.MeshPhongMaterial=exports.MeshNormalMaterial=exports.MeshMatcapMaterial=exports.MeshLambertMaterial=exports.MeshDistanceMaterial=exports.MeshDepthMaterial=exports.MeshBasicMaterial=exports.MaxEquation=exports.Matrix4=exports.Matrix3=exports.MathUtils=exports.Math=exports.MaterialLoader=exports.MOUSE=exports.LuminanceFormat=exports.LuminanceAlphaFormat=exports.LoopRepeat=exports.LoopPingPong=exports.LoopOnce=exports.LogLuvEncoding=exports.LoaderUtils=exports.LinearToneMapping=exports.LinearMipmapNearestFilter=exports.LinearMipmapLinearFilter=exports.LinearMipMapNearestFilter=exports.LinearMipMapLinearFilter=exports.LinearFilter=exports.LinearEncoding=exports.LineStrip=exports.LinePieces=exports.LineLoop=exports.LineDashedMaterial=exports.LineCurve3=exports.LineCurve=exports.LineBasicMaterial=exports.Line3=exports.LightProbe=exports.Light=exports.LessStencilFunc=exports.LessEqualStencilFunc=exports.LessEqualDepth=exports.LessDepth=exports.Layers=exports.LatheGeometry=exports.LatheBufferGeometry=exports.LOD=exports.KeyframeTrack=exports.KeepStencilOp=exports.InvertStencilOp=exports.InterpolateSmooth=exports.InterpolateLinear=exports.InterpolateDiscrete=exports.IntType=exports.IncrementWrapStencilOp=exports.IncrementStencilOp=exports.ImageUtils=exports.ImageLoader=exports.IcosahedronGeometry=exports.IcosahedronBufferGeometry=exports.HemisphereLightProbe=exports.HemisphereLightHelper=exports.HemisphereLight=exports.HalfFloatType=exports.Group=exports.GridHelper=exports.GreaterStencilFunc=exports.GreaterEqualStencilFunc=exports.GreaterEqualDepth=exports.GreaterDepth=exports.GammaEncoding=exports.GLSL3=exports.GLSL1=exports.Frustum=exports.FrontSide=exports.FontLoader=exports.Font=exports.FogExp2=exports.Fog=exports.FloatType=void 0;exports.Shape=exports.ShadowMaterial=exports.ShaderLib=exports.ShaderChunk=exports.SceneUtils=exports.Scene=exports.SRGB8_ALPHA8_ASTC_8x8_Format=exports.SRGB8_ALPHA8_ASTC_8x6_Format=exports.SRGB8_ALPHA8_ASTC_8x5_Format=exports.SRGB8_ALPHA8_ASTC_6x6_Format=exports.SRGB8_ALPHA8_ASTC_6x5_Format=exports.SRGB8_ALPHA8_ASTC_5x5_Format=exports.SRGB8_ALPHA8_ASTC_5x4_Format=exports.SRGB8_ALPHA8_ASTC_4x4_Format=exports.SRGB8_ALPHA8_ASTC_12x12_Format=exports.SRGB8_ALPHA8_ASTC_12x10_Format=exports.SRGB8_ALPHA8_ASTC_10x8_Format=exports.SRGB8_ALPHA8_ASTC_10x6_Format=exports.SRGB8_ALPHA8_ASTC_10x5_Format=exports.SRGB8_ALPHA8_ASTC_10x10_Format=exports.RingGeometry=exports.RingBufferGeometry=exports.ReverseSubtractEquation=exports.ReplaceStencilOp=exports.RepeatWrapping=exports.ReinhardToneMapping=exports.RedIntegerFormat=exports.RedFormat=exports.RectAreaLight=exports.Ray=exports.RawShaderMaterial=exports.RGIntegerFormat=exports.RGFormat=exports.RGB_S3TC_DXT1_Format=exports.RGB_PVRTC_4BPPV1_Format=exports.RGB_PVRTC_2BPPV1_Format=exports.RGB_ETC2_Format=exports.RGB_ETC1_Format=exports.RGBM7Encoding=exports.RGBM16Encoding=exports.RGBIntegerFormat=exports.RGBFormat=exports.RGBEFormat=exports.RGBEEncoding=exports.RGBDEncoding=exports.RGBA_S3TC_DXT5_Format=exports.RGBA_S3TC_DXT3_Format=exports.RGBA_S3TC_DXT1_Format=exports.RGBA_PVRTC_4BPPV1_Format=exports.RGBA_PVRTC_2BPPV1_Format=exports.RGBA_ETC2_EAC_Format=exports.RGBA_BPTC_Format=exports.RGBA_ASTC_8x8_Format=exports.RGBA_ASTC_8x6_Format=exports.RGBA_ASTC_8x5_Format=exports.RGBA_ASTC_6x6_Format=exports.RGBA_ASTC_6x5_Format=exports.RGBA_ASTC_5x5_Format=exports.RGBA_ASTC_5x4_Format=exports.RGBA_ASTC_4x4_Format=exports.RGBA_ASTC_12x12_Format=exports.RGBA_ASTC_12x10_Format=exports.RGBA_ASTC_10x8_Format=exports.RGBA_ASTC_10x6_Format=exports.RGBA_ASTC_10x5_Format=exports.RGBA_ASTC_10x10_Format=exports.RGBAIntegerFormat=exports.RGBAFormat=exports.RGBADepthPacking=exports.REVISION=exports.QuaternionKeyframeTrack=exports.Quaternion=exports.QuadraticBezierCurve3=exports.QuadraticBezierCurve=exports.PropertyMixer=exports.PositionalAudio=exports.PolyhedronGeometry=exports.PolyhedronBufferGeometry=exports.PolarGridHelper=exports.PointsMaterial=exports.PointLightHelper=exports.PointLight=exports.PlaneHelper=exports.PlaneGeometry=exports.PlaneBufferGeometry=exports.Plane=exports.Path=exports.PMREMGenerator=exports.PCFSoftShadowMap=exports.PCFShadowMap=exports.OrthographicCamera=exports.OneMinusSrcColorFactor=exports.OneMinusSrcAlphaFactor=exports.OneMinusDstColorFactor=exports.OneMinusDstAlphaFactor=exports.OneFactor=exports.OctahedronGeometry=exports.OctahedronBufferGeometry=exports.ObjectSpaceNormalMap=exports.ObjectLoader=void 0;exports.sRGBEncoding=exports.ZeroStencilOp=exports.ZeroSlopeEnding=exports.ZeroFactor=exports.ZeroCurvatureEnding=exports.WrapAroundEnding=exports.WireframeGeometry=exports.WebGLRenderTarget=exports.WebGLMultisampleRenderTarget=exports.WebGLCubeRenderTarget=exports.WebGL1Renderer=exports.VideoTexture=exports.VertexColors=exports.VectorKeyframeTrack=exports.Vector4=exports.Vector3=exports.Vector2=exports.VSMShadowMap=exports.UnsignedShortType=exports.UnsignedShort565Type=exports.UnsignedShort5551Type=exports.UnsignedShort4444Type=exports.UnsignedIntType=exports.UnsignedInt248Type=exports.UnsignedByteType=exports.UniformsUtils=exports.UniformsLib=exports.Uniform=exports.UVMapping=exports.TubeGeometry=exports.TubeBufferGeometry=exports.TrianglesDrawMode=exports.TriangleStripDrawMode=exports.TriangleFanDrawMode=exports.Triangle=exports.TorusKnotGeometry=exports.TorusKnotBufferGeometry=exports.TorusGeometry=exports.TorusBufferGeometry=exports.Texture=exports.TextGeometry=exports.TextBufferGeometry=exports.TetrahedronGeometry=exports.TetrahedronBufferGeometry=exports.TangentSpaceNormalMap=exports.TOUCH=exports.SubtractiveBlending=exports.SubtractEquation=exports.StringKeyframeTrack=exports.StreamReadUsage=exports.StreamDrawUsage=exports.StreamCopyUsage=exports.StereoCamera=exports.StaticReadUsage=exports.StaticDrawUsage=exports.StaticCopyUsage=exports.SrcColorFactor=exports.SrcAlphaSaturateFactor=exports.SrcAlphaFactor=exports.SpriteMaterial=exports.Sprite=exports.SpotLightHelper=exports.SpotLight=exports.SplineCurve=exports.SphericalHarmonics3=exports.Spherical=exports.SphereGeometry=exports.SphereBufferGeometry=exports.Sphere=exports.SmoothShading=exports.SkeletonHelper=exports.Skeleton=exports.ShortType=exports.ShapeUtils=exports.ShapePath=exports.ShapeGeometry=exports.ShapeBufferGeometry=void 0;/**
  * @license
  * Copyright 2010-2021 Three.js Authors
@@ -7537,7 +8688,7 @@ function JSONLoader(){console.error('THREE.JSONLoader has been removed.');}//
 const SceneUtils={createMultiMaterialObject:function()/* geometry, materials */{console.error('THREE.SceneUtils has been moved to /examples/jsm/utils/SceneUtils.js');},detach:function()/* child, parent, scene */{console.error('THREE.SceneUtils has been moved to /examples/jsm/utils/SceneUtils.js');},attach:function()/* child, scene, parent */{console.error('THREE.SceneUtils has been moved to /examples/jsm/utils/SceneUtils.js');}};//
 exports.SceneUtils=SceneUtils;function LensFlare(){console.error('THREE.LensFlare has been moved to /examples/jsm/objects/Lensflare.js');}if(typeof __THREE_DEVTOOLS__!=='undefined'){/* eslint-disable no-undef */__THREE_DEVTOOLS__.dispatchEvent(new CustomEvent('register',{detail:{revision:REVISION}}));/* eslint-enable no-undef */}if(typeof window!=='undefined'){if(window.__THREE__){console.warn('WARNING: Multiple instances of Three.js being imported.');}else{window.__THREE__=REVISION;}}
 
-},{}],4:[function(require,module,exports){
+},{}],6:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -7830,7 +8981,7 @@ exports.DragControls = DragControls;
 DragControls.prototype = Object.create(_threeModule.EventDispatcher.prototype);
 DragControls.prototype.constructor = DragControls;
 
-},{"../../../build/three.module.js":3}],5:[function(require,module,exports){
+},{"../../../build/three.module.js":5}],7:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -8665,7 +9816,7 @@ exports.MapControls = MapControls;
 MapControls.prototype = Object.create(_threeModule.EventDispatcher.prototype);
 MapControls.prototype.constructor = MapControls;
 
-},{"../../../build/three.module.js":3}],6:[function(require,module,exports){
+},{"../../../build/three.module.js":5}],8:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -9778,7 +10929,7 @@ TransformControlsPlane.prototype = Object.assign(Object.create(_threeModule.Mesh
   isTransformControlsPlane: true
 });
 
-},{"../../../build/three.module.js":3}],7:[function(require,module,exports){
+},{"../../../build/three.module.js":5}],9:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -12514,7 +13665,7 @@ var GLTFLoader = function () {
 
 exports.GLTFLoader = GLTFLoader;
 
-},{"../../../build/three.module.js":3}],8:[function(require,module,exports){
+},{"../../../build/three.module.js":5}],10:[function(require,module,exports){
 "use strict";
 
 var THREE = _interopRequireWildcard(require("three"));
@@ -12536,6 +13687,8 @@ function _getRequireWildcardCache() { if (typeof WeakMap !== "function") return 
 function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } if (obj === null || typeof obj !== "object" && typeof obj !== "function") { return { default: obj }; } var cache = _getRequireWildcardCache(); if (cache && cache.has(obj)) { return cache.get(obj); } var newObj = {}; var hasPropertyDescriptor = Object.defineProperty && Object.getOwnPropertyDescriptor; for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) { var desc = hasPropertyDescriptor ? Object.getOwnPropertyDescriptor(obj, key) : null; if (desc && (desc.get || desc.set)) { Object.defineProperty(newObj, key, desc); } else { newObj[key] = obj[key]; } } } newObj.default = obj; if (cache) { cache.set(obj, newObj); } return newObj; }
 
 // Find the latest version by visiting https://unpkg.com/three.
+const TWEEN = require('@tweenjs/tween.js');
+
 const scene = new THREE.Scene();
 const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
 const renderer = new THREE.WebGLRenderer();
@@ -12595,28 +13748,45 @@ loader.load('assets/main.glb', function (gltf) {
   console.error(error);
 });
 const objects = [];
+const dragControls = new _DragControls.DragControls(objects, camera, renderer.domElement);
 loader.load('assets/pullIt.glb', function (gltf) {
   var pullIt = gltf.scene.children[0];
   scene.add(gltf.scene);
   pullIt.userData.limit = {
-    min: new THREE.Vector3(-0.05, -0.16302920877933502, 0.08229061961174011),
+    min: new THREE.Vector3(-0.08, -0.16302920877933502, 0.08229061961174011),
     max: new THREE.Vector3(0, -0.16302920877933502, 0.08229061961174011)
   };
+  var pulledIt = false;
 
   pullIt.userData.update = function () {
     pullIt.position.clamp(pullIt.userData.limit.min, pullIt.userData.limit.max);
 
-    if (pullIt.position.x <= -0.045) {
-      pullIt.position.setX(0);
+    if (pullIt.position.x < -0.075 && pulledIt == true) {
+      var position = {
+        x: pullIt.position.x
+      };
+      var target = {
+        x: 0
+      };
+      var tween = new TWEEN.Tween(position).to(target, 250);
+      tween.onUpdate(function () {
+        pullIt.position.x = position.x;
+      });
+
+      if (pulledIt == true) {
+        tween.start();
+      }
     }
   };
 
   objects.push(pullIt);
-  pullIt.on('mouseover', function (ev) {
+  dragControls.addEventListener('dragstart', function (event) {
     controls.enabled = false;
+    pulledIt = true;
   });
-  pullIt.on('mouseout', function (ev) {
+  dragControls.addEventListener('dragend', function (event) {
     controls.enabled = true;
+    pulledIt = false;
   });
 }, undefined, function (error) {
   console.error(error);
@@ -12662,7 +13832,6 @@ function toRadians(angle) {
   return angle * (Math.PI / 180);
 }
 
-const dragControls = new _DragControls.DragControls(objects, camera, renderer.domElement);
 const ambientLight = new THREE.AmbientLight(0x404040); // soft white light
 
 const pointLight = new THREE.SpotLight(0x404040, 5, 0, Math.PI / 2); // soft white light
@@ -12679,9 +13848,10 @@ const animate = function () {
     o.userData.update();
   });
   requestAnimationFrame(animate);
+  TWEEN.update();
   renderer.render(scene, camera);
 };
 
 animate();
 
-},{"three":3,"three.interaction":1,"three/examples/jsm/controls/DragControls.js":4,"three/examples/jsm/controls/OrbitControls.js":5,"three/examples/jsm/controls/TransformControls.js":6,"three/examples/jsm/loaders/GLTFLoader.js":7,"threeJS-object-controls":2}]},{},[8]);
+},{"@tweenjs/tween.js":1,"three":5,"three.interaction":3,"three/examples/jsm/controls/DragControls.js":6,"three/examples/jsm/controls/OrbitControls.js":7,"three/examples/jsm/controls/TransformControls.js":8,"three/examples/jsm/loaders/GLTFLoader.js":9,"threeJS-object-controls":4}]},{},[10]);
