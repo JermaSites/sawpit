@@ -13756,40 +13756,35 @@ loader.load('assets/pullIt.glb', function (gltf) {
     min: new THREE.Vector3(-0.08, -0.16302920877933502, 0.08229061961174011),
     max: new THREE.Vector3(0, -0.16302920877933502, 0.08229061961174011)
   };
-  var pullingIt = false;
 
   pullIt.userData.update = function () {
     pullIt.position.clamp(pullIt.userData.limit.min, pullIt.userData.limit.max);
-
-    if (pullIt.position.x < -0.075 && pullingIt == true) {
-      var position = {
-        x: pullIt.position.x
-      };
-      var target = {
-        x: 0
-      };
-      var tween = new TWEEN.Tween(position).to(target, 250);
-      tween.onUpdate(function () {
-        pullIt.position.x = position.x;
-      });
-      tween.onComplete(function () {
-        pulledIt();
-      });
-
-      if (pullingIt == true) {
-        tween.start();
-      }
-    }
   };
 
   objects.push(pullIt);
   dragControls.addEventListener('dragstart', function (event) {
     controls.enabled = false;
-    pullingIt = true;
   });
   dragControls.addEventListener('dragend', function (event) {
     controls.enabled = true;
-    pullingIt = false;
+    pullIt.position.clamp(pullIt.userData.limit.min, pullIt.userData.limit.max);
+    var position = {
+      x: pullIt.position.x
+    };
+
+    if (pullIt.position.x < -0.075) {
+      pulledIt();
+    }
+
+    var target = {
+      x: 0
+    };
+    var tween = new TWEEN.Tween(position).to(target, 250);
+    tween.onUpdate(function () {
+      pullIt.position.clamp(pullIt.userData.limit.min, pullIt.userData.limit.max);
+      pullIt.position.x = position.x;
+    });
+    tween.start();
   });
 }, undefined, function (error) {
   console.error(error);
