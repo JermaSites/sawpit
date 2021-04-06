@@ -121,6 +121,7 @@ var dragRotate = false;
 loader.load( 'assets/twistIt_newOrigin.glb', function ( gltf ) {
 	console.log(gltf.scene.children[0]);
 	var twistIt = gltf.scene.children[0];
+	twistIt.rotation.x = 0;
 	twistIt.cursor = 'grab';
 	twistIt.on('mouseover', function(ev) {
 		controls.enabled = false;
@@ -137,37 +138,43 @@ loader.load( 'assets/twistIt_newOrigin.glb', function ( gltf ) {
 		y: 0
 	};
 	console.log(renderer.domElement)
+	twistIt.userData.rotationNess = 0;
 	renderer.domElement.addEventListener('pointermove', function (e) {
 		if(e.buttons == 1 && dragRotate == true) {
-			console.log(`dragrotate = ${dragRotate}`)
 			renderer.domElement.style.cursor = "grabbing";
 			var deltaMove = {
-				x: e.offsetX-previousMousePosition.x,
 				y: e.offsetY-previousMousePosition.y
 			};
-			var deltaRotationQuaternion = new THREE.Quaternion()
-				.setFromEuler(new THREE.Euler(
-					toRadians(deltaMove.y * 3),
-					0,
-					0,
-					'XYZ'
-				));
-			if(((deltaMove.y * 3) > 120) || ((deltaMove.y * 3) < -120)) {
-				twistedIt();
-			}
-		
-			twistIt.quaternion.multiplyQuaternions(deltaRotationQuaternion, twistIt.quaternion);
-		
-			previousMousePosition = {
-				x: e.offsetX,
-				y: e.offsetY
-			};
+			twistIt.rotation.x += deltaMove.y * 0.05;
+			twistIt.userData.rotationNess += deltaMove.y * 0.05;
+			console.log(twistIt.userData.rotationNess);
 		}
+		previousMousePosition = {
+			x: e.offsetX,
+			y: e.offsetY
+		};
 	});
 
-	document.addEventListener('click', function() {
-		dragRotate = false;
-		renderer.domElement.style.cursor = "default";	
+	document.addEventListener('click', function() { //I HAVE LITERALLY NO IDEA WHY I CANT JUST ADD THIS EVENT TO RENDER.DOMELEMENT AAAAAAAAAAAAAAAAAAA
+		if(dragRotate == true) {
+			dragRotate = false;
+			console.log(twistIt.userData.rotationNess);
+			renderer.domElement.style.cursor = "default";
+			var rotation = { x : twistIt.userData.rotationNess};
+			var target = { x : 0 };
+			var tween = new TWEEN.Tween(rotation).to(target, 250);
+			if(twistIt.userData.rotationNess > 5 || twistIt.userData.rotationNess < -5) {
+				twistedIt();
+			}
+			tween.onUpdate(function(){
+				twistIt.rotation.x = rotation.x;
+			});
+			tween.onComplete(function() {
+				console.log("hello");
+				twistIt.userData.rotationNess = 0;
+			});
+			tween.start();
+		}
 	}, false);	
 
 	scene.add( gltf.scene );
