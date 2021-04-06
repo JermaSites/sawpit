@@ -116,30 +116,35 @@ loader.load( 'assets/pullIt.glb', function ( gltf ) {
 	console.error( error );
 } );
 
+var dragRotate = false;
 
 loader.load( 'assets/twistIt_newOrigin.glb', function ( gltf ) {
 	console.log(gltf.scene.children[0]);
 	var twistIt = gltf.scene.children[0];
-	var previousMousePosition = {
-		x: 0,
-		y: 0
-	};
 	twistIt.cursor = 'grab';
 	twistIt.on('mouseover', function(ev) {
 		controls.enabled = false;
 	});	
 	twistIt.on('mouseout', function(ev) {
 		controls.enabled = true;
-	});
-	twistIt.on('mousemove', function (env) {
-		var e = env.data.originalEvent;
-		var deltaMove = {
-			x: e.offsetX-previousMousePosition.x,
-			y: e.offsetY-previousMousePosition.y
-		};
-	
-		if(e.buttons == 1) {
-			twistIt.cursor = 'grabbed';
+	});	
+	twistIt.on('mousedown', function(ev) {
+		dragRotate = true;
+		console.log(`dragrotate = ${dragRotate}`)
+	});	
+	var previousMousePosition = {
+		x: 0,
+		y: 0
+	};
+	console.log(renderer.domElement)
+	renderer.domElement.addEventListener('pointermove', function (e) {
+		if(e.buttons == 1 && dragRotate == true) {
+			console.log(`dragrotate = ${dragRotate}`)
+			renderer.domElement.style.cursor = "grabbing";
+			var deltaMove = {
+				x: e.offsetX-previousMousePosition.x,
+				y: e.offsetY-previousMousePosition.y
+			};
 			var deltaRotationQuaternion = new THREE.Quaternion()
 				.setFromEuler(new THREE.Euler(
 					toRadians(deltaMove.y * 3),
@@ -147,20 +152,25 @@ loader.load( 'assets/twistIt_newOrigin.glb', function ( gltf ) {
 					0,
 					'XYZ'
 				));
-			if(((deltaMove.y * 3) > 40) || ((deltaMove.y * 3) < -40)) {
+			if(((deltaMove.y * 3) > 120) || ((deltaMove.y * 3) < -120)) {
 				twistedIt();
 			}
-	
+		
 			twistIt.quaternion.multiplyQuaternions(deltaRotationQuaternion, twistIt.quaternion);
+		
+			previousMousePosition = {
+				x: e.offsetX,
+				y: e.offsetY
+			};
 		}
-	
-		previousMousePosition = {
-			x: e.offsetX,
-			y: e.offsetY
-		};
 	});
-	scene.add( gltf.scene );
 
+	document.addEventListener('click', function() {
+		dragRotate = false;
+		renderer.domElement.style.cursor = "default";	
+	}, false);	
+
+	scene.add( gltf.scene );
 	
 }, undefined, function ( error ) {
 	console.error( error );
@@ -172,51 +182,47 @@ function toRadians(angle) {
 
 const listener = new THREE.AudioListener();
 camera.add( listener );
-const bopIt = new THREE.PositionalAudio( listener );
-const twistIt = new THREE.PositionalAudio( listener );
-const pullIt = new THREE.PositionalAudio( listener );
+const bopItSound = new THREE.PositionalAudio( listener );
+const twistItSound = new THREE.PositionalAudio( listener );
+const pullItSound = new THREE.PositionalAudio( listener );
 const audioLoader = new THREE.AudioLoader();
 
 const sphere = new THREE.SphereGeometry( 0.01, 0.01, 0.01 );
 const material = new THREE.MeshPhongMaterial( { color: 0xff2200 } );
 const mesh = new THREE.Mesh( sphere, material );
 scene.add( mesh );
-mesh.add( bopIt );
-mesh.add( twistIt );
-mesh.add( pullIt );
+mesh.add( bopItSound );
+mesh.add( twistItSound );
+mesh.add( pullItSound );
 
 audioLoader.load( 'assets/Bop_R.wav', function( buffer ) {
-	bopIt.setBuffer( buffer );
+	bopItSound.setBuffer( buffer );
 });
 
 audioLoader.load( 'assets/Twist_R.wav', function( buffer ) {
-	twistIt.setBuffer( buffer );
+	twistItSound.setBuffer( buffer );
 });
 
 audioLoader.load( 'assets/Pull_R.wav', function( buffer ) {
-	pullIt.setBuffer( buffer );
+	pullItSound.setBuffer( buffer );
 });
 
 function boppedit() {
-	bopIt.play();
+	bopItSound.play();
 }
 
 function twistedIt() {
-	twistIt.play();
+	twistItSound.play();
 }
 
 function pulledIt() {
-	pullIt.play();
+	pullItSound.play();
 }
 
 const ambientLight = new THREE.AmbientLight( 0x404040 ); // soft white light
 const pointLight = new THREE.SpotLight(0x404040, 5, 0, Math.PI/2); // soft white light
 scene.add( pointLight );
 scene.add( ambientLight );
-
-scene.addEventListener('mouseup', function () {
-	console.log("hi");
-});
 
 camera.position.z = 1.5;
 
