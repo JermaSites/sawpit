@@ -13867,8 +13867,11 @@ function toRadians(angle) {
 const listener = new THREE.AudioListener();
 camera.add(listener);
 const bopItSound = new THREE.PositionalAudio(listener);
+bopItSound.setVolume(0.5);
 const twistItSound = new THREE.PositionalAudio(listener);
+twistItSound.setVolume(0.5);
 const pullItSound = new THREE.PositionalAudio(listener);
+pullItSound.setVolume(0.5);
 const audioLoader = new THREE.AudioLoader();
 const sphere = new THREE.SphereGeometry(0.01, 0.01, 0.01);
 const material = new THREE.MeshPhongMaterial({
@@ -13907,6 +13910,12 @@ const pointLight = new THREE.SpotLight(0x404040, 5, 0, Math.PI / 2); // soft whi
 
 scene.add(pointLight);
 scene.add(ambientLight);
+const textureLoader = new THREE.CubeTextureLoader();
+const texture = textureLoader.load(['https://threejsfundamentals.org/threejs/resources/images/cubemaps/computer-history-museum/pos-x.jpg', 'https://threejsfundamentals.org/threejs/resources/images/cubemaps/computer-history-museum/neg-x.jpg', 'https://threejsfundamentals.org/threejs/resources/images/cubemaps/computer-history-museum/pos-y.jpg', 'https://threejsfundamentals.org/threejs/resources/images/cubemaps/computer-history-museum/neg-y.jpg', 'https://threejsfundamentals.org/threejs/resources/images/cubemaps/computer-history-museum/pos-z.jpg', 'https://threejsfundamentals.org/threejs/resources/images/cubemaps/computer-history-museum/neg-z.jpg']);
+scene.background = texture;
+controls.enablePan = false;
+controls.minDistance = 0.25;
+controls.maxDistance = 5;
 camera.position.z = 1.5;
 
 const animate = function () {
