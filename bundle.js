@@ -13700,7 +13700,7 @@ document.body.appendChild(renderer.domElement);
 const loader = new _GLTFLoader.GLTFLoader();
 var bopitButtonLeftPressed = false;
 var bopitButtonRightPressed = false;
-loader.load('assets/bopitButtonLeft.glb', function (gltf) {
+loader.load('assets/models/bopitButtonLeft.glb', function (gltf) {
   var bopitButtonLeft = gltf.scene.children[0];
   scene.add(gltf.scene);
   bopitButtonLeft.cursor = 'pointer';
@@ -13718,7 +13718,7 @@ loader.load('assets/bopitButtonLeft.glb', function (gltf) {
 }, undefined, function (error) {
   console.error(error);
 });
-loader.load('assets/bopitButtonRight.glb', function (gltf) {
+loader.load('assets/models/bopitButtonRight.glb', function (gltf) {
   var bopitButtonRight = gltf.scene.children[0];
   scene.add(gltf.scene);
   bopitButtonRight.cursor = 'pointer';
@@ -13742,14 +13742,14 @@ loader.load('assets/bopitButtonRight.glb', function (gltf) {
 }, undefined, function (error) {
   console.error(error);
 });
-loader.load('assets/main.glb', function (gltf) {
+loader.load('assets/models/main.glb', function (gltf) {
   scene.add(gltf.scene);
 }, undefined, function (error) {
   console.error(error);
 });
 const objects = [];
 const dragControls = new _DragControls.DragControls(objects, camera, renderer.domElement);
-loader.load('assets/pullIt.glb', function (gltf) {
+loader.load('assets/models/pullIt.glb', function (gltf) {
   var pullIt = gltf.scene.children[0];
   scene.add(gltf.scene);
   pullIt.userData.limit = {
@@ -13790,7 +13790,7 @@ loader.load('assets/pullIt.glb', function (gltf) {
   console.error(error);
 });
 var dragRotate = false;
-loader.load('assets/twistIt_newOrigin.glb', function (gltf) {
+loader.load('assets/models/twistIt_newOrigin.glb', function (gltf) {
   console.log(gltf.scene.children[0]);
   var twistIt = gltf.scene.children[0];
   twistIt.rotation.x = 0;
@@ -13882,13 +13882,13 @@ scene.add(mesh);
 mesh.add(bopItSound);
 mesh.add(twistItSound);
 mesh.add(pullItSound);
-audioLoader.load('assets/Bop_R.wav', function (buffer) {
+audioLoader.load('assets/audio/Bop_R.wav', function (buffer) {
   bopItSound.setBuffer(buffer);
 });
-audioLoader.load('assets/Twist_R.wav', function (buffer) {
+audioLoader.load('assets/audio/Twist_R.wav', function (buffer) {
   twistItSound.setBuffer(buffer);
 });
-audioLoader.load('assets/Pull_R.wav', function (buffer) {
+audioLoader.load('assets/audio/Pull_R.wav', function (buffer) {
   pullItSound.setBuffer(buffer);
 });
 
