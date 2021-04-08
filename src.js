@@ -3,10 +3,8 @@
 import * as THREE from 'three';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
 import { DragControls } from 'three/examples/jsm/controls/DragControls.js';
-import { TransformControls } from 'three/examples/jsm/controls/TransformControls.js';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
 import { Interaction } from 'three.interaction';
-import {ObjectControls} from 'threeJS-object-controls';
 const TWEEN = require('@tweenjs/tween.js')
 
 const scene = new THREE.Scene();
@@ -243,15 +241,46 @@ controls.enablePan = false;
 controls.minDistance = 0.25;
 controls.maxDistance = 5;
 
-
 camera.position.z = 1.5;
 
+const canvas = document.getElementById('texture');
+const odometerCanvas = document.getElementById('odometer');
+const ctx = canvas.getContext('2d');
+const odometerCtx = odometerCanvas.getContext('2d');
+var myOdometer = new odometer(odometerCtx, {height: 42, value: 500000});
+const canvasTexture = new THREE.CanvasTexture(ctx.canvas);
+canvasTexture.encoding = THREE.sRGBEncoding;
+
+loader.load( 'assets/models/tv/scene.gltf', function ( gltf ) {
+	scene.add( gltf.scene );
+	var tv = gltf.scene.children[0].children[0].children[0].children[0]; //this is awful but i literally cba to open up the model and reexporting it lol
+	tv.material.map = canvasTexture;
+	console.log(tv.material);
+	console.log(gltf.scene);
+}, undefined, function ( error ) {
+	console.error( error );
+} );
+
+const image = new Image(); // Using optional size for image
+image.onload = drawImageActualSize; // Draw when image has loaded
+image.src = 'assets/models/tv/textures/Diffusebakee_baseColor.png';
+function drawImageActualSize() {
+	canvas.width = 800;
+	canvas.height = 800;
+	ctx.drawImage(this, 0, 0, 800, 800);
+  }
+
+
+  
 const animate = function () {
 	objects.forEach(o => {
 		o.userData.update();
 	})
 	requestAnimationFrame( animate );
+	myOdometer.setValue(myOdometer.getValue() - 1);
+	ctx.drawImage(odometerCtx.canvas, 510, 595);
 	TWEEN.update();
+	canvasTexture.needsUpdate = true;
 	renderer.render( scene, camera );
 };
 animate();
