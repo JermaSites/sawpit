@@ -12445,6 +12445,7 @@ loader.load('assets/models/tv/scene.gltf', function (gltf) {
   var tv = gltf.scene.children[0].children[0].children[0].children[0]; //this is awful but i literally cba to open up the model and reexporting it lol
 
   tv.material.map = canvasTexture;
+  tv.position.y = 2;
   console.log(tv.material);
   console.log(gltf.scene);
 }, undefined, function (error) {
