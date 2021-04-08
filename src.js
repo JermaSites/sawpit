@@ -247,7 +247,10 @@ const canvas = document.getElementById('texture');
 const odometerCanvas = document.getElementById('odometer');
 const ctx = canvas.getContext('2d');
 const odometerCtx = odometerCanvas.getContext('2d');
-var myOdometer = new odometer(odometerCtx, {height: 42, value: 500000});
+var myOdometer = new odometer(odometerCtx, {
+	height: 42, 
+	value: 500000,
+});
 const canvasTexture = new THREE.CanvasTexture(ctx.canvas);
 canvasTexture.encoding = THREE.sRGBEncoding;
 
@@ -278,7 +281,7 @@ const animate = function () {
 		o.userData.update();
 	})
 	requestAnimationFrame( animate );
-	myOdometer.setValue(myOdometer.getValue() - 1);
+	myOdometer.setValue(myOdometer.getValue() - 0.1);
 	ctx.drawImage(odometerCtx.canvas, 510, 595);
 	TWEEN.update();
 	canvasTexture.needsUpdate = true;

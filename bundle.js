@@ -12468,7 +12468,7 @@ const animate = function () {
     o.userData.update();
   });
   requestAnimationFrame(animate);
-  myOdometer.setValue(myOdometer.getValue() - 1);
+  myOdometer.setValue(myOdometer.getValue() - 0.1);
   ctx.drawImage(odometerCtx.canvas, 510, 595);
   TWEEN.update();
   canvasTexture.needsUpdate = true;
