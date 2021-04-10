@@ -3029,7 +3029,9 @@ var MouseDragger = /*#__PURE__*/function (_EventEmitter) {
 
         if (self.dragging === false) {
           // Create a plane with the camera's world space direction (as a normal) and a coplanar point
-          self.plane.setFromNormalAndCoplanarPoint(self.camera.getWorldDirection(), self.selected.position); // Calculate the offset between the mouse and the center of the selected object
+          var camerasWorldDirection = new _three.Vector3();
+          self.camera.getWorldDirection(camerasWorldDirection);
+          self.plane.setFromNormalAndCoplanarPoint(camerasWorldDirection, self.selected.position); // Calculate the offset between the mouse and the center of the selected object
 
           self.raycaster.setFromCamera(self.mouse, self.camera);
           self.raycaster.ray.intersectPlane(self.plane, self.intersection);
@@ -14373,12 +14375,16 @@ loader.load('assets/models/main.glb', function (gltf) {
   console.error(error);
 });
 const objects = []; // const dragControls = new DragControls( objects, camera, document.getElementById("testingbullshit") );
+//replaced dragcontrols with an alternative libary due to incompatibility with first person camera stuff
 
 const mouseDragger = new _threeDragger.default(objects, camera, renderer.domElement);
 loader.load('assets/models/pullIt.glb', function (gltf) {
   var pullIt = gltf.scene.children[0];
   scene.add(gltf.scene);
-  pullIt.cursor = 'grab';
+  pullIt.cursor = 'pointer';
+  pullIt.on('mouseover', function () {//for some reason putting a cursor on this object requires an event to be put on it even tho it doesen't do anything
+  }); //im guessing its because three.js.interact needs some sort of "hook" to be added? idfk
+
   pullIt.userData.limit = {
     min: new THREE.Vector3(-0.08, -0.16302920877933502, 0.08229061961174011),
     max: new THREE.Vector3(0, -0.16302920877933502, 0.08229061961174011)

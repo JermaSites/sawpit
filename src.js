@@ -92,12 +92,17 @@ loader.load( 'assets/models/main.glb', function ( gltf ) {
 
 const objects = [];
 // const dragControls = new DragControls( objects, camera, document.getElementById("testingbullshit") );
+//replaced dragcontrols with an alternative libary due to incompatibility with first person camera stuff
 const mouseDragger = new ThreeDragger(objects, camera, renderer.domElement);
 
 loader.load( 'assets/models/pullIt.glb', function ( gltf ) {
 	var pullIt = gltf.scene.children[0];
 	scene.add( gltf.scene );
-	pullIt.cursor = 'grab';
+	pullIt.cursor = 'pointer';
+
+	pullIt.on('mouseover', function(){ //for some reason putting a cursor on this object requires an event to be put on it even tho it doesen't do anything
+	});	//im guessing its because three.js.interact needs some sort of "hook" to be added? idfk
+
 	pullIt.userData.limit = {
 		min: new THREE.Vector3(-0.08, -0.16302920877933502, 0.08229061961174011),
 	  	max: new THREE.Vector3(0, -0.16302920877933502, 0.08229061961174011)
@@ -297,7 +302,7 @@ function drawImageActualSize() {
 	canvas.width = 800;
 	canvas.height = 800;
 	ctx.drawImage(this, 0, 0, 800, 800);
-  }
+}
 
 
   
