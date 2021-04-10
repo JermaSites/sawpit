@@ -6,6 +6,9 @@ import { DragControls } from 'three/examples/jsm/controls/DragControls.js';
 import ThreeDragger from 'three-dragger';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
 import { Interaction } from 'three.interaction';
+import { RectAreaLightUniformsLib } from 'three/examples/jsm/lights/RectAreaLightUniformsLib.js';
+import { RectAreaLightHelper } from 'three/examples/jsm/helpers/RectAreaLightHelper.js';
+RectAreaLightUniformsLib.init();
 import CameraControls from './camera-controls';
 CameraControls.install( { THREE: THREE } );
 const TWEEN = require('@tweenjs/tween.js')
@@ -39,6 +42,8 @@ const loader = new GLTFLoader();
 var bopitButtonLeftPressed = false;
 var bopitButtonRightPressed = false;
 
+const bopItGroup = new THREE.Group();
+
 loader.load( 'assets/models/bopitButtonLeft.glb', function ( gltf ) {
 	var bopitButtonLeft = gltf.scene.children[0];
 	scene.add( gltf.scene );
@@ -54,6 +59,13 @@ loader.load( 'assets/models/bopitButtonLeft.glb', function ( gltf ) {
 			}, 300);
 		}
 	});
+	bopitButtonLeft.on('mouseDown', function(ev) {
+		cameraControls.enabled = false;
+	});	
+	bopitButtonLeft.on('mouseUp', function(ev) {
+		cameraControls.enabled = true;
+	});
+	bopItGroup.add(bopitButtonLeft);
 
 }, undefined, function ( error ) {
 	console.error( error );
@@ -80,12 +92,16 @@ loader.load( 'assets/models/bopitButtonRight.glb', function ( gltf ) {
 	bopitButtonRight.on('mouseUp', function(ev) {
 		cameraControls.enabled = true;
 	});
+	bopItGroup.add(bopitButtonRight);
+
 }, undefined, function ( error ) {
 	console.error( error );
 } );
 
 loader.load( 'assets/models/main.glb', function ( gltf ) {
 	scene.add( gltf.scene );
+	var main = gltf.scene.children[0];
+	bopItGroup.add(main);
 }, undefined, function ( error ) {
 	console.error( error );
 } );
@@ -134,6 +150,7 @@ loader.load( 'assets/models/pullIt.glb', function ( gltf ) {
 		const { target, position } = data;
 		target.position.set(position.x, position.y, position.z);
 	});
+	bopItGroup.add(pullIt);
 
 }, undefined, function ( error ) {
 	console.error( error );
@@ -201,14 +218,25 @@ loader.load( 'assets/models/twistIt_newOrigin.glb', function ( gltf ) {
 	}, false);	
 
 	scene.add( gltf.scene );
+	bopItGroup.add(twistIt);
 	
 }, undefined, function ( error ) {
 	console.error( error );
 } );
 
-function toRadians(angle) {
-	return angle * (Math.PI / 180);
-}
+bopItGroup.scale.x = 0.3;
+bopItGroup.scale.y = 0.3;
+bopItGroup.scale.z = 0.3;
+
+bopItGroup.position.y = -0.7;
+bopItGroup.position.z = 7.4;
+
+bopItGroup.rotation.x = 1.58;
+bopItGroup.rotation.y = 0.017;
+bopItGroup.rotation.z = 0.4;
+
+scene.add(bopItGroup);
+console.log(bopItGroup);
 
 const listener = new THREE.AudioListener();
 camera.add( listener );
@@ -252,26 +280,7 @@ function pulledIt() {
 	pullItSound.play();
 }
 
-const ambientLight = new THREE.AmbientLight( 0x404040 ); // soft white light
-const pointLight = new THREE.SpotLight(0x404040, 5, 0, Math.PI/2); // soft white light
-scene.add( pointLight );
-scene.add( ambientLight );
-
-const textureLoader = new THREE.CubeTextureLoader();
-const texture = textureLoader.load([
-	'https://threejsfundamentals.org/threejs/resources/images/cubemaps/computer-history-museum/pos-x.jpg',
-	'https://threejsfundamentals.org/threejs/resources/images/cubemaps/computer-history-museum/neg-x.jpg',
-	'https://threejsfundamentals.org/threejs/resources/images/cubemaps/computer-history-museum/pos-y.jpg',
-	'https://threejsfundamentals.org/threejs/resources/images/cubemaps/computer-history-museum/neg-y.jpg',
-	'https://threejsfundamentals.org/threejs/resources/images/cubemaps/computer-history-museum/pos-z.jpg',
-	'https://threejsfundamentals.org/threejs/resources/images/cubemaps/computer-history-museum/neg-z.jpg',
-]);
-scene.background = texture;
-// controls.enablePan = false;
-// controls.minDistance = 0.25;
-// controls.maxDistance = 5;
-
-cameraControls.forward(-1.5);
+cameraControls.moveTo(0, -0.5, 8);
 
 const canvas = document.getElementById('texture');
 const odometerCanvas = document.getElementById('odometer');
@@ -288,9 +297,34 @@ loader.load( 'assets/models/tv/scene.gltf', function ( gltf ) {
 	scene.add( gltf.scene );
 	var tv = gltf.scene.children[0].children[0].children[0].children[0]; //this is awful but i literally cba to open up the model and reexporting it lol
 	tv.material.map = canvasTexture;
-	tv.position.y = 2;
+
+	var tvGroup = new THREE.Group();
+	tvGroup.add(gltf.scene);
+
+	console.log(tv);
 	console.log(tv.material);
-	console.log(gltf.scene);
+
+	const rectLight = new THREE.RectAreaLight( 0xffffff, 1.0, 2.3, 1.9 );
+	const rectLightHelper = new RectAreaLightHelper( rectLight );
+	rectLight.add( rectLightHelper );
+	
+
+	// rectLight.position.set( tv.position.x, tv.position.y, tv.position.z );
+	
+	// rectLight.lookAt( tv.position );
+	console.log(rectLight);
+	rectLight.position.y = 1.05;
+	rectLight.position.z = 0.6;
+	tvGroup.add(rectLight);
+
+	tvGroup.position.x = -5.4;
+	tvGroup.position.y = 0.7;
+	tvGroup.position.z = -2;
+
+	tvGroup.rotation.y = 0.75;
+	scene.add(tvGroup);
+	console.log(tvGroup);
+
 }, undefined, function ( error ) {
 	console.error( error );
 } );
@@ -304,7 +338,33 @@ function drawImageActualSize() {
 	ctx.drawImage(this, 0, 0, 800, 800);
 }
 
+const pointLight = new THREE.PointLight(0xffffff, 0.05, 0, 20); // soft white light
+pointLight.position.y = 2;
+pointLight.position.z = 7;
+scene.add( pointLight );
+console.log(pointLight);
 
+const pointLightHelper = new THREE.PointLightHelper( pointLight, 1 );
+scene.add( pointLightHelper );
+
+
+loader.load( 'assets/models/table/scene.gltf', function ( gltf ) {
+	scene.add( gltf.scene );
+	var table = gltf.scene.children[0].children[0].children[0].children[0]; //same as above lol
+	table.position.y = -6;
+	table.position.x = -1;
+	table.position.z = -2.25;
+}, undefined, function ( error ) {
+	console.error( error );
+} );
+
+const geometry = new THREE.BoxGeometry( 25, 10, 15 );
+const concreteTexture = new THREE.TextureLoader().load( 'assets/concrete.jpg' );
+const cubeMaterial = new THREE.MeshLambertMaterial( {color: 0xFFFFFF, map: concreteTexture, side: THREE.BackSide } );
+const cube = new THREE.Mesh( geometry, cubeMaterial );
+console.log(cube);
+cube.position.z = 1.875;
+scene.add( cube );
   
 const animate = function () {
 	objects.forEach(o => {
