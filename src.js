@@ -3,6 +3,7 @@
 import * as THREE from 'three';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
 import { DragControls } from 'three/examples/jsm/controls/DragControls.js';
+import ThreeDragger from 'three-dragger';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
 import { Interaction } from 'three.interaction';
 import CameraControls from './camera-controls';
@@ -91,10 +92,12 @@ loader.load( 'assets/models/main.glb', function ( gltf ) {
 
 const objects = [];
 // const dragControls = new DragControls( objects, camera, document.getElementById("testingbullshit") );
+const mouseDragger = new ThreeDragger(objects, camera, renderer.domElement);
 
 loader.load( 'assets/models/pullIt.glb', function ( gltf ) {
 	var pullIt = gltf.scene.children[0];
 	scene.add( gltf.scene );
+	pullIt.cursor = 'grab';
 	pullIt.userData.limit = {
 		min: new THREE.Vector3(-0.08, -0.16302920877933502, 0.08229061961174011),
 	  	max: new THREE.Vector3(0, -0.16302920877933502, 0.08229061961174011)
@@ -103,10 +106,10 @@ loader.load( 'assets/models/pullIt.glb', function ( gltf ) {
 		pullIt.position.clamp(pullIt.userData.limit.min, pullIt.userData.limit.max);
 	}
 	objects.push(pullIt);
-	dragControls.addEventListener( 'dragstart', function ( event ) {
+	mouseDragger.on( 'dragstart', function ( event ) {
 		cameraControls.enabled = false;
 	});
-	dragControls.addEventListener( 'dragend', function ( event ) {
+	mouseDragger.on( 'dragend', function ( event ) {
 		cameraControls.enabled = true;
 		pullIt.position.clamp(pullIt.userData.limit.min, pullIt.userData.limit.max);
 		var position = { x : pullIt.position.x };
@@ -120,6 +123,11 @@ loader.load( 'assets/models/pullIt.glb', function ( gltf ) {
 			pullIt.position.x = position.x;
 		});
 		tween.start();
+	});
+
+	mouseDragger.on('drag', function (data) {
+		const { target, position } = data;
+		target.position.set(position.x, position.y, position.z);
 	});
 
 }, undefined, function ( error ) {

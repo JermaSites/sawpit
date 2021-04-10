@@ -2430,6 +2430,818 @@ process.umask = function() { return 0; };
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
+exports.default = void 0;
+
+var _three = require("three");
+
+/* @license three-dragger v1.0.1 | (c) Qingrong Ke <keqingrong1992@gmail.com> (https://keqingrong.github.io/) */
+function _classCallCheck(instance, Constructor) {
+  if (!(instance instanceof Constructor)) {
+    throw new TypeError("Cannot call a class as a function");
+  }
+}
+
+function _defineProperties(target, props) {
+  for (var i = 0; i < props.length; i++) {
+    var descriptor = props[i];
+    descriptor.enumerable = descriptor.enumerable || false;
+    descriptor.configurable = true;
+    if ("value" in descriptor) descriptor.writable = true;
+    Object.defineProperty(target, descriptor.key, descriptor);
+  }
+}
+
+function _createClass(Constructor, protoProps, staticProps) {
+  if (protoProps) _defineProperties(Constructor.prototype, protoProps);
+  if (staticProps) _defineProperties(Constructor, staticProps);
+  return Constructor;
+}
+
+function _defineProperty(obj, key, value) {
+  if (key in obj) {
+    Object.defineProperty(obj, key, {
+      value: value,
+      enumerable: true,
+      configurable: true,
+      writable: true
+    });
+  } else {
+    obj[key] = value;
+  }
+
+  return obj;
+}
+
+function _inherits(subClass, superClass) {
+  if (typeof superClass !== "function" && superClass !== null) {
+    throw new TypeError("Super expression must either be null or a function");
+  }
+
+  subClass.prototype = Object.create(superClass && superClass.prototype, {
+    constructor: {
+      value: subClass,
+      writable: true,
+      configurable: true
+    }
+  });
+  if (superClass) _setPrototypeOf(subClass, superClass);
+}
+
+function _getPrototypeOf(o) {
+  _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) {
+    return o.__proto__ || Object.getPrototypeOf(o);
+  };
+  return _getPrototypeOf(o);
+}
+
+function _setPrototypeOf(o, p) {
+  _setPrototypeOf = Object.setPrototypeOf || function _setPrototypeOf(o, p) {
+    o.__proto__ = p;
+    return o;
+  };
+
+  return _setPrototypeOf(o, p);
+}
+
+function _assertThisInitialized(self) {
+  if (self === void 0) {
+    throw new ReferenceError("this hasn't been initialised - super() hasn't been called");
+  }
+
+  return self;
+}
+
+function _possibleConstructorReturn(self, call) {
+  if (call && (typeof call === "object" || typeof call === "function")) {
+    return call;
+  }
+
+  return _assertThisInitialized(self);
+}
+
+function _superPropBase(object, property) {
+  while (!Object.prototype.hasOwnProperty.call(object, property)) {
+    object = _getPrototypeOf(object);
+    if (object === null) break;
+  }
+
+  return object;
+}
+
+function _get(target, property, receiver) {
+  if (typeof Reflect !== "undefined" && Reflect.get) {
+    _get = Reflect.get;
+  } else {
+    _get = function _get(target, property, receiver) {
+      var base = _superPropBase(target, property);
+
+      if (!base) return;
+      var desc = Object.getOwnPropertyDescriptor(base, property);
+
+      if (desc.get) {
+        return desc.get.call(receiver);
+      }
+
+      return desc.value;
+    };
+  }
+
+  return _get(target, property, receiver || target);
+}
+
+function createCommonjsModule(fn, module) {
+  return module = {
+    exports: {}
+  }, fn(module, module.exports), module.exports;
+}
+
+var eventemitter3 = createCommonjsModule(function (module) {
+  var has = Object.prototype.hasOwnProperty,
+      prefix = '~';
+  /**
+   * Constructor to create a storage for our `EE` objects.
+   * An `Events` instance is a plain object whose properties are event names.
+   *
+   * @constructor
+   * @private
+   */
+
+  function Events() {} //
+  // We try to not inherit from `Object.prototype`. In some engines creating an
+  // instance in this way is faster than calling `Object.create(null)` directly.
+  // If `Object.create(null)` is not supported we prefix the event names with a
+  // character to make sure that the built-in object properties are not
+  // overridden or used as an attack vector.
+  //
+
+
+  if (Object.create) {
+    Events.prototype = Object.create(null); //
+    // This hack is needed because the `__proto__` property is still inherited in
+    // some old browsers like Android 4, iPhone 5.1, Opera 11 and Safari 5.
+    //
+
+    if (!new Events().__proto__) prefix = false;
+  }
+  /**
+   * Representation of a single event listener.
+   *
+   * @param {Function} fn The listener function.
+   * @param {*} context The context to invoke the listener with.
+   * @param {Boolean} [once=false] Specify if the listener is a one-time listener.
+   * @constructor
+   * @private
+   */
+
+
+  function EE(fn, context, once) {
+    this.fn = fn;
+    this.context = context;
+    this.once = once || false;
+  }
+  /**
+   * Add a listener for a given event.
+   *
+   * @param {EventEmitter} emitter Reference to the `EventEmitter` instance.
+   * @param {(String|Symbol)} event The event name.
+   * @param {Function} fn The listener function.
+   * @param {*} context The context to invoke the listener with.
+   * @param {Boolean} once Specify if the listener is a one-time listener.
+   * @returns {EventEmitter}
+   * @private
+   */
+
+
+  function addListener(emitter, event, fn, context, once) {
+    if (typeof fn !== 'function') {
+      throw new TypeError('The listener must be a function');
+    }
+
+    var listener = new EE(fn, context || emitter, once),
+        evt = prefix ? prefix + event : event;
+    if (!emitter._events[evt]) emitter._events[evt] = listener, emitter._eventsCount++;else if (!emitter._events[evt].fn) emitter._events[evt].push(listener);else emitter._events[evt] = [emitter._events[evt], listener];
+    return emitter;
+  }
+  /**
+   * Clear event by name.
+   *
+   * @param {EventEmitter} emitter Reference to the `EventEmitter` instance.
+   * @param {(String|Symbol)} evt The Event name.
+   * @private
+   */
+
+
+  function clearEvent(emitter, evt) {
+    if (--emitter._eventsCount === 0) emitter._events = new Events();else delete emitter._events[evt];
+  }
+  /**
+   * Minimal `EventEmitter` interface that is molded against the Node.js
+   * `EventEmitter` interface.
+   *
+   * @constructor
+   * @public
+   */
+
+
+  function EventEmitter() {
+    this._events = new Events();
+    this._eventsCount = 0;
+  }
+  /**
+   * Return an array listing the events for which the emitter has registered
+   * listeners.
+   *
+   * @returns {Array}
+   * @public
+   */
+
+
+  EventEmitter.prototype.eventNames = function eventNames() {
+    var names = [],
+        events,
+        name;
+    if (this._eventsCount === 0) return names;
+
+    for (name in events = this._events) {
+      if (has.call(events, name)) names.push(prefix ? name.slice(1) : name);
+    }
+
+    if (Object.getOwnPropertySymbols) {
+      return names.concat(Object.getOwnPropertySymbols(events));
+    }
+
+    return names;
+  };
+  /**
+   * Return the listeners registered for a given event.
+   *
+   * @param {(String|Symbol)} event The event name.
+   * @returns {Array} The registered listeners.
+   * @public
+   */
+
+
+  EventEmitter.prototype.listeners = function listeners(event) {
+    var evt = prefix ? prefix + event : event,
+        handlers = this._events[evt];
+    if (!handlers) return [];
+    if (handlers.fn) return [handlers.fn];
+
+    for (var i = 0, l = handlers.length, ee = new Array(l); i < l; i++) {
+      ee[i] = handlers[i].fn;
+    }
+
+    return ee;
+  };
+  /**
+   * Return the number of listeners listening to a given event.
+   *
+   * @param {(String|Symbol)} event The event name.
+   * @returns {Number} The number of listeners.
+   * @public
+   */
+
+
+  EventEmitter.prototype.listenerCount = function listenerCount(event) {
+    var evt = prefix ? prefix + event : event,
+        listeners = this._events[evt];
+    if (!listeners) return 0;
+    if (listeners.fn) return 1;
+    return listeners.length;
+  };
+  /**
+   * Calls each of the listeners registered for a given event.
+   *
+   * @param {(String|Symbol)} event The event name.
+   * @returns {Boolean} `true` if the event had listeners, else `false`.
+   * @public
+   */
+
+
+  EventEmitter.prototype.emit = function emit(event, a1, a2, a3, a4, a5) {
+    var evt = prefix ? prefix + event : event;
+    if (!this._events[evt]) return false;
+    var listeners = this._events[evt],
+        len = arguments.length,
+        args,
+        i;
+
+    if (listeners.fn) {
+      if (listeners.once) this.removeListener(event, listeners.fn, undefined, true);
+
+      switch (len) {
+        case 1:
+          return listeners.fn.call(listeners.context), true;
+
+        case 2:
+          return listeners.fn.call(listeners.context, a1), true;
+
+        case 3:
+          return listeners.fn.call(listeners.context, a1, a2), true;
+
+        case 4:
+          return listeners.fn.call(listeners.context, a1, a2, a3), true;
+
+        case 5:
+          return listeners.fn.call(listeners.context, a1, a2, a3, a4), true;
+
+        case 6:
+          return listeners.fn.call(listeners.context, a1, a2, a3, a4, a5), true;
+      }
+
+      for (i = 1, args = new Array(len - 1); i < len; i++) {
+        args[i - 1] = arguments[i];
+      }
+
+      listeners.fn.apply(listeners.context, args);
+    } else {
+      var length = listeners.length,
+          j;
+
+      for (i = 0; i < length; i++) {
+        if (listeners[i].once) this.removeListener(event, listeners[i].fn, undefined, true);
+
+        switch (len) {
+          case 1:
+            listeners[i].fn.call(listeners[i].context);
+            break;
+
+          case 2:
+            listeners[i].fn.call(listeners[i].context, a1);
+            break;
+
+          case 3:
+            listeners[i].fn.call(listeners[i].context, a1, a2);
+            break;
+
+          case 4:
+            listeners[i].fn.call(listeners[i].context, a1, a2, a3);
+            break;
+
+          default:
+            if (!args) for (j = 1, args = new Array(len - 1); j < len; j++) {
+              args[j - 1] = arguments[j];
+            }
+            listeners[i].fn.apply(listeners[i].context, args);
+        }
+      }
+    }
+
+    return true;
+  };
+  /**
+   * Add a listener for a given event.
+   *
+   * @param {(String|Symbol)} event The event name.
+   * @param {Function} fn The listener function.
+   * @param {*} [context=this] The context to invoke the listener with.
+   * @returns {EventEmitter} `this`.
+   * @public
+   */
+
+
+  EventEmitter.prototype.on = function on(event, fn, context) {
+    return addListener(this, event, fn, context, false);
+  };
+  /**
+   * Add a one-time listener for a given event.
+   *
+   * @param {(String|Symbol)} event The event name.
+   * @param {Function} fn The listener function.
+   * @param {*} [context=this] The context to invoke the listener with.
+   * @returns {EventEmitter} `this`.
+   * @public
+   */
+
+
+  EventEmitter.prototype.once = function once(event, fn, context) {
+    return addListener(this, event, fn, context, true);
+  };
+  /**
+   * Remove the listeners of a given event.
+   *
+   * @param {(String|Symbol)} event The event name.
+   * @param {Function} fn Only remove the listeners that match this function.
+   * @param {*} context Only remove the listeners that have this context.
+   * @param {Boolean} once Only remove one-time listeners.
+   * @returns {EventEmitter} `this`.
+   * @public
+   */
+
+
+  EventEmitter.prototype.removeListener = function removeListener(event, fn, context, once) {
+    var evt = prefix ? prefix + event : event;
+    if (!this._events[evt]) return this;
+
+    if (!fn) {
+      clearEvent(this, evt);
+      return this;
+    }
+
+    var listeners = this._events[evt];
+
+    if (listeners.fn) {
+      if (listeners.fn === fn && (!once || listeners.once) && (!context || listeners.context === context)) {
+        clearEvent(this, evt);
+      }
+    } else {
+      for (var i = 0, events = [], length = listeners.length; i < length; i++) {
+        if (listeners[i].fn !== fn || once && !listeners[i].once || context && listeners[i].context !== context) {
+          events.push(listeners[i]);
+        }
+      } //
+      // Reset the array, or remove it completely if we have no more listeners.
+      //
+
+
+      if (events.length) this._events[evt] = events.length === 1 ? events[0] : events;else clearEvent(this, evt);
+    }
+
+    return this;
+  };
+  /**
+   * Remove all listeners, or those of the specified event.
+   *
+   * @param {(String|Symbol)} [event] The event name.
+   * @returns {EventEmitter} `this`.
+   * @public
+   */
+
+
+  EventEmitter.prototype.removeAllListeners = function removeAllListeners(event) {
+    var evt;
+
+    if (event) {
+      evt = prefix ? prefix + event : event;
+      if (this._events[evt]) clearEvent(this, evt);
+    } else {
+      this._events = new Events();
+      this._eventsCount = 0;
+    }
+
+    return this;
+  }; //
+  // Alias methods names because people roll like that.
+  //
+
+
+  EventEmitter.prototype.off = EventEmitter.prototype.removeListener;
+  EventEmitter.prototype.addListener = EventEmitter.prototype.on; //
+  // Expose the prefix.
+  //
+
+  EventEmitter.prefixed = prefix; //
+  // Allow `EventEmitter` to be imported as module namespace.
+  //
+
+  EventEmitter.EventEmitter = EventEmitter; //
+  // Expose the module.
+  //
+
+  {
+    module.exports = EventEmitter;
+  }
+});
+
+var isFunction = function isFunction(object) {
+  return typeof object === 'function';
+};
+
+var isEmptyArray = function isEmptyArray(object) {
+  return Array.isArray(object) && object.length === 0;
+};
+/**
+ * Normalize a number to [-1,1]
+ * @param {Number} number
+ * @return {Number}
+ */
+
+
+var normalize = function normalize(number) {
+  if (number < -1) {
+    return -1;
+  } else if (number > 1) {
+    return 1;
+  } else {
+    return number;
+  }
+};
+/**
+ * Calculate normalized device coordinates of the mouse
+ * @param {MouseEvent} event
+ * @param {Element} container
+ * @return {Vector2}
+ */
+
+
+var getMouseNDCPosition = function getMouseNDCPosition(event, container) {
+  var rect = {
+    left: 0,
+    top: 0,
+    width: window.innerWidth,
+    height: window.innerHeight
+  }; // the contanier is Element type
+
+  if (container && isFunction(container.getBoundingClientRect)) {
+    Object.assign(rect, container.getBoundingClientRect());
+  }
+
+  var left = rect.left,
+      top = rect.top,
+      width = rect.width,
+      height = rect.height;
+
+  if (event.clientX === undefined || event.clientY === undefined) {
+    console.warn("".concat(event, " is not a standard DOM event, which misses clientX and clientY")); // eslint-disable-line no-console
+  } // relative to the viewport -> relative to the container
+
+
+  var clientX = event.clientX - left;
+  var clientY = event.clientY - top; // calculate normalized device coordinates
+
+  var x = clientX / width * 2 - 1;
+  var y = -(clientY / height) * 2 + 1;
+  return new _three.Vector2(normalize(x), normalize(y));
+};
+
+var MOUSE = {
+  LEFT: 0,
+  MIDDLE: 1,
+  RIGHT: 2
+};
+
+var MouseDragger = /*#__PURE__*/function (_EventEmitter) {
+  _inherits(MouseDragger, _EventEmitter);
+  /**
+   * Constructor
+   * @param {[Object3D]} objects - draggable objects
+   * @param {Camera} camera - camera
+   * @param {Element} domElement - canvas element
+   */
+
+
+  function MouseDragger(objects, camera, domElement) {
+    var _this;
+
+    _classCallCheck(this, MouseDragger);
+
+    _this = _possibleConstructorReturn(this, _getPrototypeOf(MouseDragger).call(this));
+
+    _defineProperty(_assertThisInitialized(_assertThisInitialized(_this)), "onDocumentMouseDown", function (event) {
+      var self = _assertThisInitialized(_assertThisInitialized(_this));
+
+      if (!self.enabled) {
+        return;
+      }
+
+      if (!self.containsMousePoint(event)) {
+        return;
+      }
+
+      if (event.button === MOUSE.LEFT) {
+        event.preventDefault();
+        var mouse = getMouseNDCPosition(event, self.domElement);
+        var current = self.rayCast(mouse) || null;
+        self.mouse = mouse;
+        self.selected = current;
+        self.emitEvent('mousedown', current, null, event);
+      }
+    });
+
+    _defineProperty(_assertThisInitialized(_assertThisInitialized(_this)), "onDocumentMouseMove", function (event) {
+      var self = _assertThisInitialized(_assertThisInitialized(_this));
+
+      if (!self.enabled) {
+        return;
+      }
+
+      event.preventDefault();
+
+      if (self.selected) {
+        var mouse = getMouseNDCPosition(event, self.domElement); // the NDC is not changed
+
+        if (mouse.equals(self.mouse)) {
+          return;
+        } // Update mouse's coordinates
+
+
+        self.mouse = mouse; // Begin to drag the object
+
+        if (self.dragging === false) {
+          // Create a plane with the camera's world space direction (as a normal) and a coplanar point
+          self.plane.setFromNormalAndCoplanarPoint(self.camera.getWorldDirection(), self.selected.position); // Calculate the offset between the mouse and the center of the selected object
+
+          self.raycaster.setFromCamera(self.mouse, self.camera);
+          self.raycaster.ray.intersectPlane(self.plane, self.intersection);
+          self.offset.copy(self.intersection).sub(self.selected.position);
+          self.domElement.style.cursor = 'move';
+          self.emitEvent('dragstart', self.selected, self.selected.position.clone(), event);
+          self.dragging = true;
+        } // Calculate the intersection of the plane and the ray
+
+
+        self.raycaster.setFromCamera(self.mouse, self.camera);
+        self.raycaster.ray.intersectPlane(self.plane, self.intersection); // Subtract the offset before emit world coordinates
+
+        self.emitEvent('drag', self.selected, self.intersection.sub(self.offset).clone(), event);
+      }
+    });
+
+    _defineProperty(_assertThisInitialized(_assertThisInitialized(_this)), "onDocumentMouseUp", function (event) {
+      var self = _assertThisInitialized(_assertThisInitialized(_this));
+
+      if (!self.enabled) {
+        return;
+      }
+
+      if (event.button === MOUSE.LEFT) {
+        event.preventDefault(); // Dargging
+
+        if (self.dragging && self.selected) {
+          self.domElement.style.cursor = 'auto';
+          self.emitEvent('dragend', self.selected, self.intersection.clone(), event);
+          self.selected = null;
+          self.dragging = false;
+          return;
+        }
+
+        self.selected = null;
+        self.dragging = false; // No dragging
+
+        if (self.containsMousePoint(event)) {
+          self.emitEvent('mouseup', null, null, event);
+          self.emitEvent('click', null, null, event);
+        }
+      }
+    });
+
+    _this.objects = objects;
+    _this.camera = camera;
+    _this.domElement = domElement;
+    _this.mouse = new _three.Vector2(); // normalized device coordinates of the mouse
+
+    _this.selected = null; // selected object
+
+    _this.offset = new _three.Vector3(); // offset between the mouse and the center of selected object
+
+    _this.plane = new _three.Plane(); // plane of the selected object, which is perpendicular to the camera's world space direction
+
+    _this.raycaster = new _three.Raycaster();
+    _this.intersection = new _three.Vector3();
+    _this.dragging = false;
+    _this.enabled = true;
+
+    _this.attachEvents();
+
+    return _this;
+  }
+  /**
+   * Update draggable objects
+   * @param {[Object3D]} objects
+   */
+
+
+  _createClass(MouseDragger, [{
+    key: "update",
+    value: function update(objects) {
+      this.objects = objects;
+    }
+    /**
+     * Reset
+     */
+
+  }, {
+    key: "reset",
+    value: function reset() {
+      var self = this;
+      self.enabled = true;
+    }
+    /**
+     * Dispose
+     */
+
+  }, {
+    key: "dispose",
+    value: function dispose() {
+      this.detachEvents();
+    }
+    /**
+     * Attach events
+     */
+
+  }, {
+    key: "attachEvents",
+    value: function attachEvents() {
+      var self = this;
+      document.addEventListener('mousedown', self.onDocumentMouseDown, false);
+      document.addEventListener('mousemove', self.onDocumentMouseMove, false);
+      document.addEventListener('mouseup', self.onDocumentMouseUp, false);
+    }
+    /**
+     * Detach events
+     */
+
+  }, {
+    key: "detachEvents",
+    value: function detachEvents() {
+      var self = this;
+      document.removeEventListener('mousedown', self.onDocumentMouseDown, false);
+      document.removeEventListener('mousemove', self.onDocumentMouseMove, false);
+      document.removeEventListener('mouseup', self.onDocumentMouseUp, false);
+    }
+    /**
+     * Determine whether the mouse is contained in the canvas element
+     * @param {MouseEvent} event
+     */
+
+  }, {
+    key: "containsMousePoint",
+    value: function containsMousePoint(event) {
+      var self = this;
+
+      if (!self.domElement.getBoundingClientRect) {
+        return true;
+      }
+
+      var _self$domElement$getB = self.domElement.getBoundingClientRect(),
+          top = _self$domElement$getB.top,
+          right = _self$domElement$getB.right,
+          bottom = _self$domElement$getB.bottom,
+          left = _self$domElement$getB.left;
+
+      var clientX = event.clientX,
+          clientY = event.clientY; // outside of the canvas element
+
+      if (clientX < left || clientX > right || clientY < top || clientY > bottom) {
+        return false;
+      } // inside
+
+
+      return true;
+    }
+    /**
+     * Ray cast
+     * @param {Vector2} - mouse
+     * @returns {Object3D|null} - intersected object
+     */
+
+  }, {
+    key: "rayCast",
+    value: function rayCast(mouse) {
+      var self = this;
+
+      if (isEmptyArray(self.objects)) {
+        return null;
+      }
+
+      self.raycaster.setFromCamera(mouse, self.camera);
+      var intersects = self.raycaster.intersectObjects(self.objects, true);
+
+      if (intersects.length > 0) {
+        return intersects[0].object;
+      }
+
+      return null;
+    }
+    /**
+     * Emit event
+     * @param {string} eventName - event name
+     * @param {Object3D} target - intersected object
+     * @param {Vector3} position - position of the intersected object
+     * @param {Event} domEvent - DOM event
+     */
+
+  }, {
+    key: "emitEvent",
+    value: function emitEvent(eventName, target, position, domEvent) {
+      var self = this;
+
+      _get(_getPrototypeOf(MouseDragger.prototype), "emit", this).call(this, eventName, {
+        target: target,
+        mouse: self.mouse,
+        position: position,
+        event: domEvent
+      });
+    }
+    /**
+     * Press the left mouse button
+     * @param {MouseEvent} event
+     */
+
+  }]);
+
+  return MouseDragger;
+}(eventemitter3);
+
+var _default = MouseDragger;
+exports.default = _default;
+
+},{"three":6}],5:[function(require,module,exports){
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
 exports.Interaction = exports.InteractionLayer = exports.InteractionManager = void 0;
 
 var _three = require("three");
@@ -6693,7 +7505,7 @@ var Interaction = function (_InteractionManager) {
 
 exports.Interaction = Interaction;
 
-},{"three":5}],5:[function(require,module,exports){
+},{"three":6}],6:[function(require,module,exports){
 "use strict";Object.defineProperty(exports,"__esModule",{value:true});exports.AxisHelper=AxisHelper;exports.BinaryTextureLoader=BinaryTextureLoader;exports.Bone=Bone;exports.BoundingBoxHelper=BoundingBoxHelper;exports.BufferAttribute=BufferAttribute;exports.BufferGeometry=BufferGeometry;exports.Camera=Camera;exports.CanvasRenderer=CanvasRenderer;exports.CompressedTextureLoader=CompressedTextureLoader;exports.CubicInterpolant=CubicInterpolant;exports.Curve=Curve;exports.DataTextureLoader=DataTextureLoader;exports.DiscreteInterpolant=DiscreteInterpolant;exports.DynamicBufferAttribute=DynamicBufferAttribute;exports.EdgesHelper=EdgesHelper;exports.EventDispatcher=EventDispatcher;exports.FileLoader=FileLoader;exports.Float16BufferAttribute=Float16BufferAttribute;exports.Float32Attribute=Float32Attribute;exports.Float32BufferAttribute=Float32BufferAttribute;exports.Float64Attribute=Float64Attribute;exports.Float64BufferAttribute=Float64BufferAttribute;exports.GLBufferAttribute=GLBufferAttribute;exports.ImageBitmapLoader=ImageBitmapLoader;exports.ImmediateRenderObject=ImmediateRenderObject;exports.InstancedBufferAttribute=InstancedBufferAttribute;exports.InstancedBufferGeometry=InstancedBufferGeometry;exports.InstancedInterleavedBuffer=InstancedInterleavedBuffer;exports.InstancedMesh=InstancedMesh;exports.Int16Attribute=Int16Attribute;exports.Int16BufferAttribute=Int16BufferAttribute;exports.Int32Attribute=Int32Attribute;exports.Int32BufferAttribute=Int32BufferAttribute;exports.Int8Attribute=Int8Attribute;exports.Int8BufferAttribute=Int8BufferAttribute;exports.InterleavedBuffer=InterleavedBuffer;exports.InterleavedBufferAttribute=InterleavedBufferAttribute;exports.Interpolant=Interpolant;exports.JSONLoader=JSONLoader;exports.LensFlare=LensFlare;exports.Line=Line;exports.LineSegments=LineSegments;exports.LinearInterpolant=LinearInterpolant;exports.Loader=Loader;exports.LoadingManager=LoadingManager;exports.Material=Material;exports.Mesh=Mesh;exports.MeshFaceMaterial=MeshFaceMaterial;exports.MeshPhysicalMaterial=MeshPhysicalMaterial;exports.MeshStandardMaterial=MeshStandardMaterial;exports.MultiMaterial=MultiMaterial;exports.Object3D=Object3D;exports.ParametricGeometry=exports.ParametricBufferGeometry=ParametricGeometry;exports.Particle=Particle;exports.ParticleBasicMaterial=ParticleBasicMaterial;exports.ParticleSystem=ParticleSystem;exports.ParticleSystemMaterial=ParticleSystemMaterial;exports.PerspectiveCamera=PerspectiveCamera;exports.PointCloud=PointCloud;exports.PointCloudMaterial=PointCloudMaterial;exports.Points=Points;exports.PropertyBinding=PropertyBinding;exports.QuaternionLinearInterpolant=QuaternionLinearInterpolant;exports.Raycaster=Raycaster;exports.ShaderMaterial=ShaderMaterial;exports.SkinnedMesh=SkinnedMesh;exports.TextureLoader=TextureLoader;exports.Uint16Attribute=Uint16Attribute;exports.Uint16BufferAttribute=Uint16BufferAttribute;exports.Uint32Attribute=Uint32Attribute;exports.Uint32BufferAttribute=Uint32BufferAttribute;exports.Uint8Attribute=Uint8Attribute;exports.Uint8BufferAttribute=Uint8BufferAttribute;exports.Uint8ClampedAttribute=Uint8ClampedAttribute;exports.Uint8ClampedBufferAttribute=Uint8ClampedBufferAttribute;exports.Vertex=Vertex;exports.WebGLRenderTargetCube=WebGLRenderTargetCube;exports.WebGLRenderer=WebGLRenderer;exports.WebGLUtils=WebGLUtils;exports.WireframeHelper=WireframeHelper;exports.XHRLoader=XHRLoader;exports.FlatShading=exports.FaceColors=exports.ExtrudeGeometry=exports.ExtrudeBufferGeometry=exports.Euler=exports.EquirectangularRefractionMapping=exports.EquirectangularReflectionMapping=exports.EqualStencilFunc=exports.EqualDepth=exports.EllipseCurve=exports.EdgesGeometry=exports.DynamicReadUsage=exports.DynamicDrawUsage=exports.DynamicCopyUsage=exports.DstColorFactor=exports.DstAlphaFactor=exports.DoubleSide=exports.DodecahedronGeometry=exports.DodecahedronBufferGeometry=exports.DirectionalLightHelper=exports.DirectionalLight=exports.DepthTexture=exports.DepthStencilFormat=exports.DepthFormat=exports.DefaultLoadingManager=exports.DecrementWrapStencilOp=exports.DecrementStencilOp=exports.DataUtils=exports.DataTexture3D=exports.DataTexture2DArray=exports.DataTexture=exports.Cylindrical=exports.CylinderGeometry=exports.CylinderBufferGeometry=exports.CustomToneMapping=exports.CustomBlending=exports.CurvePath=exports.CullFaceNone=exports.CullFaceFrontBack=exports.CullFaceFront=exports.CullFaceBack=exports.CubicBezierCurve3=exports.CubicBezierCurve=exports.CubeUVRefractionMapping=exports.CubeUVReflectionMapping=exports.CubeTextureLoader=exports.CubeTexture=exports.CubeRefractionMapping=exports.CubeReflectionMapping=exports.CubeCamera=exports.ConeGeometry=exports.ConeBufferGeometry=exports.CompressedTexture=exports.ColorKeyframeTrack=exports.Color=exports.Clock=exports.ClampToEdgeWrapping=exports.CircleGeometry=exports.CircleBufferGeometry=exports.CineonToneMapping=exports.CatmullRomCurve3=exports.CanvasTexture=exports.CameraHelper=exports.Cache=exports.ByteType=exports.BufferGeometryLoader=exports.BoxHelper=exports.BoxGeometry=exports.BoxBufferGeometry=exports.Box3Helper=exports.Box3=exports.Box2=exports.BooleanKeyframeTrack=exports.BasicShadowMap=exports.BasicDepthPacking=exports.BackSide=exports.AxesHelper=exports.AudioLoader=exports.AudioListener=exports.AudioContext=exports.AudioAnalyser=exports.Audio=exports.ArrowHelper=exports.ArrayCamera=exports.ArcCurve=exports.AnimationUtils=exports.AnimationObjectGroup=exports.AnimationMixer=exports.AnimationLoader=exports.AnimationClip=exports.AmbientLightProbe=exports.AmbientLight=exports.AlwaysStencilFunc=exports.AlwaysDepth=exports.AlphaFormat=exports.AdditiveBlending=exports.AdditiveAnimationBlendMode=exports.AddOperation=exports.AddEquation=exports.ACESFilmicToneMapping=void 0;exports.NumberKeyframeTrack=exports.NotEqualStencilFunc=exports.NotEqualDepth=exports.NormalBlending=exports.NormalAnimationBlendMode=exports.NoToneMapping=exports.NoColors=exports.NoBlending=exports.NeverStencilFunc=exports.NeverDepth=exports.NearestMipmapNearestFilter=exports.NearestMipmapLinearFilter=exports.NearestMipMapNearestFilter=exports.NearestMipMapLinearFilter=exports.NearestFilter=exports.MultiplyOperation=exports.MultiplyBlending=exports.MixOperation=exports.MirroredRepeatWrapping=exports.MinEquation=exports.MeshToonMaterial=exports.MeshPhongMaterial=exports.MeshNormalMaterial=exports.MeshMatcapMaterial=exports.MeshLambertMaterial=exports.MeshDistanceMaterial=exports.MeshDepthMaterial=exports.MeshBasicMaterial=exports.MaxEquation=exports.Matrix4=exports.Matrix3=exports.MathUtils=exports.Math=exports.MaterialLoader=exports.MOUSE=exports.LuminanceFormat=exports.LuminanceAlphaFormat=exports.LoopRepeat=exports.LoopPingPong=exports.LoopOnce=exports.LogLuvEncoding=exports.LoaderUtils=exports.LinearToneMapping=exports.LinearMipmapNearestFilter=exports.LinearMipmapLinearFilter=exports.LinearMipMapNearestFilter=exports.LinearMipMapLinearFilter=exports.LinearFilter=exports.LinearEncoding=exports.LineStrip=exports.LinePieces=exports.LineLoop=exports.LineDashedMaterial=exports.LineCurve3=exports.LineCurve=exports.LineBasicMaterial=exports.Line3=exports.LightProbe=exports.Light=exports.LessStencilFunc=exports.LessEqualStencilFunc=exports.LessEqualDepth=exports.LessDepth=exports.Layers=exports.LatheGeometry=exports.LatheBufferGeometry=exports.LOD=exports.KeyframeTrack=exports.KeepStencilOp=exports.InvertStencilOp=exports.InterpolateSmooth=exports.InterpolateLinear=exports.InterpolateDiscrete=exports.IntType=exports.IncrementWrapStencilOp=exports.IncrementStencilOp=exports.ImageUtils=exports.ImageLoader=exports.IcosahedronGeometry=exports.IcosahedronBufferGeometry=exports.HemisphereLightProbe=exports.HemisphereLightHelper=exports.HemisphereLight=exports.HalfFloatType=exports.Group=exports.GridHelper=exports.GreaterStencilFunc=exports.GreaterEqualStencilFunc=exports.GreaterEqualDepth=exports.GreaterDepth=exports.GammaEncoding=exports.GLSL3=exports.GLSL1=exports.Frustum=exports.FrontSide=exports.FontLoader=exports.Font=exports.FogExp2=exports.Fog=exports.FloatType=void 0;exports.Shape=exports.ShadowMaterial=exports.ShaderLib=exports.ShaderChunk=exports.SceneUtils=exports.Scene=exports.SRGB8_ALPHA8_ASTC_8x8_Format=exports.SRGB8_ALPHA8_ASTC_8x6_Format=exports.SRGB8_ALPHA8_ASTC_8x5_Format=exports.SRGB8_ALPHA8_ASTC_6x6_Format=exports.SRGB8_ALPHA8_ASTC_6x5_Format=exports.SRGB8_ALPHA8_ASTC_5x5_Format=exports.SRGB8_ALPHA8_ASTC_5x4_Format=exports.SRGB8_ALPHA8_ASTC_4x4_Format=exports.SRGB8_ALPHA8_ASTC_12x12_Format=exports.SRGB8_ALPHA8_ASTC_12x10_Format=exports.SRGB8_ALPHA8_ASTC_10x8_Format=exports.SRGB8_ALPHA8_ASTC_10x6_Format=exports.SRGB8_ALPHA8_ASTC_10x5_Format=exports.SRGB8_ALPHA8_ASTC_10x10_Format=exports.RingGeometry=exports.RingBufferGeometry=exports.ReverseSubtractEquation=exports.ReplaceStencilOp=exports.RepeatWrapping=exports.ReinhardToneMapping=exports.RedIntegerFormat=exports.RedFormat=exports.RectAreaLight=exports.Ray=exports.RawShaderMaterial=exports.RGIntegerFormat=exports.RGFormat=exports.RGB_S3TC_DXT1_Format=exports.RGB_PVRTC_4BPPV1_Format=exports.RGB_PVRTC_2BPPV1_Format=exports.RGB_ETC2_Format=exports.RGB_ETC1_Format=exports.RGBM7Encoding=exports.RGBM16Encoding=exports.RGBIntegerFormat=exports.RGBFormat=exports.RGBEFormat=exports.RGBEEncoding=exports.RGBDEncoding=exports.RGBA_S3TC_DXT5_Format=exports.RGBA_S3TC_DXT3_Format=exports.RGBA_S3TC_DXT1_Format=exports.RGBA_PVRTC_4BPPV1_Format=exports.RGBA_PVRTC_2BPPV1_Format=exports.RGBA_ETC2_EAC_Format=exports.RGBA_BPTC_Format=exports.RGBA_ASTC_8x8_Format=exports.RGBA_ASTC_8x6_Format=exports.RGBA_ASTC_8x5_Format=exports.RGBA_ASTC_6x6_Format=exports.RGBA_ASTC_6x5_Format=exports.RGBA_ASTC_5x5_Format=exports.RGBA_ASTC_5x4_Format=exports.RGBA_ASTC_4x4_Format=exports.RGBA_ASTC_12x12_Format=exports.RGBA_ASTC_12x10_Format=exports.RGBA_ASTC_10x8_Format=exports.RGBA_ASTC_10x6_Format=exports.RGBA_ASTC_10x5_Format=exports.RGBA_ASTC_10x10_Format=exports.RGBAIntegerFormat=exports.RGBAFormat=exports.RGBADepthPacking=exports.REVISION=exports.QuaternionKeyframeTrack=exports.Quaternion=exports.QuadraticBezierCurve3=exports.QuadraticBezierCurve=exports.PropertyMixer=exports.PositionalAudio=exports.PolyhedronGeometry=exports.PolyhedronBufferGeometry=exports.PolarGridHelper=exports.PointsMaterial=exports.PointLightHelper=exports.PointLight=exports.PlaneHelper=exports.PlaneGeometry=exports.PlaneBufferGeometry=exports.Plane=exports.Path=exports.PMREMGenerator=exports.PCFSoftShadowMap=exports.PCFShadowMap=exports.OrthographicCamera=exports.OneMinusSrcColorFactor=exports.OneMinusSrcAlphaFactor=exports.OneMinusDstColorFactor=exports.OneMinusDstAlphaFactor=exports.OneFactor=exports.OctahedronGeometry=exports.OctahedronBufferGeometry=exports.ObjectSpaceNormalMap=exports.ObjectLoader=void 0;exports.sRGBEncoding=exports.ZeroStencilOp=exports.ZeroSlopeEnding=exports.ZeroFactor=exports.ZeroCurvatureEnding=exports.WrapAroundEnding=exports.WireframeGeometry=exports.WebGLRenderTarget=exports.WebGLMultisampleRenderTarget=exports.WebGLCubeRenderTarget=exports.WebGL1Renderer=exports.VideoTexture=exports.VertexColors=exports.VectorKeyframeTrack=exports.Vector4=exports.Vector3=exports.Vector2=exports.VSMShadowMap=exports.UnsignedShortType=exports.UnsignedShort565Type=exports.UnsignedShort5551Type=exports.UnsignedShort4444Type=exports.UnsignedIntType=exports.UnsignedInt248Type=exports.UnsignedByteType=exports.UniformsUtils=exports.UniformsLib=exports.Uniform=exports.UVMapping=exports.TubeGeometry=exports.TubeBufferGeometry=exports.TrianglesDrawMode=exports.TriangleStripDrawMode=exports.TriangleFanDrawMode=exports.Triangle=exports.TorusKnotGeometry=exports.TorusKnotBufferGeometry=exports.TorusGeometry=exports.TorusBufferGeometry=exports.Texture=exports.TextGeometry=exports.TextBufferGeometry=exports.TetrahedronGeometry=exports.TetrahedronBufferGeometry=exports.TangentSpaceNormalMap=exports.TOUCH=exports.SubtractiveBlending=exports.SubtractEquation=exports.StringKeyframeTrack=exports.StreamReadUsage=exports.StreamDrawUsage=exports.StreamCopyUsage=exports.StereoCamera=exports.StaticReadUsage=exports.StaticDrawUsage=exports.StaticCopyUsage=exports.SrcColorFactor=exports.SrcAlphaSaturateFactor=exports.SrcAlphaFactor=exports.SpriteMaterial=exports.Sprite=exports.SpotLightHelper=exports.SpotLight=exports.SplineCurve=exports.SphericalHarmonics3=exports.Spherical=exports.SphereGeometry=exports.SphereBufferGeometry=exports.Sphere=exports.SmoothShading=exports.SkeletonHelper=exports.Skeleton=exports.ShortType=exports.ShapeUtils=exports.ShapePath=exports.ShapeGeometry=exports.ShapeBufferGeometry=void 0;/**
  * @license
  * Copyright 2010-2021 Three.js Authors
@@ -9593,7 +10405,7 @@ function JSONLoader(){console.error('THREE.JSONLoader has been removed.');}//
 const SceneUtils={createMultiMaterialObject:function()/* geometry, materials */{console.error('THREE.SceneUtils has been moved to /examples/jsm/utils/SceneUtils.js');},detach:function()/* child, parent, scene */{console.error('THREE.SceneUtils has been moved to /examples/jsm/utils/SceneUtils.js');},attach:function()/* child, scene, parent */{console.error('THREE.SceneUtils has been moved to /examples/jsm/utils/SceneUtils.js');}};//
 exports.SceneUtils=SceneUtils;function LensFlare(){console.error('THREE.LensFlare has been moved to /examples/jsm/objects/Lensflare.js');}if(typeof __THREE_DEVTOOLS__!=='undefined'){/* eslint-disable no-undef */__THREE_DEVTOOLS__.dispatchEvent(new CustomEvent('register',{detail:{revision:REVISION}}));/* eslint-enable no-undef */}if(typeof window!=='undefined'){if(window.__THREE__){console.warn('WARNING: Multiple instances of Three.js being imported.');}else{window.__THREE__=REVISION;}}
 
-},{}],6:[function(require,module,exports){
+},{}],7:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -9886,7 +10698,7 @@ exports.DragControls = DragControls;
 DragControls.prototype = Object.create(_threeModule.EventDispatcher.prototype);
 DragControls.prototype.constructor = DragControls;
 
-},{"../../../build/three.module.js":5}],7:[function(require,module,exports){
+},{"../../../build/three.module.js":6}],8:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -10721,7 +11533,7 @@ exports.MapControls = MapControls;
 MapControls.prototype = Object.create(_threeModule.EventDispatcher.prototype);
 MapControls.prototype.constructor = MapControls;
 
-},{"../../../build/three.module.js":5}],8:[function(require,module,exports){
+},{"../../../build/three.module.js":6}],9:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -13457,7 +14269,7 @@ var GLTFLoader = function () {
 
 exports.GLTFLoader = GLTFLoader;
 
-},{"../../../build/three.module.js":5}],9:[function(require,module,exports){
+},{"../../../build/three.module.js":6}],10:[function(require,module,exports){
 "use strict";
 
 var THREE = _interopRequireWildcard(require("three"));
@@ -13465,6 +14277,8 @@ var THREE = _interopRequireWildcard(require("three"));
 var _OrbitControls = require("three/examples/jsm/controls/OrbitControls.js");
 
 var _DragControls = require("three/examples/jsm/controls/DragControls.js");
+
+var _threeDragger = _interopRequireDefault(require("three-dragger"));
 
 var _GLTFLoader = require("three/examples/jsm/loaders/GLTFLoader.js");
 
@@ -13560,9 +14374,11 @@ loader.load('assets/models/main.glb', function (gltf) {
 });
 const objects = []; // const dragControls = new DragControls( objects, camera, document.getElementById("testingbullshit") );
 
+const mouseDragger = new _threeDragger.default(objects, camera, renderer.domElement);
 loader.load('assets/models/pullIt.glb', function (gltf) {
   var pullIt = gltf.scene.children[0];
   scene.add(gltf.scene);
+  pullIt.cursor = 'grab';
   pullIt.userData.limit = {
     min: new THREE.Vector3(-0.08, -0.16302920877933502, 0.08229061961174011),
     max: new THREE.Vector3(0, -0.16302920877933502, 0.08229061961174011)
@@ -13573,10 +14389,10 @@ loader.load('assets/models/pullIt.glb', function (gltf) {
   };
 
   objects.push(pullIt);
-  dragControls.addEventListener('dragstart', function (event) {
+  mouseDragger.on('dragstart', function (event) {
     cameraControls.enabled = false;
   });
-  dragControls.addEventListener('dragend', function (event) {
+  mouseDragger.on('dragend', function (event) {
     cameraControls.enabled = true;
     pullIt.position.clamp(pullIt.userData.limit.min, pullIt.userData.limit.max);
     var position = {
@@ -13596,6 +14412,13 @@ loader.load('assets/models/pullIt.glb', function (gltf) {
       pullIt.position.x = position.x;
     });
     tween.start();
+  });
+  mouseDragger.on('drag', function (data) {
+    const {
+      target,
+      position
+    } = data;
+    target.position.set(position.x, position.y, position.z);
   });
 }, undefined, function (error) {
   console.error(error);
@@ -13777,4 +14600,4 @@ const animate = function () {
 
 animate();
 
-},{"./camera-controls":1,"@tweenjs/tween.js":2,"three":5,"three.interaction":4,"three/examples/jsm/controls/DragControls.js":6,"three/examples/jsm/controls/OrbitControls.js":7,"three/examples/jsm/loaders/GLTFLoader.js":8}]},{},[9]);
+},{"./camera-controls":1,"@tweenjs/tween.js":2,"three":6,"three-dragger":4,"three.interaction":5,"three/examples/jsm/controls/DragControls.js":7,"three/examples/jsm/controls/OrbitControls.js":8,"three/examples/jsm/loaders/GLTFLoader.js":9}]},{},[10]);
