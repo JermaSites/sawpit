@@ -5,13 +5,31 @@ import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
 import { DragControls } from 'three/examples/jsm/controls/DragControls.js';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
 import { Interaction } from 'three.interaction';
+import CameraControls from './camera-controls';
+CameraControls.install( { THREE: THREE } );
 const TWEEN = require('@tweenjs/tween.js')
 
 const scene = new THREE.Scene();
 const camera = new THREE.PerspectiveCamera( 75, window.innerWidth / window.innerHeight, 0.1, 1000 );
 const renderer = new THREE.WebGLRenderer();
 const interaction = new Interaction(renderer, scene, camera);
-const controls = new OrbitControls(camera, renderer.domElement);
+// const controls = new OrbitControls(camera, renderer.domElement);
+const clock = new THREE.Clock();
+const EPS = 1e-5;
+// in order to archive FPS look, set EPSILON for the distance to the center
+camera.position.set( 0, 0, EPS );
+// renderer.setSize( width, height );
+// document.body.appendChild( renderer.domElement );
+
+const cameraControls = new CameraControls( camera, renderer.domElement );
+// cameraControls.maxDistance = EPS;
+cameraControls.azimuthRotateSpeed = - 0.3; // negative value to invert rotation direction
+cameraControls.polarRotateSpeed   = - 0.3; // negative value to invert rotation direction
+cameraControls.truckSpeed = 1 / EPS * 3;
+cameraControls.mouseButtons.wheel = CameraControls.ACTION.ZOOM;
+cameraControls.touches.two = CameraControls.ACTION.TOUCH_ZOOM_TRUCK;
+cameraControls.saveState();
+
 
 renderer.outputEncoding = THREE.sRGBEncoding;
 renderer.setSize( window.innerWidth, window.innerHeight );
@@ -57,10 +75,10 @@ loader.load( 'assets/models/bopitButtonRight.glb', function ( gltf ) {
 		}
 	});	
 	bopitButtonRight.on('mouseDown', function(ev) {
-		controls.enabled = false;
+		cameraControls.enabled = false;
 	});	
 	bopitButtonRight.on('mouseUp', function(ev) {
-		controls.enabled = true;
+		cameraControls.enabled = true;
 	});
 }, undefined, function ( error ) {
 	console.error( error );
@@ -73,7 +91,7 @@ loader.load( 'assets/models/main.glb', function ( gltf ) {
 } );
 
 const objects = [];
-const dragControls = new DragControls( objects, camera, renderer.domElement );
+// const dragControls = new DragControls( objects, camera, document.getElementById("testingbullshit") );
 
 loader.load( 'assets/models/pullIt.glb', function ( gltf ) {
 	var pullIt = gltf.scene.children[0];
@@ -87,10 +105,10 @@ loader.load( 'assets/models/pullIt.glb', function ( gltf ) {
 	}
 	objects.push(pullIt);
 	dragControls.addEventListener( 'dragstart', function ( event ) {
-		controls.enabled = false;
+		cameraControls.enabled = false;
 	});
 	dragControls.addEventListener( 'dragend', function ( event ) {
-		controls.enabled = true;
+		cameraControls.enabled = true;
 		pullIt.position.clamp(pullIt.userData.limit.min, pullIt.userData.limit.max);
 		var position = { x : pullIt.position.x };
 		if(pullIt.position.x < -0.075) {
@@ -117,10 +135,10 @@ loader.load( 'assets/models/twistIt_newOrigin.glb', function ( gltf ) {
 	twistIt.rotation.x = 0;
 	twistIt.cursor = 'grab';
 	twistIt.on('mouseover', function(ev) {
-		controls.enabled = false;
+		cameraControls.enabled = false;
 	});	
 	twistIt.on('mouseout', function(ev) {
-		controls.enabled = true;
+		cameraControls.enabled = true;
 	});	
 	twistIt.on('mousedown', function(ev) {
 		dragRotate = true;
@@ -237,11 +255,11 @@ const texture = textureLoader.load([
 	'https://threejsfundamentals.org/threejs/resources/images/cubemaps/computer-history-museum/neg-z.jpg',
 ]);
 scene.background = texture;
-controls.enablePan = false;
-controls.minDistance = 0.25;
-controls.maxDistance = 5;
+// controls.enablePan = false;
+// controls.minDistance = 0.25;
+// controls.maxDistance = 5;
 
-camera.position.z = 1.5;
+cameraControls.forward(-1.5);
 
 const canvas = document.getElementById('texture');
 const odometerCanvas = document.getElementById('odometer');
@@ -249,7 +267,7 @@ const ctx = canvas.getContext('2d');
 const odometerCtx = odometerCanvas.getContext('2d');
 var myOdometer = new odometer(odometerCtx, {
 	height: 42, 
-	value: 500000,
+	value: 500000
 });
 const canvasTexture = new THREE.CanvasTexture(ctx.canvas);
 canvasTexture.encoding = THREE.sRGBEncoding;
@@ -285,6 +303,8 @@ const animate = function () {
 	ctx.drawImage(odometerCtx.canvas, 510, 595);
 	TWEEN.update();
 	canvasTexture.needsUpdate = true;
+	const delta = clock.getDelta();
+	cameraControls.update( delta );
 	renderer.render( scene, camera );
 };
 animate();
