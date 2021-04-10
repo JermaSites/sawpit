@@ -13502,8 +13502,7 @@ cameraControls.azimuthRotateSpeed = -0.3; // negative value to invert rotation d
 
 cameraControls.polarRotateSpeed = -0.3; // negative value to invert rotation direction
 
-cameraControls.truckSpeed = 1 / EPS * 3;
-cameraControls.mouseButtons.wheel = _cameraControls.default.ACTION.ZOOM;
+cameraControls.mouseButtons.right = _cameraControls.default.ACTION.NONE;
 cameraControls.touches.two = _cameraControls.default.ACTION.TOUCH_ZOOM_TRUCK;
 cameraControls.saveState();
 renderer.outputEncoding = THREE.sRGBEncoding;

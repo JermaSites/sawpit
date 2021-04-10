@@ -25,8 +25,7 @@ const cameraControls = new CameraControls( camera, renderer.domElement );
 // cameraControls.maxDistance = EPS;
 cameraControls.azimuthRotateSpeed = - 0.3; // negative value to invert rotation direction
 cameraControls.polarRotateSpeed   = - 0.3; // negative value to invert rotation direction
-cameraControls.truckSpeed = 1 / EPS * 3;
-cameraControls.mouseButtons.wheel = CameraControls.ACTION.ZOOM;
+cameraControls.mouseButtons.right = CameraControls.ACTION.NONE;
 cameraControls.touches.two = CameraControls.ACTION.TOUCH_ZOOM_TRUCK;
 cameraControls.saveState();
 
