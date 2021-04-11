@@ -14735,7 +14735,7 @@ function drawImageActualSize() {
   ctx.drawImage(this, 0, 0, 800, 800);
 }
 
-const pointLight = new THREE.PointLight(0xffffff, 0.05, 0, 20); // soft white light
+const pointLight = new THREE.PointLight(0xffffff, 0.005, 0, 20); // soft white light
 
 pointLight.position.y = 2;
 pointLight.position.z = 7;
@@ -14750,6 +14750,19 @@ loader.load('assets/models/table/scene.gltf', function (gltf) {
   table.position.y = -6;
   table.position.x = -1;
   table.position.z = -2.25;
+  const spotLight = new THREE.SpotLight(0xffffff);
+  spotLight.target.position.y = -6;
+  spotLight.target.position.x = -1;
+  spotLight.target.position.z = -2.25;
+  spotLight.position.z = 9.75;
+  spotLight.position.y = 2;
+  spotLight.angle = 0.7471975511965978;
+  spotLight.penumbra = 1;
+  spotLight.intensity = 0.25;
+  scene.add(spotLight);
+  console.log(spotLight);
+  const spotLightHelper = new THREE.SpotLightHelper(spotLight);
+  scene.add(spotLightHelper);
 }, undefined, function (error) {
   console.error(error);
 });
