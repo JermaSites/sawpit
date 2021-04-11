@@ -14723,6 +14723,37 @@ loader.load('assets/models/tv/scene.gltf', function (gltf) {
 }, undefined, function (error) {
   console.error(error);
 });
+const canvas_jigsaw = document.getElementById('texture_jigsaw');
+const ctx_jigsaw = canvas_jigsaw.getContext('2d');
+const canvasTextureJigsaw = new THREE.CanvasTexture(ctx_jigsaw.canvas);
+canvasTextureJigsaw.encoding = THREE.sRGBEncoding;
+loader.load('assets/models/tv/scene.gltf', function (gltf) {
+  scene.add(gltf.scene);
+  var tv = gltf.scene.children[0].children[0].children[0].children[0]; //this is awful but i literally cba to open up the model and reexporting it lol
+
+  tv.material.map = canvasTextureJigsaw;
+  var tvGroup = new THREE.Group();
+  tvGroup.add(gltf.scene);
+  console.log(tv);
+  console.log(tv.material);
+  const rectLight = new THREE.RectAreaLight(0xffffff, 1.0, 2.3, 1.9);
+  const rectLightHelper = new _RectAreaLightHelper.RectAreaLightHelper(rectLight);
+  rectLight.add(rectLightHelper); // rectLight.position.set( tv.position.x, tv.position.y, tv.position.z );
+  // rectLight.lookAt( tv.position );
+
+  console.log(rectLight);
+  rectLight.position.y = 1.05;
+  rectLight.position.z = 0.6;
+  tvGroup.add(rectLight); // tvGroup.position.x = -5.4;
+  // tvGroup.position.y = 0.7;
+  // tvGroup.position.z = -2;
+  // tvGroup.rotation.y = 0.75;
+
+  scene.add(tvGroup);
+  console.log(tvGroup);
+}, undefined, function (error) {
+  console.error(error);
+});
 const image = new Image(); // Using optional size for image
 
 image.onload = drawImageActualSize; // Draw when image has loaded
@@ -14730,9 +14761,21 @@ image.onload = drawImageActualSize; // Draw when image has loaded
 image.src = 'assets/models/tv/textures/Diffusebakee_baseColor.png';
 
 function drawImageActualSize() {
+  canvas_jigsaw.width = 800;
+  canvas_jigsaw.height = 800;
   canvas.width = 800;
   canvas.height = 800;
   ctx.drawImage(this, 0, 0, 800, 800);
+  ctx_jigsaw.drawImage(this, 0, 0, 800, 800);
+  const jigsaw = new Image(); // Using optional size for image
+
+  jigsaw.onload = drawImageJigsaw; // Draw when image has loaded
+
+  jigsaw.src = 'assets/icon.jpg';
+
+  function drawImageJigsaw() {
+    ctx_jigsaw.drawImage(this, 500, 500, 250, 225);
+  }
 }
 
 const pointLight = new THREE.PointLight(0xffffff, 0.05, 0, 20); // soft white light
@@ -14786,6 +14829,7 @@ const animate = function () {
   ctx.drawImage(odometerCtx.canvas, 510, 595);
   TWEEN.update();
   canvasTexture.needsUpdate = true;
+  canvasTextureJigsaw.needsUpdate = true;
   const delta = clock.getDelta();
   cameraControls.update(delta);
   renderer.render(scene, camera);
