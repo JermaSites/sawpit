@@ -241,17 +241,35 @@ console.log(bopItGroup);
 const listener = new THREE.AudioListener();
 camera.add( listener );
 const bopItSound = new THREE.PositionalAudio( listener );
-bopItSound.setVolume( 0.5 );
+bopItSound.setVolume( 15 );
 const twistItSound = new THREE.PositionalAudio( listener );
-twistItSound.setVolume( 0.5 );
+twistItSound.setVolume( 15 );
 const pullItSound = new THREE.PositionalAudio( listener );
-pullItSound.setVolume( 0.5 );
+pullItSound.setVolume( 15 );
+const drumLoop = new THREE.PositionalAudio( listener );
+drumLoop.setVolume( 5 );
+const bopIt_announce = new THREE.PositionalAudio( listener );
+bopIt_announce.setVolume( 1 );
+const twistIt_announce = new THREE.PositionalAudio( listener );
+twistIt_announce.setVolume( 1 );
+const pullIt_announce = new THREE.PositionalAudio( listener );
+pullIt_announce.setVolume( 1 );
+const failSound = new THREE.PositionalAudio( listener );
+failSound.setVolume( 1 );
 const audioLoader = new THREE.AudioLoader();
 
 const sphere = new THREE.SphereGeometry( 0.01, 0.01, 0.01 );
 const material = new THREE.MeshPhongMaterial( { color: 0xff2200 } );
 const mesh = new THREE.Mesh( sphere, material );
 scene.add( mesh );
+mesh.add( bopIt_announce );
+mesh.add( twistIt_announce );
+mesh.add( pullIt_announce );
+mesh.add( failSound );
+
+// const mesh2 = new THREE.Mesh( sphere, material );
+// scene.add( mesh2 );
+mesh.add( drumLoop );
 mesh.add( bopItSound );
 mesh.add( twistItSound );
 mesh.add( pullItSound );
@@ -268,16 +286,132 @@ audioLoader.load( 'assets/audio/Pull_R.wav', function( buffer ) {
 	pullItSound.setBuffer( buffer );
 });
 
+audioLoader.load( 'assets/audio/drum_loop.mp3', function( buffer ) {
+	drumLoop.setBuffer( buffer );
+	drumLoop.setLoop( true );
+	// drumLoop.play();
+	// console.log(drumLoop);
+});
+
+audioLoader.load( 'assets/audio/annoucer/bopit_annouce.mp3', function( buffer ) {
+	bopIt_announce.setBuffer( buffer );
+});
+
+audioLoader.load( 'assets/audio/annoucer/twistit_annouce.mp3', function( buffer ) {
+	twistIt_announce.setBuffer( buffer );
+});
+
+audioLoader.load( 'assets/audio/annoucer/pullit_annouce.mp3', function( buffer ) {
+	pullIt_announce.setBuffer( buffer );
+});
+
+audioLoader.load( 'assets/audio/annoucer/fail.mp3', function( buffer ) {
+	failSound.setBuffer( buffer );
+});
+
+var inGame = false;
+
 function boppedit() {
-	bopItSound.play();
+	if(inGame == false) {
+		startGame();
+	} else {
+		playAction("bopit");
+	}
 }
 
 function twistedIt() {
-	twistItSound.play();
+	if(inGame == true) {
+		playAction("twistit");
+	}
 }
 
 function pulledIt() {
-	pullItSound.play();
+	if(inGame == true) {
+		playAction("pullit");
+	}
+}
+
+function randomIntFromInterval(min, max) { // min and max included 
+	return Math.floor(Math.random() * (max - min + 1) + min);
+}
+var speed = 0;
+var expectedAction;
+var playedAction;
+var playcooldown = false; //this prevents people from getting confused if they start another game immeditly after failing
+
+function startGame() {
+	if(playcooldown == false) {
+		speed = 1;
+		inGame = true;
+		continueGame();
+	}
+}
+
+function continueGame() {
+	console.log("Speed is ", speed);
+	expectedAction = null;
+	drumLoop.setPlaybackRate(speed);
+	drumLoop.play();
+	setTimeout(() => {
+		if(inGame == true) {
+			drumLoop.pause();
+			switch (randomIntFromInterval(0, 2)) {
+				case 0:
+					bopIt_announce.play();
+					expectedAction = "bopit";
+					break;				
+				case 1:
+					twistIt_announce.play();
+					expectedAction = "twistit";
+					break;				
+				case 2:
+					pullIt_announce.play();
+					expectedAction = "pullit";
+					break;
+			
+				default:
+					throw new Error("Invalid action generated!!");
+			}
+			setTimeout(() => {
+				if(playedAction != true) {
+					failSound.play();
+					drumLoop.stop();
+					inGame = false;
+					playcooldown = true;
+					setTimeout(() => {
+						playcooldown = false;
+					}, 100);
+				} else {
+					playedAction = false;
+				}
+			}, 2000 - (speed * 1000));
+		}
+	}, randomIntFromInterval(speed * 1000, 2000 - (speed * 1000)))
+}
+
+function playAction(action) {
+	playedAction = true;
+	if(expectedAction == action) {
+		switch (action) {
+			case "bopit":
+				bopItSound.play();
+				break;			
+			case "twistit":
+				twistItSound.play();
+				break;			
+			case "pullit":
+				pullItSound.play();
+				break;
+			default:
+				throw new Error("Invalid action played!!");
+		}
+		speed += 0.01;
+		continueGame();
+	} else {
+		failSound.play();
+		drumLoop.stop();
+		inGame = false;
+	}
 }
 
 cameraControls.moveTo(0, -0.5, 8);
