@@ -14789,7 +14789,7 @@ function continueGame() {
         }
       }, 2000 - speed * 1000);
     }
-  }, randomIntFromInterval(speed * 1000, 2000 - speed * 1000));
+  }, randomIntFromInterval(speed * 500, 3000 - speed * 1500));
 }
 
 function playAction(action) {
