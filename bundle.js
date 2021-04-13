@@ -14514,6 +14514,7 @@ const objects = []; // const dragControls = new DragControls( objects, camera, d
 const mouseDragger = new _threeDragger.default(objects, camera, renderer.domElement);
 loader.load('assets/models/pullIt.glb', function (gltf) {
   var pullIt = gltf.scene.children[0];
+  var isTweened = false;
   scene.add(gltf.scene);
   pullIt.cursor = 'pointer';
   pullIt.on('mouseover', function () {//for some reason putting a cursor on this object requires an event to be put on it even tho it doesen't do anything
@@ -14526,6 +14527,11 @@ loader.load('assets/models/pullIt.glb', function (gltf) {
 
   pullIt.userData.update = function () {
     pullIt.position.clamp(pullIt.userData.limit.min, pullIt.userData.limit.max);
+
+    if (pullIt.position.x < -0.075 && isTweened == false) {
+      isTweened = true;
+      pulledIt();
+    }
   };
 
   objects.push(pullIt);
@@ -14538,11 +14544,6 @@ loader.load('assets/models/pullIt.glb', function (gltf) {
     var position = {
       x: pullIt.position.x
     };
-
-    if (pullIt.position.x < -0.075) {
-      pulledIt();
-    }
-
     var target = {
       x: 0
     };
@@ -14550,6 +14551,14 @@ loader.load('assets/models/pullIt.glb', function (gltf) {
     tween.onUpdate(function () {
       pullIt.position.clamp(pullIt.userData.limit.min, pullIt.userData.limit.max);
       pullIt.position.x = position.x;
+    });
+    tween.onStart(function () {
+      isTweened = true;
+      console.log(isTweened);
+    });
+    tween.onComplete(function () {
+      isTweened = false;
+      console.log(isTweened);
     });
     tween.start();
   });
@@ -14594,6 +14603,14 @@ loader.load('assets/models/twistIt_newOrigin.glb', function (gltf) {
       };
       twistIt.rotation.x += deltaMove.y * 0.05;
       twistIt.userData.rotationNess += deltaMove.y * 0.05;
+
+      if (twistIt.userData.rotationNess > 15 || twistIt.userData.rotationNess < -15) {
+        twistIt.userData.rotationNess = 0;
+        dragRotate = false;
+        renderer.domElement.style.cursor = "default";
+        twistedIt();
+      }
+
       console.log(twistIt.userData.rotationNess);
     }
 
@@ -14639,10 +14656,10 @@ bopItGroup.scale.x = 0.3;
 bopItGroup.scale.y = 0.3;
 bopItGroup.scale.z = 0.3;
 bopItGroup.position.y = -0.7;
-bopItGroup.position.z = 7.4;
-bopItGroup.rotation.x = 1.58;
-bopItGroup.rotation.y = 0.017;
-bopItGroup.rotation.z = 0.4;
+bopItGroup.position.z = 7.4; // bopItGroup.rotation.x = 1.58;
+// bopItGroup.rotation.y = 0.017;
+// bopItGroup.rotation.z = 0.4;
+
 scene.add(bopItGroup);
 console.log(bopItGroup);
 const listener = new THREE.AudioListener();
@@ -14719,13 +14736,16 @@ function boppedit() {
 function twistedIt() {
   if (inGame == true) {
     playAction("twistit");
-  }
+  } // console.log("TWIST5ED ASDJHKGADKJAWDLAWKJ")
+
 }
 
 function pulledIt() {
   if (inGame == true) {
     playAction("pullit");
   }
+
+  console.log("TWIST5ED ASDJHKGADKJAWDLAWKJ");
 }
 
 function randomIntFromInterval(min, max) {
@@ -14742,7 +14762,7 @@ function startGame() {
   playedAction = false;
 
   if (playcooldown == false) {
-    speed = 1;
+    speed = 5;
     inGame = true;
     continueGame();
   }
@@ -14751,7 +14771,7 @@ function startGame() {
 function continueGame() {
   console.log("Speed is ", speed);
   expectedAction = null;
-  drumLoop.setPlaybackRate(speed);
+  drumLoop.setPlaybackRate(1 - (speed - 4) + 1);
   drumLoop.play();
   setTimeout(() => {
     if (inGame == true) {
@@ -14789,39 +14809,45 @@ function continueGame() {
           }, 100);
         } else {
           playedAction = false;
+          playcooldown = true;
+          setTimeout(() => {
+            playcooldown = false;
+          }, 100);
         }
-      }, 2000 - speed * 1000);
+      }, speed * 250);
     }
-  }, randomIntFromInterval(500 * (2 - speed), 3000 * (2 - speed)));
+  }, randomIntFromInterval(speed * 250, speed * 1000));
 }
 
 function playAction(action) {
-  playedAction = true;
+  if (playcooldown == false) {
+    playedAction = true;
 
-  if (expectedAction == action) {
-    switch (action) {
-      case "bopit":
-        bopItSound.play();
-        break;
+    if (expectedAction == action) {
+      switch (action) {
+        case "bopit":
+          bopItSound.play();
+          break;
 
-      case "twistit":
-        twistItSound.play();
-        break;
+        case "twistit":
+          twistItSound.play();
+          break;
 
-      case "pullit":
-        pullItSound.play();
-        break;
+        case "pullit":
+          pullItSound.play();
+          break;
 
-      default:
-        throw new Error("Invalid action played!!");
+        default:
+          throw new Error("Invalid action played!!");
+      }
+
+      speed += 0.005;
+      continueGame();
+    } else {
+      failSound.play();
+      drumLoop.stop();
+      inGame = false;
     }
-
-    speed += 0.01;
-    continueGame();
-  } else {
-    failSound.play();
-    drumLoop.stop();
-    inGame = false;
   }
 }
 
