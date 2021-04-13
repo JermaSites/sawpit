@@ -369,7 +369,7 @@ function startGame() {
 function continueGame() {
 	console.log("Speed is ", speed);
 	expectedAction = null;
-	drumLoop.setPlaybackRate(1 - (speed - 4) + 1);
+	drumLoop.setPlaybackRate((speed - 3)/3);
 	drumLoop.play();
 	setTimeout(() => {
 		if(inGame == true) {
@@ -410,7 +410,7 @@ function continueGame() {
 				}
 			}, speed * 250);
 		}
-	}, randomIntFromInterval(speed * 250, speed * 1000))
+	}, randomIntFromInterval(1200 - ((speed - 5) * 100), 2000 - ((speed - 5) * 100)));
 }
 
 function playAction(action) {
@@ -430,7 +430,7 @@ function playAction(action) {
 				default:
 					throw new Error("Invalid action played!!");
 			}
-			speed += 0.005;
+			speed += 0.1;
 			continueGame();
 		} else {
 			failSound.play();
