@@ -340,6 +340,7 @@ var playedAction;
 var playcooldown = false; //this prevents people from getting confused if they start another game immeditly after failing
 
 function startGame() {
+	playedAction = false;
 	if(playcooldown == false) {
 		speed = 1;
 		inGame = true;
@@ -374,6 +375,7 @@ function continueGame() {
 			}
 			setTimeout(() => {
 				if(playedAction != true) {
+					playedAction = false;
 					failSound.play();
 					drumLoop.stop();
 					inGame = false;
@@ -386,7 +388,7 @@ function continueGame() {
 				}
 			}, 2000 - (speed * 1000));
 		}
-	}, randomIntFromInterval(speed * 500, 3000 - (speed * 1500)))
+	}, randomIntFromInterval(500 * (2 - speed), 3000 * (2 - speed)))
 }
 
 function playAction(action) {
