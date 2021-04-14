@@ -14814,7 +14814,7 @@ function continueGame() {
             playcooldown = false;
           }, 100);
         }
-      }, speed * 250);
+      }, (1000 - ((speed - 5) * 10)));
     }
   }, randomIntFromInterval(1200 - ((speed - 5) * 100), 2000 - ((speed - 5) * 100)));
 }
