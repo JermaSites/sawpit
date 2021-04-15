@@ -623,26 +623,38 @@ console.log(cameraControls);
 // scene.add( cube );
 
 var fbxLoader = new FBXLoader();
-fbxLoader.load( 'assets/sawroom.fbx', function ( fbx ) {
-	fbx.traverse( function( node ) { if ( node instanceof THREE.PointLight ) { 
-		node.castShadow = true;
-		node.shadow.mapSize.width = 2048;
-		node.shadow.mapSize.height = 2048;
-		node.shadow.bias = -0.0001;
-		node.shadow.radius = 3;
-		// var helper = new THREE.CameraHelper( node.shadow.camera );
-		// scenes.add( helper );
-		// node.shadowCameraVisible = true;
-		// var cameraHelper = new THREE.CameraHelper(node.shadow.camera);
-		// node.shadow.camera.near = 0.1;
-		// node.shadow.camera.far = 50;
-		// node.shadow.camera.width = 100;
-		// node.shadow.camera.height = 100;
-		// node.shadow.camera.zoom = 1;
-		// console.log(node.shadow.camera);
-		// scene.add(cameraHelper);
-		scene.add(node); 
-	} } );
+fbxLoader.load( 'assets/models/RoomTest/room.fbx', function ( fbx ) {
+	fbx.traverse( function( node ) { 
+		if ( node instanceof THREE.PointLight ) { 
+			node.castShadow = true;
+			node.shadow.mapSize.width = 2048;
+			node.shadow.mapSize.height = 2048;
+			node.shadow.bias = -0.0001;
+			// node.shadow.radius = 3;
+			// var helper = new THREE.CameraHelper( node.shadow.camera );
+			// scenes.add( helper );
+			// node.shadowCameraVisible = true;
+			// var cameraHelper = new THREE.CameraHelper(node.shadow.camera);
+			// node.shadow.camera.near = 0.1;
+			// node.shadow.camera.far = 50;
+			// node.shadow.camera.width = 100;
+			// node.shadow.camera.height = 100;
+			// node.shadow.camera.zoom = 1;
+			// console.log(node.shadow.camera);
+			// scene.add(cameraHelper);
+			scene.add(node); 
+		} 
+		// if ( node.isMesh ) { 
+		// 	console.log(node);
+		// 	node.castShadow = true; 
+		// 	node.receiveShadow = true; 
+		// 	// var prevMaterial = node.material;
+		// 	// node.material = new THREE.MeshPhongMaterial();
+			  
+		// 	// THREE.MeshBasicMaterial.prototype.copy.call( node.material, prevMaterial );
+		// 	// // node.material = material;
+		// }
+	} );
 	// fbx.castShadow = true;
 	// fbx.receiveShadow = true;
 	// scene.add(fbx);
@@ -653,7 +665,7 @@ fbxLoader.load( 'assets/sawroom.fbx', function ( fbx ) {
 	console.error( error );
 } );
 
-loader.load( 'assets/sawroom.glb', function ( gltf ) {
+loader.load( 'assets/models/RoomTest/room.glb', function ( gltf ) {
 	gltf.castShadow = true;
 	gltf.scene.traverse( function( node ) {
         if ( node.isMesh ) { 

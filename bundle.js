@@ -19941,14 +19941,14 @@ console.log(cameraControls); // const canvas = document.getElementById('texture'
 // scene.add( cube );
 
 var fbxLoader = new _FBXLoader.FBXLoader();
-fbxLoader.load('assets/sawroom.fbx', function (fbx) {
+fbxLoader.load('assets/models/RoomTest/room.fbx', function (fbx) {
   fbx.traverse(function (node) {
     if (node instanceof THREE.PointLight) {
       node.castShadow = true;
       node.shadow.mapSize.width = 2048;
       node.shadow.mapSize.height = 2048;
-      node.shadow.bias = -0.0001;
-      node.shadow.radius = 3; // var helper = new THREE.CameraHelper( node.shadow.camera );
+      node.shadow.bias = -0.0001; // node.shadow.radius = 3;
+      // var helper = new THREE.CameraHelper( node.shadow.camera );
       // scenes.add( helper );
       // node.shadowCameraVisible = true;
       // var cameraHelper = new THREE.CameraHelper(node.shadow.camera);
@@ -19961,7 +19961,16 @@ fbxLoader.load('assets/sawroom.fbx', function (fbx) {
       // scene.add(cameraHelper);
 
       scene.add(node);
-    }
+    } // if ( node.isMesh ) { 
+    // 	console.log(node);
+    // 	node.castShadow = true; 
+    // 	node.receiveShadow = true; 
+    // 	// var prevMaterial = node.material;
+    // 	// node.material = new THREE.MeshPhongMaterial();
+    // 	// THREE.MeshBasicMaterial.prototype.copy.call( node.material, prevMaterial );
+    // 	// // node.material = material;
+    // }
+
   }); // fbx.castShadow = true;
   // fbx.receiveShadow = true;
   // scene.add(fbx);
@@ -19971,7 +19980,7 @@ fbxLoader.load('assets/sawroom.fbx', function (fbx) {
 }, undefined, function (error) {
   console.error(error);
 });
-loader.load('assets/sawroom.glb', function (gltf) {
+loader.load('assets/models/RoomTest/room.glb', function (gltf) {
   gltf.castShadow = true;
   gltf.scene.traverse(function (node) {
     if (node.isMesh) {
