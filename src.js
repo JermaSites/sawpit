@@ -5,6 +5,7 @@ import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
 import { DragControls } from 'three/examples/jsm/controls/DragControls.js';
 import ThreeDragger from 'three-dragger';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
+import { FBXLoader } from 'three/examples/jsm/loaders/FBXLoader.js';
 import { Interaction } from 'three.interaction';
 import { RectAreaLightUniformsLib } from 'three/examples/jsm/lights/RectAreaLightUniformsLib.js';
 import { RectAreaLightHelper } from 'three/examples/jsm/helpers/RectAreaLightHelper.js';
@@ -244,12 +245,19 @@ bopItGroup.scale.x = 0.3;
 bopItGroup.scale.y = 0.3;
 bopItGroup.scale.z = 0.3;
 
-bopItGroup.position.y = -0.7;
-bopItGroup.position.z = 7.4;
+bopItGroup.position.x = 7.5;
+bopItGroup.position.y = 3.4;
+bopItGroup.position.z = -0.5;
+// bopItGroup.position.x = 7.1;
+// bopItGroup.position.y = 3.01;
+// bopItGroup.position.z = -0.5;
 
-// bopItGroup.rotation.x = 1.58;
-// bopItGroup.rotation.y = 0.017;
-// bopItGroup.rotation.z = 0.4;
+bopItGroup.rotation.x = -3.151459;
+bopItGroup.rotation.y = -1.533;
+bopItGroup.rotation.z = -3.151459;
+
+bopItGroup.castShadow = true;
+bopItGroup.receiveShadow = true;
 
 scene.add(bopItGroup);
 console.log(bopItGroup);
@@ -440,171 +448,185 @@ function playAction(action) {
 	}
 }
 
-cameraControls.moveTo(0, -0.5, 8);
+cameraControls.moveTo(8, 3.5, -0.5);
+cameraControls.rotate(1.65, 0);
+console.log(cameraControls);
 
-const canvas = document.getElementById('texture');
-const odometerCanvas = document.getElementById('odometer');
-const ctx = canvas.getContext('2d');
-const odometerCtx = odometerCanvas.getContext('2d');
-var myOdometer = new odometer(odometerCtx, {
-	height: 42, 
-	value: 500000
-});
+// const canvas = document.getElementById('texture');
+// const odometerCanvas = document.getElementById('odometer');
+// const ctx = canvas.getContext('2d');
+// const odometerCtx = odometerCanvas.getContext('2d');
+// var myOdometer = new odometer(odometerCtx, {
+// 	height: 42, 
+// 	value: 500000
+// });
 
-const canvasTexture = new THREE.CanvasTexture(ctx.canvas);
-canvasTexture.encoding = THREE.sRGBEncoding;
+// const canvasTexture = new THREE.CanvasTexture(ctx.canvas);
+// canvasTexture.encoding = THREE.sRGBEncoding;
 
-loader.load( 'assets/models/tv/scene.gltf', function ( gltf ) {
-	scene.add( gltf.scene );
-	var tv = gltf.scene.children[0].children[0].children[0].children[0]; //this is awful but i literally cba to open up the model and reexporting it lol
-	tv.material.map = canvasTexture;
+// loader.load( 'assets/models/tv/scene.gltf', function ( gltf ) {
+// 	scene.add( gltf.scene );
+// 	var tv = gltf.scene.children[0].children[0].children[0].children[0]; //this is awful but i literally cba to open up the model and reexporting it lol
+// 	tv.material.map = canvasTexture;
 
-	var tvGroup = new THREE.Group();
-	tvGroup.add(gltf.scene);
+// 	var tvGroup = new THREE.Group();
+// 	tvGroup.add(gltf.scene);
 
-	console.log(tv);
-	console.log(tv.material);
+// 	console.log(tv);
+// 	console.log(tv.material);
 
-	const rectLight = new THREE.RectAreaLight( 0xffffff, 1.0, 2.3, 1.9 );
-	const rectLightHelper = new RectAreaLightHelper( rectLight );
-	rectLight.add( rectLightHelper );
+// 	const rectLight = new THREE.RectAreaLight( 0xffffff, 1.0, 2.3, 1.9 );
+// 	const rectLightHelper = new RectAreaLightHelper( rectLight );
+// 	rectLight.add( rectLightHelper );
 	
 
-	// rectLight.position.set( tv.position.x, tv.position.y, tv.position.z );
+// 	// rectLight.position.set( tv.position.x, tv.position.y, tv.position.z );
 	
-	// rectLight.lookAt( tv.position );
-	console.log(rectLight);
-	rectLight.position.y = 1.05;
-	rectLight.position.z = 0.6;
-	tvGroup.add(rectLight);
+// 	// rectLight.lookAt( tv.position );
+// 	console.log(rectLight);
+// 	rectLight.position.y = 1.05;
+// 	rectLight.position.z = 0.6;
+// 	tvGroup.add(rectLight);
 
-	tvGroup.position.x = -5.4;
-	tvGroup.position.y = 0.7;
-	tvGroup.position.z = -2;
+// 	tvGroup.position.x = -5.4;
+// 	tvGroup.position.y = 0.7;
+// 	tvGroup.position.z = -2;
 
-	tvGroup.rotation.y = 0.75;
-	scene.add(tvGroup);
-	console.log(tvGroup);
+// 	tvGroup.rotation.y = 0.75;
+// 	scene.add(tvGroup);
+// 	console.log(tvGroup);
 
+// }, undefined, function ( error ) {
+// 	console.error( error );
+// } );
+
+// const canvas_jigsaw = document.getElementById('texture_jigsaw');
+// const ctx_jigsaw = canvas_jigsaw.getContext('2d');
+
+// const canvasTextureJigsaw = new THREE.CanvasTexture(ctx_jigsaw.canvas);
+// canvasTextureJigsaw.encoding = THREE.sRGBEncoding;
+
+// loader.load( 'assets/models/tv/scene.gltf', function ( gltf ) {
+// 	scene.add( gltf.scene );
+// 	var tv = gltf.scene.children[0].children[0].children[0].children[0]; //this is awful but i literally cba to open up the model and reexporting it lol
+// 	tv.material.map = canvasTextureJigsaw;
+
+// 	var tvGroup = new THREE.Group();
+// 	tvGroup.add(gltf.scene);
+
+// 	console.log(tv);
+// 	console.log(tv.material);
+
+// 	const rectLight = new THREE.RectAreaLight( 0xffffff, 1.0, 2.3, 1.9 );
+// 	const rectLightHelper = new RectAreaLightHelper( rectLight );
+// 	rectLight.add( rectLightHelper );
+	
+
+// 	// rectLight.position.set( tv.position.x, tv.position.y, tv.position.z );
+	
+// 	// rectLight.lookAt( tv.position );
+// 	console.log(rectLight);
+// 	rectLight.position.y = 1.05;
+// 	rectLight.position.z = 0.6;
+// 	tvGroup.add(rectLight);
+
+// 	// tvGroup.position.x = -5.4;
+// 	// tvGroup.position.y = 0.7;
+// 	// tvGroup.position.z = -2;
+
+// 	// tvGroup.rotation.y = 0.75;
+// 	scene.add(tvGroup);
+// 	console.log(tvGroup);
+
+// }, undefined, function ( error ) {
+// 	console.error( error );
+// } );
+
+// const image = new Image(); // Using optional size for image
+// image.onload = drawImageActualSize; // Draw when image has loaded
+// image.src = 'assets/models/tv/textures/Diffusebakee_baseColor.png';
+// function drawImageActualSize() {
+// 	canvas_jigsaw.width = 800;
+// 	canvas_jigsaw.height = 800;	
+// 	canvas.width = 800;
+// 	canvas.height = 800;
+// 	ctx.drawImage(this, 0, 0, 800, 800);
+// 	ctx_jigsaw.drawImage(this, 0, 0, 800, 800);
+// 	const jigsaw = new Image(); // Using optional size for image
+// 	jigsaw.onload = drawImageJigsaw; // Draw when image has loaded
+// 	jigsaw.src = 'assets/icon.jpg';
+// 	function drawImageJigsaw() {
+// 		ctx_jigsaw.drawImage(this, 500, 500, 250, 225);
+// 	}
+// }
+
+
+// const pointLight = new THREE.PointLight(0xffffff, 0.05, 0, 20); // soft white light
+// pointLight.position.y = 2;
+// pointLight.position.z = 7;
+// scene.add( pointLight );
+// console.log(pointLight);
+
+// const pointLightHelper = new THREE.PointLightHelper( pointLight, 1 );
+// scene.add( pointLightHelper );
+
+
+// loader.load( 'assets/models/table/scene.gltf', function ( gltf ) {
+// 	scene.add( gltf.scene );
+// 	var table = gltf.scene.children[0].children[0].children[0].children[0]; //same as above lol
+// 	table.position.y = -6;
+// 	table.position.x = -1;
+// 	table.position.z = -2.25;
+
+// 	// const spotLight = new THREE.SpotLight( 0xffffff );
+// 	// spotLight.target.position.y = -6;
+// 	// spotLight.target.position.x = -1;
+// 	// spotLight.target.position.z = -2.25;
+// 	// spotLight.position.z = 9.75;
+// 	// spotLight.position.y = 2;
+// 	// spotLight.angle = 0.7471975511965978;
+// 	// spotLight.penumbra = 1;
+// 	// spotLight.intensity = 0.25;
+// 	// scene.add( spotLight );
+// 	// console.log(spotLight);
+
+// 	// const spotLightHelper = new THREE.SpotLightHelper( spotLight );
+// 	// scene.add( spotLightHelper );
+
+// }, undefined, function ( error ) {
+// 	console.error( error );
+// } );
+
+// const geometry = new THREE.BoxGeometry( 25, 10, 15 );
+// const concreteTexture = new THREE.TextureLoader().load( 'assets/concrete.jpg' );
+// const cubeMaterial = new THREE.MeshLambertMaterial( {color: 0xFFFFFF, map: concreteTexture, side: THREE.BackSide } );
+// const cube = new THREE.Mesh( geometry, cubeMaterial );
+// console.log(cube);
+// cube.position.z = 1.875;
+// scene.add( cube );
+
+var fbxLoader = new FBXLoader();
+fbxLoader.load( 'assets/sawroom.fbx', function ( fbx ) {
+	fbx.castShadow = true;
+	fbx.receiveShadow = true;
+	scene.add(fbx);
+	console.log(fbx);
+	// var main = fbx.scene.children[0];
+	// bopItGroup.add(main);
 }, undefined, function ( error ) {
 	console.error( error );
 } );
-
-const canvas_jigsaw = document.getElementById('texture_jigsaw');
-const ctx_jigsaw = canvas_jigsaw.getContext('2d');
-
-const canvasTextureJigsaw = new THREE.CanvasTexture(ctx_jigsaw.canvas);
-canvasTextureJigsaw.encoding = THREE.sRGBEncoding;
-
-loader.load( 'assets/models/tv/scene.gltf', function ( gltf ) {
-	scene.add( gltf.scene );
-	var tv = gltf.scene.children[0].children[0].children[0].children[0]; //this is awful but i literally cba to open up the model and reexporting it lol
-	tv.material.map = canvasTextureJigsaw;
-
-	var tvGroup = new THREE.Group();
-	tvGroup.add(gltf.scene);
-
-	console.log(tv);
-	console.log(tv.material);
-
-	const rectLight = new THREE.RectAreaLight( 0xffffff, 1.0, 2.3, 1.9 );
-	const rectLightHelper = new RectAreaLightHelper( rectLight );
-	rectLight.add( rectLightHelper );
-	
-
-	// rectLight.position.set( tv.position.x, tv.position.y, tv.position.z );
-	
-	// rectLight.lookAt( tv.position );
-	console.log(rectLight);
-	rectLight.position.y = 1.05;
-	rectLight.position.z = 0.6;
-	tvGroup.add(rectLight);
-
-	// tvGroup.position.x = -5.4;
-	// tvGroup.position.y = 0.7;
-	// tvGroup.position.z = -2;
-
-	// tvGroup.rotation.y = 0.75;
-	scene.add(tvGroup);
-	console.log(tvGroup);
-
-}, undefined, function ( error ) {
-	console.error( error );
-} );
-
-const image = new Image(); // Using optional size for image
-image.onload = drawImageActualSize; // Draw when image has loaded
-image.src = 'assets/models/tv/textures/Diffusebakee_baseColor.png';
-function drawImageActualSize() {
-	canvas_jigsaw.width = 800;
-	canvas_jigsaw.height = 800;	
-	canvas.width = 800;
-	canvas.height = 800;
-	ctx.drawImage(this, 0, 0, 800, 800);
-	ctx_jigsaw.drawImage(this, 0, 0, 800, 800);
-	const jigsaw = new Image(); // Using optional size for image
-	jigsaw.onload = drawImageJigsaw; // Draw when image has loaded
-	jigsaw.src = 'assets/icon.jpg';
-	function drawImageJigsaw() {
-		ctx_jigsaw.drawImage(this, 500, 500, 250, 225);
-	}
-}
-
-
-const pointLight = new THREE.PointLight(0xffffff, 0.05, 0, 20); // soft white light
-pointLight.position.y = 2;
-pointLight.position.z = 7;
-scene.add( pointLight );
-console.log(pointLight);
-
-const pointLightHelper = new THREE.PointLightHelper( pointLight, 1 );
-scene.add( pointLightHelper );
-
-
-loader.load( 'assets/models/table/scene.gltf', function ( gltf ) {
-	scene.add( gltf.scene );
-	var table = gltf.scene.children[0].children[0].children[0].children[0]; //same as above lol
-	table.position.y = -6;
-	table.position.x = -1;
-	table.position.z = -2.25;
-
-	// const spotLight = new THREE.SpotLight( 0xffffff );
-	// spotLight.target.position.y = -6;
-	// spotLight.target.position.x = -1;
-	// spotLight.target.position.z = -2.25;
-	// spotLight.position.z = 9.75;
-	// spotLight.position.y = 2;
-	// spotLight.angle = 0.7471975511965978;
-	// spotLight.penumbra = 1;
-	// spotLight.intensity = 0.25;
-	// scene.add( spotLight );
-	// console.log(spotLight);
-
-	// const spotLightHelper = new THREE.SpotLightHelper( spotLight );
-	// scene.add( spotLightHelper );
-
-}, undefined, function ( error ) {
-	console.error( error );
-} );
-
-const geometry = new THREE.BoxGeometry( 25, 10, 15 );
-const concreteTexture = new THREE.TextureLoader().load( 'assets/concrete.jpg' );
-const cubeMaterial = new THREE.MeshLambertMaterial( {color: 0xFFFFFF, map: concreteTexture, side: THREE.BackSide } );
-const cube = new THREE.Mesh( geometry, cubeMaterial );
-console.log(cube);
-cube.position.z = 1.875;
-scene.add( cube );
   
 const animate = function () {
 	objects.forEach(o => {
 		o.userData.update();
 	})
 	requestAnimationFrame( animate );
-	myOdometer.setValue(myOdometer.getValue() - 0.1);
-	ctx.drawImage(odometerCtx.canvas, 510, 595);
+	// myOdometer.setValue(myOdometer.getValue() - 0.1);
+	// ctx.drawImage(odometerCtx.canvas, 510, 595);
 	TWEEN.update();
-	canvasTexture.needsUpdate = true;
-	canvasTextureJigsaw.needsUpdate = true;
+	// canvasTexture.needsUpdate = true;
+	// canvasTextureJigsaw.needsUpdate = true;
 	const delta = clock.getDelta();
 	cameraControls.update( delta );
 	renderer.render( scene, camera );
