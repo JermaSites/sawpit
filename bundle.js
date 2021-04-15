@@ -19362,6 +19362,7 @@ function _getRequireWildcardCache() { if (typeof WeakMap !== "function") return 
 function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } if (obj === null || typeof obj !== "object" && typeof obj !== "function") { return { default: obj }; } var cache = _getRequireWildcardCache(); if (cache && cache.has(obj)) { return cache.get(obj); } var newObj = {}; var hasPropertyDescriptor = Object.defineProperty && Object.getOwnPropertyDescriptor; for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) { var desc = hasPropertyDescriptor ? Object.getOwnPropertyDescriptor(obj, key) : null; if (desc && (desc.get || desc.set)) { Object.defineProperty(newObj, key, desc); } else { newObj[key] = obj[key]; } } } newObj.default = obj; if (cache) { cache.set(obj, newObj); } return newObj; }
 
 // Find the latest version by visiting https://unpkg.com/three.
+// import { FlyControls } from 'three/examples/jsm/controls/FlyControls.js ';
 _RectAreaLightUniformsLib.RectAreaLightUniformsLib.init();
 
 _cameraControls.default.install({
@@ -19381,7 +19382,8 @@ const EPS = 1e-5; // in order to archive FPS look, set EPSILON for the distance 
 camera.position.set(0, 0, EPS); // renderer.setSize( width, height );
 // document.body.appendChild( renderer.domElement );
 
-const cameraControls = new _cameraControls.default(camera, renderer.domElement); // cameraControls.maxDistance = EPS;
+const cameraControls = new _cameraControls.default(camera, renderer.domElement); // const flyControls = new FlyControls( camera, renderer.domElement );
+// cameraControls.maxDistance = EPS;
 
 cameraControls.azimuthRotateSpeed = -0.3; // negative value to invert rotation direction
 
@@ -19399,6 +19401,8 @@ var bopitButtonRightPressed = false;
 const bopItGroup = new THREE.Group();
 loader.load('assets/models/bopitButtonLeft.glb', function (gltf) {
   var bopitButtonLeft = gltf.scene.children[0];
+  bopitButtonLeft.castShadow = true;
+  bopitButtonLeft.receiveShadow = true;
   scene.add(gltf.scene);
   bopitButtonLeft.cursor = 'pointer';
   bopitButtonLeft.on('click', function (ev) {
@@ -19424,6 +19428,8 @@ loader.load('assets/models/bopitButtonLeft.glb', function (gltf) {
 });
 loader.load('assets/models/bopitButtonRight.glb', function (gltf) {
   var bopitButtonRight = gltf.scene.children[0];
+  bopitButtonRight.castShadow = true;
+  bopitButtonRight.receiveShadow = true;
   scene.add(gltf.scene);
   bopitButtonRight.cursor = 'pointer';
   bopitButtonRight.on('click', function (ev) {
@@ -19450,6 +19456,8 @@ loader.load('assets/models/bopitButtonRight.glb', function (gltf) {
 loader.load('assets/models/main.glb', function (gltf) {
   scene.add(gltf.scene);
   var main = gltf.scene.children[0];
+  main.castShadow = true;
+  main.receiveShadow = true;
   bopItGroup.add(main);
 }, undefined, function (error) {
   console.error(error);
@@ -19460,6 +19468,8 @@ const objects = []; // const dragControls = new DragControls( objects, camera, d
 const mouseDragger = new _threeDragger.default(objects, camera, renderer.domElement);
 loader.load('assets/models/pullIt.glb', function (gltf) {
   var pullIt = gltf.scene.children[0];
+  pullIt.castShadow = true;
+  pullIt.receiveShadow = true;
   var isTweened = false;
   scene.add(gltf.scene);
   pullIt.cursor = 'pointer';
@@ -19467,14 +19477,14 @@ loader.load('assets/models/pullIt.glb', function (gltf) {
   }); //im guessing its because three.js.interact needs some sort of "hook" to be added? idfk
 
   pullIt.userData.limit = {
-    min: new THREE.Vector3(-0.08, -0.16302920877933502, 0.08229061961174011),
+    min: new THREE.Vector3(-0.24, -0.16302920877933502, 0.08229061961174011),
     max: new THREE.Vector3(0, -0.16302920877933502, 0.08229061961174011)
   };
 
   pullIt.userData.update = function () {
     pullIt.position.clamp(pullIt.userData.limit.min, pullIt.userData.limit.max);
 
-    if (pullIt.position.x < -0.075 && isTweened == false) {
+    if (pullIt.position.x < -0.225 && isTweened == false) {
       isTweened = true;
       pulledIt();
     }
@@ -19523,6 +19533,8 @@ var dragRotate = false;
 loader.load('assets/models/twistIt_newOrigin.glb', function (gltf) {
   console.log(gltf.scene.children[0]);
   var twistIt = gltf.scene.children[0];
+  twistIt.castShadow = true;
+  twistIt.receiveShadow = true;
   twistIt.rotation.x = 0;
   twistIt.cursor = 'grab';
   twistIt.on('mouseover', function (ev) {
@@ -19597,16 +19609,19 @@ loader.load('assets/models/twistIt_newOrigin.glb', function (gltf) {
   bopItGroup.add(twistIt);
 }, undefined, function (error) {
   console.error(error);
-});
-bopItGroup.scale.x = 0.3;
-bopItGroup.scale.y = 0.3;
-bopItGroup.scale.z = 0.3;
-bopItGroup.position.x = 7.5;
-bopItGroup.position.y = 3.4;
-bopItGroup.position.z = -0.5; // bopItGroup.position.x = 7.1;
+}); // bopItGroup.scale.x = 0.3;
+// bopItGroup.scale.y = 0.3;
+// bopItGroup.scale.z = 0.3;
+// bopItGroup.position.x = 7.5;
+// bopItGroup.position.y = 3.4;
+// bopItGroup.position.z = -0.5;
+// bopItGroup.position.x = 7.1;
 // bopItGroup.position.y = 3.01;
 // bopItGroup.position.z = -0.5;
 
+bopItGroup.position.x = 6.3;
+bopItGroup.position.y = 3;
+bopItGroup.position.z = -0.5;
 bopItGroup.rotation.x = -3.151459;
 bopItGroup.rotation.y = -1.533;
 bopItGroup.rotation.z = -3.151459;
@@ -19901,19 +19916,19 @@ console.log(cameraControls); // const canvas = document.getElementById('texture'
 // 	table.position.y = -6;
 // 	table.position.x = -1;
 // 	table.position.z = -2.25;
-// 	// const spotLight = new THREE.SpotLight( 0xffffff );
-// 	// spotLight.target.position.y = -6;
-// 	// spotLight.target.position.x = -1;
-// 	// spotLight.target.position.z = -2.25;
-// 	// spotLight.position.z = 9.75;
-// 	// spotLight.position.y = 2;
-// 	// spotLight.angle = 0.7471975511965978;
-// 	// spotLight.penumbra = 1;
-// 	// spotLight.intensity = 0.25;
-// 	// scene.add( spotLight );
-// 	// console.log(spotLight);
-// 	// const spotLightHelper = new THREE.SpotLightHelper( spotLight );
-// 	// scene.add( spotLightHelper );
+// const spotLight = new THREE.SpotLight( 0xffffff );
+// spotLight.target.position.y = -6;
+// spotLight.target.position.x = -1;
+// spotLight.target.position.z = -2.25;
+// spotLight.position.z = 9.75;
+// spotLight.position.y = 2;
+// spotLight.angle = 0.7471975511965978;
+// spotLight.penumbra = 1;
+// spotLight.intensity = 0.25;
+// scene.add( spotLight );
+// console.log(spotLight);
+// const spotLightHelper = new THREE.SpotLightHelper( spotLight );
+// scene.add( spotLightHelper );
 // }, undefined, function ( error ) {
 // 	console.error( error );
 // } );
@@ -19927,11 +19942,52 @@ console.log(cameraControls); // const canvas = document.getElementById('texture'
 
 var fbxLoader = new _FBXLoader.FBXLoader();
 fbxLoader.load('assets/sawroom.fbx', function (fbx) {
-  fbx.castShadow = true;
-  fbx.receiveShadow = true;
-  scene.add(fbx);
-  console.log(fbx); // var main = fbx.scene.children[0];
+  fbx.traverse(function (node) {
+    if (node instanceof THREE.PointLight) {
+      node.castShadow = true;
+      node.shadow.mapSize.width = 2048;
+      node.shadow.mapSize.height = 2048;
+      node.shadow.bias = -0.0001;
+      node.shadow.radius = 3; // var helper = new THREE.CameraHelper( node.shadow.camera );
+      // scenes.add( helper );
+      // node.shadowCameraVisible = true;
+      // var cameraHelper = new THREE.CameraHelper(node.shadow.camera);
+      // node.shadow.camera.near = 0.1;
+      // node.shadow.camera.far = 50;
+      // node.shadow.camera.width = 100;
+      // node.shadow.camera.height = 100;
+      // node.shadow.camera.zoom = 1;
+      // console.log(node.shadow.camera);
+      // scene.add(cameraHelper);
+
+      scene.add(node);
+    }
+  }); // fbx.castShadow = true;
+  // fbx.receiveShadow = true;
+  // scene.add(fbx);
+  // console.log(fbx);
+  // var main = fbx.scene.children[0];
   // bopItGroup.add(main);
+}, undefined, function (error) {
+  console.error(error);
+});
+loader.load('assets/sawroom.glb', function (gltf) {
+  gltf.castShadow = true;
+  gltf.scene.traverse(function (node) {
+    if (node.isMesh) {
+      console.log(node);
+      node.castShadow = true;
+      node.receiveShadow = true; // var prevMaterial = node.material;
+      // node.material = new THREE.MeshPhongMaterial();
+      // THREE.MeshBasicMaterial.prototype.copy.call( node.material, prevMaterial );
+      // // node.material = material;
+    }
+  });
+  gltf.scene.scale.x = 100;
+  gltf.scene.scale.y = 100;
+  gltf.scene.scale.z = 100;
+  console.log(gltf.scene);
+  scene.add(gltf.scene);
 }, undefined, function (error) {
   console.error(error);
 });
@@ -19942,6 +19998,9 @@ const animate = function () {
   });
   requestAnimationFrame(animate); // myOdometer.setValue(myOdometer.getValue() - 0.1);
   // ctx.drawImage(odometerCtx.canvas, 510, 595);
+
+  renderer.shadowMap.enabled = true;
+  renderer.shadowMap.type = THREE.PCFSoftShadowMapping; // default THREE.PCFShadowMap
 
   TWEEN.update(); // canvasTexture.needsUpdate = true;
   // canvasTextureJigsaw.needsUpdate = true;
