@@ -134,12 +134,12 @@ loader.load( 'assets/models/pullIt.glb', function ( gltf ) {
 	});	//im guessing its because three.js.interact needs some sort of "hook" to be added? idfk
 
 	pullIt.userData.limit = {
-		min: new THREE.Vector3(-0.24, -0.16302920877933502, 0.08229061961174011),
+		min: new THREE.Vector3(-0.08, -0.16302920877933502, 0.08229061961174011),
 	  	max: new THREE.Vector3(0, -0.16302920877933502, 0.08229061961174011)
 	};
 	pullIt.userData.update = function(){
 		pullIt.position.clamp(pullIt.userData.limit.min, pullIt.userData.limit.max);
-		if(pullIt.position.x < -0.225 && isTweened == false) {
+		if(pullIt.position.x < -0.075 && isTweened == false) {
 			isTweened = true;
 			pulledIt();
 		}
@@ -171,7 +171,8 @@ loader.load( 'assets/models/pullIt.glb', function ( gltf ) {
 
 	mouseDragger.on('drag', function (data) {
 		const { target, position } = data;
-		target.position.set(position.x, position.y, position.z);
+		
+		target.position.set(-Math.abs(position.x), position.y, position.z);
 	});
 	bopItGroup.add(pullIt);
 
