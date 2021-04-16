@@ -630,6 +630,11 @@ fbxLoader.load( 'assets/models/RoomTest/room.fbx', function ( fbx ) {
 			node.shadow.mapSize.width = 2048;
 			node.shadow.mapSize.height = 2048;
 			node.shadow.bias = -0.0001;
+			if(node.name == "pointLight1") {
+				node.intensity = 0.482;
+				node.power = 1;
+			}
+
 			// node.shadow.radius = 3;
 			// var helper = new THREE.CameraHelper( node.shadow.camera );
 			// scenes.add( helper );
@@ -665,6 +670,21 @@ fbxLoader.load( 'assets/models/RoomTest/room.fbx', function ( fbx ) {
 	console.error( error );
 } );
 
+// var lightbulbLight = new THREE.SpotLight(0xffffff, 4, 13, 0.7, 1, 1)
+// lightbulbLight.power = 4;
+// lightbulbLight.castShadow = true;
+// lightbulbLight.target.copy(bopItGroup);
+// lightbulbLight.position.copy(bopItGroup);
+// lightbulbLight.position.z += 10;
+// lightbulbLight.shadow.mapSize.width = 2048;
+// lightbulbLight.shadow.mapSize.height = 2048;
+// lightbulbLight.shadow.bias = -0.0001;
+// // lightbulbLight.position.x = 6.375;
+// // lightbulbLight.position.y = 12.733;
+// // lightbulbLight.position.z = 0;
+
+// scene.add(lightbulbLight);
+
 loader.load( 'assets/models/RoomTest/untitled.glb', function ( gltf ) {
 	gltf.castShadow = true;
 	gltf.scene.traverse( function( node ) {
@@ -679,6 +699,9 @@ loader.load( 'assets/models/RoomTest/untitled.glb', function ( gltf ) {
 			// // node.material = material;
 		}
     } );
+	gltf.scene.getObjectByName( "Mesh044" ).castShadow = false;
+	gltf.scene.getObjectByName( "Mesh044_1" ).castShadow = false;
+	gltf.scene.getObjectByName( "pCylinder24" ).castShadow = false;
 	gltf.scene.scale.x = 100;
 	gltf.scene.scale.y = 100;
 	gltf.scene.scale.z = 100;
