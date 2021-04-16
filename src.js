@@ -265,13 +265,13 @@ loader.load( 'assets/models/twistIt_newOrigin.glb', function ( gltf ) {
 // bopItGroup.position.x = 7.1;
 // bopItGroup.position.y = 3.01;
 // bopItGroup.position.z = -0.5;
-bopItGroup.position.x = 6.3;
-bopItGroup.position.y = 3;
+bopItGroup.position.x = 6.370;
+bopItGroup.position.y = 3.070;
 bopItGroup.position.z = -0.5;
 
-bopItGroup.rotation.x = -3.151459;
-bopItGroup.rotation.y = -1.533;
-bopItGroup.rotation.z = -3.151459;
+bopItGroup.rotation.x = 1.510;
+bopItGroup.rotation.y = 0.000;
+bopItGroup.rotation.z = 1.129;
 
 bopItGroup.castShadow = true;
 bopItGroup.receiveShadow = true;
@@ -665,7 +665,7 @@ fbxLoader.load( 'assets/models/RoomTest/room.fbx', function ( fbx ) {
 	console.error( error );
 } );
 
-loader.load( 'assets/models/RoomTest/room.glb', function ( gltf ) {
+loader.load( 'assets/models/RoomTest/untitled.glb', function ( gltf ) {
 	gltf.castShadow = true;
 	gltf.scene.traverse( function( node ) {
         if ( node.isMesh ) { 
