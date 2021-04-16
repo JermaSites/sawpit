@@ -19838,10 +19838,43 @@ console.log(cameraControls); // const canvas = document.getElementById('texture'
 // 	tvGroup.add(gltf.scene);
 // 	console.log(tv);
 // 	console.log(tv.material);
-// 	const rectLight = new THREE.RectAreaLight( 0xffffff, 1.0, 2.3, 1.9 );
-// 	const rectLightHelper = new RectAreaLightHelper( rectLight );
-// 	rectLight.add( rectLightHelper );
-// 	// rectLight.position.set( tv.position.x, tv.position.y, tv.position.z );
+// const ipadLight = new THREE.RectAreaLight( 0xffffff );
+// ipadLight.width = 1.6;
+// ipadLight.height = 1.61;
+// ipadLight.position.x = 2.86;
+// ipadLight.position.y = 4.52;
+// ipadLight.position.z = 1.84;
+// ipadLight.rotation.x = 3.141;
+// ipadLight.rotation.y = 1.357;
+// ipadLight.rotation.z = 3.141;
+// const rectLightHelper = new RectAreaLightHelper( ipadLight );
+// ipadLight.add( rectLightHelper );
+// scene.add(ipadLight);
+
+const tvLight01 = new THREE.RectAreaLight(0xffffff);
+tvLight01.width = 1.6;
+tvLight01.height = 1.61;
+tvLight01.position.x = 2.86;
+tvLight01.position.y = 4.52;
+tvLight01.position.z = 1.84;
+tvLight01.rotation.x = 3.141;
+tvLight01.rotation.y = 1.357;
+tvLight01.rotation.z = 3.141; // const rectLightHelper = new RectAreaLightHelper( tvLight01 );
+// tvLight01.add( rectLightHelper );
+
+scene.add(tvLight01);
+const tvLight02 = new THREE.RectAreaLight(0xffffff);
+tvLight02.width = 1.89;
+tvLight02.height = 1.35;
+tvLight02.position.x = 3.1;
+tvLight02.position.y = 4.16;
+tvLight02.position.z = -2.09;
+tvLight02.rotation.x = 0;
+tvLight02.rotation.y = 1.297;
+tvLight02.rotation.z = 0; // const rectLightHelper = new RectAreaLightHelper( rectLight );
+// rectLight.add( rectLightHelper );
+
+scene.add(tvLight02); // 	// rectLight.position.set( tv.position.x, tv.position.y, tv.position.z );
 // 	// rectLight.lookAt( tv.position );
 // 	console.log(rectLight);
 // 	rectLight.position.y = 1.05;
