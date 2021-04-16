@@ -20014,6 +20014,14 @@ loader.load('assets/models/RoomTest/untitled.glb', function (gltf) {
   gltf.scene.getObjectByName("Mesh044").castShadow = false;
   gltf.scene.getObjectByName("Mesh044_1").castShadow = false;
   gltf.scene.getObjectByName("pCylinder24").castShadow = false;
+  gltf.scene.getObjectByName("pCube31").castShadow = false;
+  gltf.scene.getObjectByName("pCube31").renderOrder = 1;
+  gltf.scene.getObjectByName("pCube32").castShadow = false;
+  gltf.scene.getObjectByName("pCube32").renderOrder = 1;
+  gltf.scene.getObjectByName("pCube33").castShadow = false;
+  gltf.scene.getObjectByName("pCube33").renderOrder = 1;
+  gltf.scene.getObjectByName("pCube34").castShadow = false;
+  gltf.scene.getObjectByName("pCube34").renderOrder = 1;
   gltf.scene.scale.x = 100;
   gltf.scene.scale.y = 100;
   gltf.scene.scale.z = 100;
