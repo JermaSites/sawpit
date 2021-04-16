@@ -6,7 +6,12 @@
 		{
 			"label": "watchify",
 			"type": "shell",
-			"command": "npx watchify src.js -o bundle.js -p esmify"
+			"command": "npx watchify src.js -o bundle.js -p esmify",
+			"problemMatcher": [],
+			"group": {
+				"kind": "build",
+				"isDefault": true
+			}
 		}
 	]
 }
