@@ -63,12 +63,12 @@ var odometer = function (ctx, parameters) {
         // Create the foreground
         foregroundContext.rect(0, 0, width, height);
         gradHighlight = foregroundContext.createLinearGradient(0, 0, 0, height);
-        gradHighlight.addColorStop(0, 'rgba(0, 0, 0, 1)');
-        gradHighlight.addColorStop(0.1, 'rgba(0, 0, 0, 0.4)');
-        gradHighlight.addColorStop(0.33, 'rgba(255, 255, 255, 0.45)');
+        // gradHighlight.addColorStop(0, 'rgba(0, 0, 0, 1)');
+        // gradHighlight.addColorStop(0.1, 'rgba(0, 0, 0, 0.4)');
+        // gradHighlight.addColorStop(0.33, 'rgba(255, 255, 255, 0.45)');
         gradHighlight.addColorStop(0.46, 'rgba(255, 255, 255, 0)');
-        gradHighlight.addColorStop(0.9, 'rgba(0, 0, 0, 0.4)');
-        gradHighlight.addColorStop(1, 'rgba(0, 0, 0, 1)');
+        // gradHighlight.addColorStop(0.9, 'rgba(0, 0, 0, 0.4)');
+        // gradHighlight.addColorStop(1, 'rgba(0, 0, 0, 1)');
         foregroundContext.fillStyle = gradHighlight;
         foregroundContext.fill();
 
@@ -79,15 +79,15 @@ var odometer = function (ctx, parameters) {
         digitContext.fillStyle = valueBackColor;
         digitContext.fill();
         // edges
-        digitContext.strokeStyle = '#f0f0f0';
-        digitContext.lineWidth = '1px'; //height * 0.1 + "px";
-        digitContext.moveTo(0, 0);
-        digitContext.lineTo(0, columnHeight * 1.1);
-        digitContext.stroke();
-        digitContext.strokeStyle = '#202020';
-        digitContext.moveTo(digitWidth, 0);
-        digitContext.lineTo(digitWidth, columnHeight * 1.1);
-        digitContext.stroke();
+        // digitContext.strokeStyle = '#f0f0f0';
+        // digitContext.lineWidth = '1px'; //height * 0.1 + "px";
+        // digitContext.moveTo(0, 0);
+        // digitContext.lineTo(0, columnHeight * 1.1);
+        // digitContext.stroke();
+        // digitContext.strokeStyle = '#202020';
+        // digitContext.moveTo(digitWidth, 0);
+        // digitContext.lineTo(digitWidth, columnHeight * 1.1);
+        // digitContext.stroke();
         // numerals
         digitContext.textAlign = 'center';
         digitContext.textBaseline = 'middle';

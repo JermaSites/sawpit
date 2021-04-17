@@ -14,31 +14,59 @@
 		<script src="odometer.js"></script>
 	</head>
 	<body>
-		<canvas id="odoCanvas" height="50" width="300">No canvas support!</canvas><br/><br/>
+		<canvas id="odoCanvas"></canvas>
+		<canvas id="textureCanvas"></canvas>
 		<script>
-			var n = 25000000;
+			var n = 250000000;
 			var odo;
 			var ctx = document.getElementById('odoCanvas').getContext('2d');
+
+			var height = 200;
+			var digitHeight = Math.floor(height * 0.85);
+    		var stdFont = '600 ' + digitHeight + 'px ' + "Wallpoet";
+
+			var textureCanvas = document.getElementById('textureCanvas');
+			var ctxText = document.getElementById('textureCanvas').getContext('2d');
+			const image = new Image(); // Using optional size for image
+			image.onload = drawImageActualSize; // Draw when image has loaded
+			image.src = 'assets/models/RoomTest/analog.png';
+			function drawImageActualSize() {
+				textureCanvas.width = 2055;
+				textureCanvas.height = 1477;
+				ctxText.drawImage(this, 0, 0, 2055, 1477);
+				ctxText.font = stdFont;
+				ctxText.fillStyle = "red";
+				ctxText.fillText("$", 180, 765);
+				
+				ctxText.font = "135px Wallpoet";
+				ctxText.fillStyle = "lightgreen";
+				ctxText.fillText("Debt Removed", 255, 450);
+				ctxText.fillText("Upon Completion", 185, 550);
+			}
+			
+
+
 			var f = new FontFace('Wallpoet', 'url(https://fonts.gstatic.com/s/wallpoet/v12/f0X10em2_8RnXVVdUObp58Q.woff2)');
     		f.load().then(function(fontasd) {
 				document.fonts.add(fontasd);
 				odo = new odometer(ctx, {
-					height: 100,
-					digits: 8,
+					height: height,
+					digits: 9,
 					decimals: 0,
 					value: n,
 					wobbleFactor: 0,
 					font: "Wallpoet",
-					decimalBackColor: "#150101",
-					valueBackColor: "#010e15"
+					valueBackColor: "black",
+					valueForeColor: "red"
 				});
 				update();
 			});
 			
 			function update() {
-				n -= 208.333333;
+				n -= 208.3333;
 				odo.setValue(n);
-				setTimeout("update()", 16.6);
+				ctxText.drawImage(ctx.canvas, 320, 610);
+				setTimeout("update()", 1.66);
 			}
 		</script>
 	</body>
