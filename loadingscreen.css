@@ -72,6 +72,15 @@ html, body {
     color: red;
 }
 
+#score-display {
+    position: absolute;
+    font-family: 'Ubuntu', sans-serif;
+    color: white;
+    bottom: 0;
+    font-size: 30px;
+    display: none;
+}
+
 #credits {
     position: absolute; 
     bottom: 0; 

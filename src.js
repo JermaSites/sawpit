@@ -400,12 +400,14 @@ var expectedAction;
 var playedAction;
 var playcooldown = false; //this prevents people from getting confused if they start another game immeditly after failing
 var score = 0;
+var bestScore = 0;
 var win = false;
 
 function startGame() {
 	playedAction = false;
 	if(playcooldown == false) {
 		score = 0;
+		document.getElementById("currentscore").innerHTML = "Current Score: " + score;
 		speed = 5;
 		inGame = true;
 		continueGame();
@@ -441,6 +443,11 @@ function continueGame() {
 				if(playedAction != true) {
 					playedAction = false;
 					failSound.play();
+					if(score > bestScore) {
+						bestScore = score;
+						document.getElementById("best-score").innerHTML = "Best Score: " + bestScore;
+					}
+					score = 0;
 					drumLoop.stop();
 					inGame = false;
 					playcooldown = true;
@@ -478,6 +485,7 @@ function playAction(action) {
 			}
 			speed += 0.1;
 			score += 1;
+			document.getElementById("currentscore").innerHTML = "Current Score: " + score;
 			if(score > 24) {
 				drumLoop.stop();
 				music.stop();
@@ -493,6 +501,12 @@ function playAction(action) {
 			}
 			
 		} else {
+			if(score > bestScore) {
+				bestScore = score;
+				document.getElementById("best-score").innerHTML = "Best Score: " + bestScore;
+			}
+			score = 0;
+			document.getElementById("currentscore").innerHTML = "Current Score: " + score;
 			failSound.play();
 			drumLoop.stop();
 			inGame = false;
@@ -950,6 +964,8 @@ offer.onEnded = (function () {
 
 	ctxText.drawImage(logoImage, 100, 45, 250, 150.25);
 	update();
+
+	document.getElementById("score-display").style.display = "revert";
 })
 
 
