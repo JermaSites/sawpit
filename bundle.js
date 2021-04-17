@@ -19738,10 +19738,14 @@ var expectedAction;
 var playedAction;
 var playcooldown = false; //this prevents people from getting confused if they start another game immeditly after failing
 
+var score = 0;
+var win = false;
+
 function startGame() {
   playedAction = false;
 
   if (playcooldown == false) {
+    score = 0;
     speed = 5;
     inGame = true;
     continueGame();
@@ -19822,7 +19826,21 @@ function playAction(action) {
       }
 
       speed += 0.1;
-      continueGame();
+      score += 1;
+
+      if (score > 2) {
+        drumLoop.stop();
+        music.stop();
+        inGame = false;
+        win = true;
+        document.getElementById("winscreen").style.display = "block";
+        document.getElementById("winscreen").style.opacity = 1;
+        setTimeout(() => {
+          partyHorn.play();
+        }, 4000);
+      } else {
+        continueGame();
+      }
     } else {
       failSound.play();
       drumLoop.stop();
@@ -20096,9 +20114,11 @@ function update() {
     ctxText.fillText("Upon Completion", 46.25, 242.5);
   }
 
-  setTimeout(() => {
-    update();
-  }, 1.66);
+  if (win === false) {
+    setTimeout(() => {
+      update();
+    }, 1.66);
+  }
 }
 
 const canvasTexture = new THREE.CanvasTexture(ctxText.canvas);
@@ -20165,12 +20185,33 @@ var introFinished = false;
 const offer = new THREE.PositionalAudio(listener);
 offer.setVolume(15);
 jigsawSounds.add(offer);
-const musicmesh = new THREE.Mesh(sphere, material);
 const music = new THREE.Audio(listener);
 scene.add(music);
 music.setLoop(true);
 audioLoader.load('assets/audio/sawmusic.mp3', function (buffer) {
   music.setBuffer(buffer);
+});
+const partyHorn = new THREE.Audio(listener);
+
+partyHorn.onEnded = function () {
+  jigsawWin.play();
+};
+
+scene.add(partyHorn);
+audioLoader.load('assets/audio/party_horn.mp3', function (buffer) {
+  partyHorn.setBuffer(buffer);
+});
+const jigsawWin = new THREE.Audio(listener);
+jigsawWin.setVolume(1);
+
+jigsawWin.onEnded = function () {
+  document.getElementById("money-tally").innerHTML = "$" + Math.round(n);
+  document.getElementById("wincontainer").style.display = "flex";
+};
+
+scene.add(jigsawWin);
+audioLoader.load('assets/audio/jigsaw/win.mp3', function (buffer) {
+  jigsawWin.setBuffer(buffer);
 });
 
 offer.onEnded = function () {
@@ -20212,7 +20253,7 @@ document.getElementById("testbutton").addEventListener("click", function () {
   monologue.play();
   setTimeout(() => {
     music.play();
-  }, 49000);
+  }, 49000); // }, 49);
 });
 
 const animate = function () {

@@ -38,6 +38,40 @@ html, body {
     opacity: 0;
 }
 
+#winscreen {
+	width: 100%; 
+    height: 100%; 
+    position: absolute; 
+    background: black; 
+    opacity: 0;
+    display:none;
+    transition: 1s opacity;
+}
+
+#wincontainer {
+    display: none;
+    /* display: flex;  */
+    align-items: center; 
+    justify-content: center;
+    width: 100%;
+    height: 100%;
+}
+
+#winText {
+    color: lightgreen;
+    font-size: 7vw;
+    font-family: "Wallpoet", monospace;
+    display: flex; 
+    align-items: center; 
+    justify-content: center;
+    flex-direction: column;
+}
+
+#money-tally {
+    font-size: 1.2em;
+    color: red;
+}
+
 #credits {
     position: absolute; 
     bottom: 0; 
