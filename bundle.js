@@ -19395,7 +19395,18 @@ cameraControls.saveState();
 renderer.outputEncoding = THREE.sRGBEncoding;
 renderer.setSize(window.innerWidth, window.innerHeight);
 document.body.appendChild(renderer.domElement);
-const loader = new _GLTFLoader.GLTFLoader();
+const loadingManager = new THREE.LoadingManager(() => {
+  const loadingScreen = document.getElementById('loading-screen');
+  loadingScreen.classList.add('fade-out'); // optional: remove loader from DOM via event listener
+
+  loadingScreen.addEventListener('transitionend', onTransitionEnd);
+});
+
+function onTransitionEnd(event) {
+  event.target.remove();
+}
+
+const loader = new _GLTFLoader.GLTFLoader(loadingManager);
 var bopitButtonLeftPressed = false;
 var bopitButtonRightPressed = false;
 const bopItGroup = new THREE.Group();
@@ -20141,6 +20152,13 @@ loader.load('assets/models/RoomTest/untitled.gltf', function (gltf) {
 }, undefined, function (error) {
   console.error(error);
 });
+window.addEventListener('resize', onWindowResize, false);
+
+function onWindowResize() {
+  camera.aspect = window.innerWidth / window.innerHeight;
+  camera.updateProjectionMatrix();
+  renderer.setSize(window.innerWidth, window.innerHeight);
+}
 
 const animate = function () {
   objects.forEach(o => {
