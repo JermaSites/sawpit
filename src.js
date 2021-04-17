@@ -772,7 +772,7 @@ logo.onload = function() {
 	logoImage = this;
 }
 
-var f = new FontFace('Wallpoet', 'url(https://fonts.gstatic.com/s/wallpoet/v12/f0X10em2_8RnXVVdUObp58Q.woff2)');
+var f = new FontFace('Wallpoet', 'url(./assets/fonts/wallpoet-v12-latin-regular.woff2)');
 f.load().then(function(fontasd) {
 	document.fonts.add(fontasd);
 });
