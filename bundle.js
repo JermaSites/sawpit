@@ -20105,6 +20105,9 @@ function update() {
 const canvasTexture = new THREE.CanvasTexture(ctxText.canvas);
 canvasTexture.flipY = false;
 canvasTexture.encoding = THREE.sRGBEncoding;
+const video = document.getElementById('video');
+const videoTexture = new THREE.VideoTexture(video);
+videoTexture.flipY = false;
 loader.load('assets/models/RoomTest/untitled.gltf', function (gltf) {
   gltf.castShadow = true;
   gltf.scene.traverse(function (node) {
@@ -20129,6 +20132,7 @@ loader.load('assets/models/RoomTest/untitled.gltf', function (gltf) {
   gltf.scene.getObjectByName("pCube34").castShadow = false;
   gltf.scene.getObjectByName("pCube34").renderOrder = 1;
   gltf.scene.getObjectByName("pCube25").children[0].material.map = canvasTexture;
+  gltf.scene.getObjectByName("pCube28").children[1].material.map = videoTexture;
   gltf.scene.scale.x = 100;
   gltf.scene.scale.y = 100;
   gltf.scene.scale.z = 100;
