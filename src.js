@@ -931,7 +931,7 @@ offer.setVolume(15);
 jigsawSounds.add(offer);
 
 const music = new THREE.Audio(listener);
-music.setVolume(.25);
+music.setVolume(.1);
 scene.add(music);
 music.setLoop(true);
 
