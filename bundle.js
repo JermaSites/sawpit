@@ -19643,21 +19643,21 @@ console.log(bopItGroup);
 const listener = new THREE.AudioListener();
 camera.add(listener);
 const bopItSound = new THREE.PositionalAudio(listener);
-bopItSound.setVolume(15);
+bopItSound.setVolume(10);
 const twistItSound = new THREE.PositionalAudio(listener);
-twistItSound.setVolume(15);
+twistItSound.setVolume(10);
 const pullItSound = new THREE.PositionalAudio(listener);
-pullItSound.setVolume(15);
+pullItSound.setVolume(10);
 const drumLoop = new THREE.PositionalAudio(listener);
-drumLoop.setVolume(5);
+drumLoop.setVolume(2);
 const bopIt_announce = new THREE.PositionalAudio(listener);
-bopIt_announce.setVolume(1);
+bopIt_announce.setVolume(15);
 const twistIt_announce = new THREE.PositionalAudio(listener);
-twistIt_announce.setVolume(1);
+twistIt_announce.setVolume(15);
 const pullIt_announce = new THREE.PositionalAudio(listener);
-pullIt_announce.setVolume(1);
+pullIt_announce.setVolume(15);
 const failSound = new THREE.PositionalAudio(listener);
-failSound.setVolume(1);
+failSound.setVolume(15);
 const audioLoader = new THREE.AudioLoader();
 const sphere = new THREE.SphereGeometry(0.01, 0.01, 0.01);
 const material = new THREE.MeshPhongMaterial({
@@ -19689,25 +19689,27 @@ audioLoader.load('assets/audio/drum_loop.mp3', function (buffer) {
   drumLoop.setLoop(true); // drumLoop.play();
   // console.log(drumLoop);
 });
-audioLoader.load('assets/audio/annoucer/bopit_annouce.mp3', function (buffer) {
+audioLoader.load('assets/audio/jigsaw/bop_it.mp3', function (buffer) {
   bopIt_announce.setBuffer(buffer);
 });
-audioLoader.load('assets/audio/annoucer/twistit_annouce.mp3', function (buffer) {
+audioLoader.load('assets/audio/jigsaw/twist_it.mp3', function (buffer) {
   twistIt_announce.setBuffer(buffer);
 });
-audioLoader.load('assets/audio/annoucer/pullit_annouce.mp3', function (buffer) {
+audioLoader.load('assets/audio/jigsaw/pull_it.mp3', function (buffer) {
   pullIt_announce.setBuffer(buffer);
 });
-audioLoader.load('assets/audio/annoucer/fail.mp3', function (buffer) {
+audioLoader.load('assets/audio/jigsaw/fail.mp3', function (buffer) {
   failSound.setBuffer(buffer);
 });
 var inGame = false;
 
 function boppedit() {
-  if (inGame == false) {
-    startGame();
-  } else {
-    playAction("bopit");
+  if (introFinished === true && failSound.isPlaying === false) {
+    if (inGame == false) {
+      startGame();
+    } else {
+      playAction("bopit");
+    }
   }
 }
 
@@ -19883,7 +19885,8 @@ tvLight02.position.y = 4.16;
 tvLight02.position.z = -2.09;
 tvLight02.rotation.x = 0;
 tvLight02.rotation.y = 1.297;
-tvLight02.rotation.z = 0; // const rectLightHelper = new RectAreaLightHelper( rectLight );
+tvLight02.rotation.z = 0;
+tvLight02.visible = false; // const rectLightHelper = new RectAreaLightHelper( rectLight );
 // rectLight.add( rectLightHelper );
 
 scene.add(tvLight02); // 	// rectLight.position.set( tv.position.x, tv.position.y, tv.position.z );
@@ -20056,41 +20059,26 @@ var ctxText = document.getElementById('texture').getContext('2d');
 const image = new Image(); // Using optional size for image
 
 image.src = 'assets/models/RoomTest/Textures/analog.png';
+var uvMapImage;
 
 image.onload = function () {
   texture.width = 513.75;
   texture.height = 369.25;
-  ctxText.drawImage(this, 0, 0, 513.75, 369.25);
-  ctxText.font = stdFont;
-  ctxText.fillStyle = "red";
-  ctxText.fillText("$", 45, 296.25);
-  ctxText.font = "33.75px Wallpoet";
-  ctxText.fillStyle = "lightgreen";
-  ctxText.fillText("Debt Removed", 63.75, 217.5);
-  ctxText.fillText("Upon Completion", 46.25, 242.5);
-  const logo = new Image(); // Using optional size for image
+  uvMapImage = this;
+};
 
-  logo.src = 'assets/sawpit3.png';
+var logoImage;
+const logo = new Image(); // Using optional size for image
 
-  logo.onload = function () {
-    ctxText.drawImage(this, 100, 45, 250, 150.25);
-  };
+logo.src = 'assets/sawpit3.png';
+
+logo.onload = function () {
+  logoImage = this;
 };
 
 var f = new FontFace('Wallpoet', 'url(https://fonts.gstatic.com/s/wallpoet/v12/f0X10em2_8RnXVVdUObp58Q.woff2)');
 f.load().then(function (fontasd) {
   document.fonts.add(fontasd);
-  odo = new odometer(ctx, {
-    height: height,
-    digits: 9,
-    decimals: 0,
-    value: n,
-    wobbleFactor: 0,
-    font: "Wallpoet",
-    valueBackColor: "black",
-    valueForeColor: "red"
-  });
-  update();
 });
 
 function update() {
@@ -20159,6 +20147,62 @@ function onWindowResize() {
   camera.updateProjectionMatrix();
   renderer.setSize(window.innerWidth, window.innerHeight);
 }
+
+const jigsawSounds = new THREE.Mesh(sphere, material);
+scene.add(jigsawSounds);
+const monologue = new THREE.PositionalAudio(listener);
+monologue.setVolume(15);
+
+monologue.onEnded = function () {
+  offer.play();
+};
+
+jigsawSounds.add(monologue);
+audioLoader.load('assets/audio/jigsaw/monologue.mp3', function (buffer) {
+  monologue.setBuffer(buffer);
+});
+var introFinished = false;
+const offer = new THREE.PositionalAudio(listener);
+offer.setVolume(15);
+jigsawSounds.add(offer);
+
+offer.onEnded = function () {
+  introFinished = true;
+  tvLight02.visible = true;
+  odo = new odometer(ctx, {
+    height: height,
+    digits: 9,
+    decimals: 0,
+    value: n,
+    wobbleFactor: 0,
+    font: "Wallpoet",
+    valueBackColor: "black",
+    valueForeColor: "red"
+  });
+  ctxText.drawImage(uvMapImage, 0, 0, 513.75, 369.25);
+  ctxText.font = stdFont;
+  ctxText.fillStyle = "red";
+  ctxText.fillText("$", 45, 296.25);
+  ctxText.font = "33.75px Wallpoet";
+  ctxText.fillStyle = "lightgreen";
+  ctxText.fillText("Debt Removed", 63.75, 217.5);
+  ctxText.fillText("Upon Completion", 46.25, 242.5);
+  ctxText.drawImage(logoImage, 100, 45, 250, 150.25);
+  update();
+};
+
+audioLoader.load('assets/audio/jigsaw/offer.mp3', function (buffer) {
+  offer.setBuffer(buffer);
+});
+const fail = new THREE.PositionalAudio(listener);
+fail.setVolume(15);
+jigsawSounds.add(fail);
+audioLoader.load('assets/audio/jigsaw/fail.mp3', function (buffer) {
+  fail.setBuffer(buffer);
+});
+document.getElementById("testbutton").addEventListener("click", function () {
+  monologue.play();
+});
 
 const animate = function () {
   objects.forEach(o => {
