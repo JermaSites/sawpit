@@ -485,12 +485,8 @@ function playAction(action) {
 			}
 			speed += 0.1;
 			score += 1;
-<<<<<<< HEAD
 			document.getElementById("currentscore").innerHTML = "Current Score: " + score;
 			if(score > 24) {
-=======
-			if (score > 24) {
->>>>>>> 006d55c488e9b9a812ec11380397c2bac86ac687
 				drumLoop.stop();
 				music.stop();
 				inGame = false;
