@@ -20036,7 +20036,7 @@ fbxLoader.load('assets/models/RoomTest/room.fbx', function (fbx) {
 var n = 250000000;
 var odo;
 var ctx = document.getElementById('odometer').getContext('2d');
-var height = 200;
+var height = 50;
 var digitHeight = Math.floor(height * 0.85);
 var stdFont = '600 ' + digitHeight + 'px ' + "Wallpoet";
 var texture = document.getElementById('texture');
@@ -20048,16 +20048,16 @@ image.onload = drawImageActualSize; // Draw when image has loaded
 image.src = 'assets/models/RoomTest/analog.png';
 
 function drawImageActualSize() {
-  texture.width = 2055;
-  texture.height = 1477;
-  ctxText.drawImage(this, 0, 0, 2055, 1477);
+  texture.width = 513.75;
+  texture.height = 369.25;
+  ctxText.drawImage(this, 0, 0, 513.75, 369.25);
   ctxText.font = stdFont;
   ctxText.fillStyle = "red";
-  ctxText.fillText("$", 180, 765);
-  ctxText.font = "135px Wallpoet";
+  ctxText.fillText("$", 45, 191.25);
+  ctxText.font = "33.75px Wallpoet";
   ctxText.fillStyle = "lightgreen";
-  ctxText.fillText("Debt Removed", 255, 450);
-  ctxText.fillText("Upon Completion", 185, 550);
+  ctxText.fillText("Debt Removed", 63.75, 112.5);
+  ctxText.fillText("Upon Completion", 46.25, 137.5);
 }
 
 var f = new FontFace('Wallpoet', 'url(https://fonts.gstatic.com/s/wallpoet/v12/f0X10em2_8RnXVVdUObp58Q.woff2)');
@@ -20131,7 +20131,7 @@ const animate = function () {
   renderer.shadowMap.type = THREE.PCFSoftShadowMapping; // default THREE.PCFShadowMap
 
   TWEEN.update();
-  ctxText.drawImage(ctx.canvas, 320, 610);
+  ctxText.drawImage(ctx.canvas, 80, 152.5);
   canvasTexture.needsUpdate = true; // canvasTextureJigsaw.needsUpdate = true;
 
   const delta = clock.getDelta();
