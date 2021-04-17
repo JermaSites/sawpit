@@ -739,7 +739,7 @@ var texture = document.getElementById('texture');
 var ctxText = document.getElementById('texture').getContext('2d');
 const image = new Image(); // Using optional size for image
 image.onload = drawImageActualSize; // Draw when image has loaded
-image.src = 'assets/models/RoomTest/analog.png';
+image.src = 'assets/models/RoomTest/Textures/analog.png';
 function drawImageActualSize() {
 	texture.width = 513.75;
 	texture.height = 369.25;
@@ -785,7 +785,7 @@ canvasTexture.flipY = false;
 canvasTexture.encoding = THREE.sRGBEncoding;
 
 
-loader.load( 'assets/models/RoomTest/untitled.glb', function ( gltf ) {
+loader.load( 'assets/models/RoomTest/untitled.gltf', function ( gltf ) {
 	gltf.castShadow = true;
 	gltf.scene.traverse( function( node ) {
         if ( node.isMesh ) { 

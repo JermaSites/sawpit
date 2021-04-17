@@ -20045,7 +20045,7 @@ const image = new Image(); // Using optional size for image
 
 image.onload = drawImageActualSize; // Draw when image has loaded
 
-image.src = 'assets/models/RoomTest/analog.png';
+image.src = 'assets/models/RoomTest/Textures/analog.png';
 
 function drawImageActualSize() {
   texture.width = 513.75;
@@ -20087,7 +20087,7 @@ function update() {
 const canvasTexture = new THREE.CanvasTexture(ctxText.canvas);
 canvasTexture.flipY = false;
 canvasTexture.encoding = THREE.sRGBEncoding;
-loader.load('assets/models/RoomTest/untitled.glb', function (gltf) {
+loader.load('assets/models/RoomTest/untitled.gltf', function (gltf) {
   gltf.castShadow = true;
   gltf.scene.traverse(function (node) {
     if (node.isMesh) {
