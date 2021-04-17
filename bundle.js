@@ -20165,6 +20165,13 @@ var introFinished = false;
 const offer = new THREE.PositionalAudio(listener);
 offer.setVolume(15);
 jigsawSounds.add(offer);
+const musicmesh = new THREE.Mesh(sphere, material);
+const music = new THREE.Audio(listener);
+scene.add(music);
+music.setLoop(true);
+audioLoader.load('assets/audio/sawmusic.mp3', function (buffer) {
+  music.setBuffer(buffer);
+});
 
 offer.onEnded = function () {
   introFinished = true;
@@ -20202,6 +20209,9 @@ audioLoader.load('assets/audio/jigsaw/fail.mp3', function (buffer) {
 });
 document.getElementById("testbutton").addEventListener("click", function () {
   monologue.play();
+  setTimeout(() => {
+    music.play();
+  }, 49000);
 });
 
 const animate = function () {
