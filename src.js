@@ -484,9 +484,9 @@ function continueGame() {
 						playcooldown = false;
 					}, 100);
 				}
-			}, 1000 - (speed - 5) * 10);
+			}, 1000 - (speed - 4.5) * 10);
 		}
-	}, randomIntFromInterval(1200 - (speed - 5) * 100, 2000 - (speed - 5) * 100));
+	}, randomIntFromInterval(1200 - (speed - 4.5) * 100, 2000 - (speed - 4.5) * 100));
 }
 
 function playAction(action) {
@@ -931,6 +931,7 @@ offer.setVolume(15);
 jigsawSounds.add(offer);
 
 const music = new THREE.Audio(listener);
+music.setVolume(.25);
 scene.add(music);
 music.setLoop(true);
 
