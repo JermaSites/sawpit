@@ -20033,6 +20033,60 @@ fbxLoader.load('assets/models/RoomTest/room.fbx', function (fbx) {
 // // lightbulbLight.position.z = 0;
 // scene.add(lightbulbLight);
 
+var n = 250000000;
+var odo;
+var ctx = document.getElementById('odometer').getContext('2d');
+var height = 200;
+var digitHeight = Math.floor(height * 0.85);
+var stdFont = '600 ' + digitHeight + 'px ' + "Wallpoet";
+var texture = document.getElementById('texture');
+var ctxText = document.getElementById('texture').getContext('2d');
+const image = new Image(); // Using optional size for image
+
+image.onload = drawImageActualSize; // Draw when image has loaded
+
+image.src = 'assets/models/RoomTest/analog.png';
+
+function drawImageActualSize() {
+  texture.width = 2055;
+  texture.height = 1477;
+  ctxText.drawImage(this, 0, 0, 2055, 1477);
+  ctxText.font = stdFont;
+  ctxText.fillStyle = "red";
+  ctxText.fillText("$", 180, 765);
+  ctxText.font = "135px Wallpoet";
+  ctxText.fillStyle = "lightgreen";
+  ctxText.fillText("Debt Removed", 255, 450);
+  ctxText.fillText("Upon Completion", 185, 550);
+}
+
+var f = new FontFace('Wallpoet', 'url(https://fonts.gstatic.com/s/wallpoet/v12/f0X10em2_8RnXVVdUObp58Q.woff2)');
+f.load().then(function (fontasd) {
+  document.fonts.add(fontasd);
+  odo = new odometer(ctx, {
+    height: height,
+    digits: 9,
+    decimals: 0,
+    value: n,
+    wobbleFactor: 0,
+    font: "Wallpoet",
+    valueBackColor: "black",
+    valueForeColor: "red"
+  });
+  update();
+});
+
+function update() {
+  n -= 208.3333;
+  odo.setValue(n);
+  setTimeout(() => {
+    update();
+  }, 1.66);
+}
+
+const canvasTexture = new THREE.CanvasTexture(ctxText.canvas);
+canvasTexture.flipY = false;
+canvasTexture.encoding = THREE.sRGBEncoding;
 loader.load('assets/models/RoomTest/untitled.glb', function (gltf) {
   gltf.castShadow = true;
   gltf.scene.traverse(function (node) {
@@ -20056,6 +20110,7 @@ loader.load('assets/models/RoomTest/untitled.glb', function (gltf) {
   gltf.scene.getObjectByName("pCube33").renderOrder = 1;
   gltf.scene.getObjectByName("pCube34").castShadow = false;
   gltf.scene.getObjectByName("pCube34").renderOrder = 1;
+  gltf.scene.getObjectByName("pCube25").children[0].material.map = canvasTexture;
   gltf.scene.scale.x = 100;
   gltf.scene.scale.y = 100;
   gltf.scene.scale.z = 100;
@@ -20075,8 +20130,9 @@ const animate = function () {
   renderer.shadowMap.enabled = true;
   renderer.shadowMap.type = THREE.PCFSoftShadowMapping; // default THREE.PCFShadowMap
 
-  TWEEN.update(); // canvasTexture.needsUpdate = true;
-  // canvasTextureJigsaw.needsUpdate = true;
+  TWEEN.update();
+  ctxText.drawImage(ctx.canvas, 320, 610);
+  canvasTexture.needsUpdate = true; // canvasTextureJigsaw.needsUpdate = true;
 
   const delta = clock.getDelta();
   cameraControls.update(delta);

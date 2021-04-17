@@ -14,25 +14,25 @@
 		<script src="odometer.js"></script>
 	</head>
 	<body>
-		<canvas id="odoCanvas"></canvas>
-		<canvas id="textureCanvas"></canvas>
+		<canvas id="odometer"></canvas>
+		<canvas id="texture"></canvas>
 		<script>
 			var n = 250000000;
 			var odo;
-			var ctx = document.getElementById('odoCanvas').getContext('2d');
+			var ctx = document.getElementById('odometer').getContext('2d');
 
 			var height = 200;
 			var digitHeight = Math.floor(height * 0.85);
     		var stdFont = '600 ' + digitHeight + 'px ' + "Wallpoet";
 
-			var textureCanvas = document.getElementById('textureCanvas');
-			var ctxText = document.getElementById('textureCanvas').getContext('2d');
+			var texture = document.getElementById('texture');
+			var ctxText = document.getElementById('texture').getContext('2d');
 			const image = new Image(); // Using optional size for image
 			image.onload = drawImageActualSize; // Draw when image has loaded
 			image.src = 'assets/models/RoomTest/analog.png';
 			function drawImageActualSize() {
-				textureCanvas.width = 2055;
-				textureCanvas.height = 1477;
+				texture.width = 2055;
+				texture.height = 1477;
 				ctxText.drawImage(this, 0, 0, 2055, 1477);
 				ctxText.font = stdFont;
 				ctxText.fillStyle = "red";
