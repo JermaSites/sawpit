@@ -478,7 +478,7 @@ function playAction(action) {
 			}
 			speed += 0.1;
 			score += 1;
-			if(score > 2) {
+			if(score > 24) {
 				drumLoop.stop();
 				music.stop();
 				inGame = false;
