@@ -20208,6 +20208,7 @@ audioLoader.load('assets/audio/jigsaw/fail.mp3', function (buffer) {
   fail.setBuffer(buffer);
 });
 document.getElementById("testbutton").addEventListener("click", function () {
+  document.getElementById("introscreen").classList.add('fade-out');
   monologue.play();
   setTimeout(() => {
     music.play();

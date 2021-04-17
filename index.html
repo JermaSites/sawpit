@@ -5,6 +5,8 @@
 		<title>jigsaws saw pit</title>
 		<link href="./assets/fonts/wallpoet-v12-latin-regular.woff2" rel="stylesheet"> 
 		<link href="loadingscreen.css" rel="stylesheet"> 
+		<link rel="preconnect" href="https://fonts.gstatic.com">
+		<link href="https://fonts.googleapis.com/css2?family=Ubuntu&display=swap" rel="stylesheet"> 
 		<style>
 			body { margin: 0; }
 		</style>
@@ -13,7 +15,23 @@
 		<section id="loading-screen">
 			<div id="loader"></div>
 		</section>
-		<input type="button" id="testbutton" onclick="startIntro()" style="position: absolute;"/>
+		<div id="introscreen">
+			<button id="testbutton" style="position: absolute;">
+				click to wake up
+			</button>
+
+			<div id="credits">
+				<div>stick (<a href="https://twitter.com/stick_twt">@stick_twt</a>) - Programming</div>
+				<div><a href="https://www.deviantart.com/thomthommo/">ThormThommo</a> - Modeling</div>
+				<div><a href="https://www.instagram.com/blinkence_art/">Blinkence</a> - Textures</div>
+				<div><a href="https://github.com/s-crypt">s-crypt</a> - Voice</div>
+				<div><a href="https://github.com/JermaSites/jigsaws-bopit">GitHub</a></div>
+			</div>
+			
+			<div style="bottom: 0; right: 0; font-family: 'Ubuntu', sans-serif; font-size: 15px; position: absolute; color: white">
+				<img alt='TransgenderPride' title='TransgenderPride' class='twitch-emote twitch-emote-0' src='https://static-cdn.jtvnw.net/emoticons/v1/1064995/1.0'>&nbsp;trans rights baybee&nbsp;<img alt='TransgenderPride' title='TransgenderPride' class='twitch-emote twitch-emote-0' src='https://static-cdn.jtvnw.net/emoticons/v1/1064995/1.0'>
+			</div>
+		</div>
 		<canvas id="odometer" style="display: none;"></canvas>
 		<canvas id="texture" style="display: none;"></canvas>
 		<video id="video" autoplay controls muted loop src="assets/jigsaw_animation.mp4" style="display: none;"></video>
