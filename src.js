@@ -12,50 +12,50 @@ import { RectAreaLightUniformsLib } from 'three/examples/jsm/lights/RectAreaLigh
 import { RectAreaLightHelper } from 'three/examples/jsm/helpers/RectAreaLightHelper.js';
 RectAreaLightUniformsLib.init();
 import CameraControls from './camera-controls';
-CameraControls.install( { THREE: THREE } );
+CameraControls.install({ THREE: THREE });
 const TWEEN = require('@tweenjs/tween.js')
 
 
 const scene = new THREE.Scene();
-const camera = new THREE.PerspectiveCamera( 75, window.innerWidth / window.innerHeight, 0.1, 1000 );
+const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
 const renderer = new THREE.WebGLRenderer();
 const interaction = new Interaction(renderer, scene, camera);
 // const controls = new OrbitControls(camera, renderer.domElement);
 const clock = new THREE.Clock();
 const EPS = 1e-5;
 // in order to archive FPS look, set EPSILON for the distance to the center
-camera.position.set( 0, 0, EPS );
+camera.position.set(0, 0, EPS);
 // renderer.setSize( width, height );
 // document.body.appendChild( renderer.domElement );
 
-const cameraControls = new CameraControls( camera, renderer.domElement );
+const cameraControls = new CameraControls(camera, renderer.domElement);
 // const flyControls = new FlyControls( camera, renderer.domElement );
 
 // cameraControls.maxDistance = EPS;
 cameraControls.azimuthRotateSpeed = - 0.3; // negative value to invert rotation direction
-cameraControls.polarRotateSpeed   = - 0.3; // negative value to invert rotation direction
+cameraControls.polarRotateSpeed = - 0.3; // negative value to invert rotation direction
 cameraControls.mouseButtons.right = CameraControls.ACTION.NONE;
 cameraControls.touches.two = CameraControls.ACTION.TOUCH_ZOOM_TRUCK;
 cameraControls.saveState();
 
 
 renderer.outputEncoding = THREE.sRGBEncoding;
-renderer.setSize( window.innerWidth, window.innerHeight );
-document.body.appendChild( renderer.domElement );
+renderer.setSize(window.innerWidth, window.innerHeight);
+document.body.appendChild(renderer.domElement);
 
-const loadingManager = new THREE.LoadingManager( () => {	
-	const loadingScreen = document.getElementById( 'loading-screen' );
-	loadingScreen.classList.add( 'fade-out' );
+const loadingManager = new THREE.LoadingManager(() => {
+	const loadingScreen = document.getElementById('loading-screen');
+	loadingScreen.classList.add('fade-out');
 
 	// optional: remove loader from DOM via event listener
-	loadingScreen.addEventListener( 'transitionend', onTransitionEnd );
-	
-} );
+	loadingScreen.addEventListener('transitionend', onTransitionEnd);
 
-function onTransitionEnd( event ) {
+});
+
+function onTransitionEnd(event) {
 
 	event.target.remove();
-	
+
 }
 
 const loader = new GLTFLoader(loadingManager);
@@ -64,14 +64,14 @@ var bopitButtonRightPressed = false;
 
 const bopItGroup = new THREE.Group();
 
-loader.load( 'assets/models/bopitButtonLeft.glb', function ( gltf ) {
+loader.load('assets/models/bopitButtonLeft.glb', function (gltf) {
 	var bopitButtonLeft = gltf.scene.children[0];
-	bopitButtonLeft.castShadow = true; 
-	bopitButtonLeft.receiveShadow = true; 
-	scene.add( gltf.scene );
+	bopitButtonLeft.castShadow = true;
+	bopitButtonLeft.receiveShadow = true;
+	scene.add(gltf.scene);
 	bopitButtonLeft.cursor = 'pointer';
-	bopitButtonLeft.on('click', function(ev) {
-		if(bopitButtonLeftPressed != true) {
+	bopitButtonLeft.on('click', function (ev) {
+		if (bopitButtonLeftPressed != true) {
 			boppedit();
 			bopitButtonLeft.position.z += 0.01;
 			bopitButtonLeftPressed = true;
@@ -81,26 +81,26 @@ loader.load( 'assets/models/bopitButtonLeft.glb', function ( gltf ) {
 			}, 300);
 		}
 	});
-	bopitButtonLeft.on('mouseDown', function(ev) {
+	bopitButtonLeft.on('mouseDown', function (ev) {
 		cameraControls.enabled = false;
-	});	
-	bopitButtonLeft.on('mouseUp', function(ev) {
+	});
+	bopitButtonLeft.on('mouseUp', function (ev) {
 		cameraControls.enabled = true;
 	});
 	bopItGroup.add(bopitButtonLeft);
 
-}, undefined, function ( error ) {
-	console.error( error );
-} );
+}, undefined, function (error) {
+	console.error(error);
+});
 
-loader.load( 'assets/models/bopitButtonRight.glb', function ( gltf ) {
+loader.load('assets/models/bopitButtonRight.glb', function (gltf) {
 	var bopitButtonRight = gltf.scene.children[0];
-	bopitButtonRight.castShadow = true; 
-	bopitButtonRight.receiveShadow = true; 
-	scene.add( gltf.scene );
+	bopitButtonRight.castShadow = true;
+	bopitButtonRight.receiveShadow = true;
+	scene.add(gltf.scene);
 	bopitButtonRight.cursor = 'pointer';
-	bopitButtonRight.on('click', function(ev) {
-		if(bopitButtonRightPressed != true) {
+	bopitButtonRight.on('click', function (ev) {
+		if (bopitButtonRightPressed != true) {
 			boppedit();
 			bopitButtonRight.position.z -= 0.01;
 			bopitButtonRightPressed = true;
@@ -109,67 +109,67 @@ loader.load( 'assets/models/bopitButtonRight.glb', function ( gltf ) {
 				bopitButtonRightPressed = false;
 			}, 300);
 		}
-	});	
-	bopitButtonRight.on('mouseDown', function(ev) {
+	});
+	bopitButtonRight.on('mouseDown', function (ev) {
 		cameraControls.enabled = false;
-	});	
-	bopitButtonRight.on('mouseUp', function(ev) {
+	});
+	bopitButtonRight.on('mouseUp', function (ev) {
 		cameraControls.enabled = true;
 	});
 	bopItGroup.add(bopitButtonRight);
 
-}, undefined, function ( error ) {
-	console.error( error );
-} );
+}, undefined, function (error) {
+	console.error(error);
+});
 
-loader.load( 'assets/models/main.glb', function ( gltf ) {
-	scene.add( gltf.scene );
+loader.load('assets/models/main.glb', function (gltf) {
+	scene.add(gltf.scene);
 	var main = gltf.scene.children[0];
-	main.castShadow = true; 
-	main.receiveShadow = true; 
+	main.castShadow = true;
+	main.receiveShadow = true;
 	bopItGroup.add(main);
-}, undefined, function ( error ) {
-	console.error( error );
-} );
+}, undefined, function (error) {
+	console.error(error);
+});
 
 const objects = [];
 // const dragControls = new DragControls( objects, camera, document.getElementById("testingbullshit") );
 //replaced dragcontrols with an alternative libary due to incompatibility with first person camera stuff
 const mouseDragger = new ThreeDragger(objects, camera, renderer.domElement);
 
-loader.load( 'assets/models/pullIt.glb', function ( gltf ) {
+loader.load('assets/models/pullIt.glb', function (gltf) {
 	var pullIt = gltf.scene.children[0];
-	pullIt.castShadow = true; 
-	pullIt.receiveShadow = true; 
+	pullIt.castShadow = true;
+	pullIt.receiveShadow = true;
 	var isTweened = false;
-	scene.add( gltf.scene );
+	scene.add(gltf.scene);
 	pullIt.cursor = 'pointer';
 
-	pullIt.on('mouseover', function(){ //for some reason putting a cursor on this object requires an event to be put on it even tho it doesen't do anything
+	pullIt.on('mouseover', function () { //for some reason putting a cursor on this object requires an event to be put on it even tho it doesen't do anything
 	});	//im guessing its because three.js.interact needs some sort of "hook" to be added? idfk
 
 	pullIt.userData.limit = {
 		min: new THREE.Vector3(-0.08, -0.16302920877933502, 0.08229061961174011),
-	  	max: new THREE.Vector3(0, -0.16302920877933502, 0.08229061961174011)
+		max: new THREE.Vector3(0, -0.16302920877933502, 0.08229061961174011)
 	};
-	pullIt.userData.update = function(){
+	pullIt.userData.update = function () {
 		pullIt.position.clamp(pullIt.userData.limit.min, pullIt.userData.limit.max);
-		if(pullIt.position.x < -0.075 && isTweened == false) {
+		if (pullIt.position.x < -0.075 && isTweened == false) {
 			isTweened = true;
 			pulledIt();
 		}
 	}
 	objects.push(pullIt);
-	mouseDragger.on( 'dragstart', function ( event ) {
+	mouseDragger.on('dragstart', function (event) {
 		cameraControls.enabled = false;
 	});
-	mouseDragger.on( 'dragend', function ( event ) {
+	mouseDragger.on('dragend', function (event) {
 		cameraControls.enabled = true;
 		pullIt.position.clamp(pullIt.userData.limit.min, pullIt.userData.limit.max);
-		var position = { x : pullIt.position.x };
-		var target = { x : 0 };
+		var position = { x: pullIt.position.x };
+		var target = { x: 0 };
 		var tween = new TWEEN.Tween(position).to(target, 250);
-		tween.onUpdate(function(){
+		tween.onUpdate(function () {
 			pullIt.position.clamp(pullIt.userData.limit.min, pullIt.userData.limit.max);
 			pullIt.position.x = position.x;
 		});
@@ -186,34 +186,34 @@ loader.load( 'assets/models/pullIt.glb', function ( gltf ) {
 
 	mouseDragger.on('drag', function (data) {
 		const { target, position } = data;
-		
+
 		target.position.set(-Math.abs(position.x), position.y, position.z);
 	});
 	bopItGroup.add(pullIt);
 
-}, undefined, function ( error ) {
-	console.error( error );
-} );
+}, undefined, function (error) {
+	console.error(error);
+});
 
 var dragRotate = false;
 
-loader.load( 'assets/models/twistIt_newOrigin.glb', function ( gltf ) {
+loader.load('assets/models/twistIt_newOrigin.glb', function (gltf) {
 	console.log(gltf.scene.children[0]);
 	var twistIt = gltf.scene.children[0];
-	twistIt.castShadow = true; 
-	twistIt.receiveShadow = true; 
+	twistIt.castShadow = true;
+	twistIt.receiveShadow = true;
 	twistIt.rotation.x = 0;
 	twistIt.cursor = 'grab';
-	twistIt.on('mouseover', function(ev) {
+	twistIt.on('mouseover', function (ev) {
 		cameraControls.enabled = false;
-	});	
-	twistIt.on('mouseout', function(ev) {
+	});
+	twistIt.on('mouseout', function (ev) {
 		cameraControls.enabled = true;
-	});	
-	twistIt.on('mousedown', function(ev) {
+	});
+	twistIt.on('mousedown', function (ev) {
 		dragRotate = true;
 		console.log(`dragrotate = ${dragRotate}`)
-	});	
+	});
 	var previousMousePosition = {
 		x: 0,
 		y: 0
@@ -221,14 +221,14 @@ loader.load( 'assets/models/twistIt_newOrigin.glb', function ( gltf ) {
 	console.log(renderer.domElement)
 	twistIt.userData.rotationNess = 0;
 	renderer.domElement.addEventListener('pointermove', function (e) {
-		if(e.buttons == 1 && dragRotate == true) {
+		if (e.buttons == 1 && dragRotate == true) {
 			renderer.domElement.style.cursor = "grabbing";
 			var deltaMove = {
-				y: e.offsetY-previousMousePosition.y
+				y: e.offsetY - previousMousePosition.y
 			};
 			twistIt.rotation.x += deltaMove.y * 0.05;
 			twistIt.userData.rotationNess += deltaMove.y * 0.05;
-			if(twistIt.userData.rotationNess > 15 || twistIt.userData.rotationNess < -15) {
+			if (twistIt.userData.rotationNess > 15 || twistIt.userData.rotationNess < -15) {
 				twistIt.userData.rotationNess = 0;
 				dragRotate = false;
 				renderer.domElement.style.cursor = "default";
@@ -242,34 +242,34 @@ loader.load( 'assets/models/twistIt_newOrigin.glb', function ( gltf ) {
 		};
 	});
 
-	document.addEventListener('click', function() { //I HAVE LITERALLY NO IDEA WHY I CANT JUST ADD THIS EVENT TO RENDER.DOMELEMENT AAAAAAAAAAAAAAAAAAA
-		if(dragRotate == true) {
+	document.addEventListener('click', function () { //I HAVE LITERALLY NO IDEA WHY I CANT JUST ADD THIS EVENT TO RENDER.DOMELEMENT AAAAAAAAAAAAAAAAAAA
+		if (dragRotate == true) {
 			dragRotate = false;
 			console.log(twistIt.userData.rotationNess);
 			renderer.domElement.style.cursor = "default";
-			var rotation = { x : twistIt.userData.rotationNess};
-			var target = { x : 0 };
+			var rotation = { x: twistIt.userData.rotationNess };
+			var target = { x: 0 };
 			var tween = new TWEEN.Tween(rotation).to(target, 250);
-			if(twistIt.userData.rotationNess > 5 || twistIt.userData.rotationNess < -5) {
+			if (twistIt.userData.rotationNess > 5 || twistIt.userData.rotationNess < -5) {
 				twistedIt();
 			}
-			tween.onUpdate(function(){
+			tween.onUpdate(function () {
 				twistIt.rotation.x = rotation.x;
 			});
-			tween.onComplete(function() {
+			tween.onComplete(function () {
 				console.log("hello");
 				twistIt.userData.rotationNess = 0;
 			});
 			tween.start();
 		}
-	}, false);	
+	}, false);
 
-	scene.add( gltf.scene );
+	scene.add(gltf.scene);
 	bopItGroup.add(twistIt);
-	
-}, undefined, function ( error ) {
-	console.error( error );
-} );
+
+}, undefined, function (error) {
+	console.error(error);
+});
 
 // bopItGroup.scale.x = 0.3;
 // bopItGroup.scale.y = 0.3;
@@ -296,81 +296,81 @@ scene.add(bopItGroup);
 console.log(bopItGroup);
 
 const listener = new THREE.AudioListener();
-camera.add( listener );
-const bopItSound = new THREE.PositionalAudio( listener );
-bopItSound.setVolume( 10 );
-const twistItSound = new THREE.PositionalAudio( listener );
-twistItSound.setVolume( 10 );
-const pullItSound = new THREE.PositionalAudio( listener );
-pullItSound.setVolume( 10 );
-const drumLoop = new THREE.PositionalAudio( listener );
-drumLoop.setVolume( 2 );
-const bopIt_announce = new THREE.PositionalAudio( listener );
-bopIt_announce.setVolume( 15 );
-const twistIt_announce = new THREE.PositionalAudio( listener );
-twistIt_announce.setVolume( 15 );
-const pullIt_announce = new THREE.PositionalAudio( listener );
-pullIt_announce.setVolume( 15 );
-const failSound = new THREE.PositionalAudio( listener );
-failSound.setVolume( 15 );
+camera.add(listener);
+const bopItSound = new THREE.PositionalAudio(listener);
+bopItSound.setVolume(10);
+const twistItSound = new THREE.PositionalAudio(listener);
+twistItSound.setVolume(10);
+const pullItSound = new THREE.PositionalAudio(listener);
+pullItSound.setVolume(10);
+const drumLoop = new THREE.PositionalAudio(listener);
+drumLoop.setVolume(2);
+const bopIt_announce = new THREE.PositionalAudio(listener);
+bopIt_announce.setVolume(15);
+const twistIt_announce = new THREE.PositionalAudio(listener);
+twistIt_announce.setVolume(15);
+const pullIt_announce = new THREE.PositionalAudio(listener);
+pullIt_announce.setVolume(15);
+const failSound = new THREE.PositionalAudio(listener);
+failSound.setVolume(15);
 const audioLoader = new THREE.AudioLoader();
 
-const sphere = new THREE.SphereGeometry( 0.01, 0.01, 0.01 );
-const material = new THREE.MeshPhongMaterial( { color: 0xff2200 } );
-const mesh = new THREE.Mesh( sphere, material );
-scene.add( mesh );
-mesh.add( bopIt_announce );
-mesh.add( twistIt_announce );
-mesh.add( pullIt_announce );
-mesh.add( failSound );
+const sphere = new THREE.SphereGeometry(0.01, 0.01, 0.01);
+const material = new THREE.MeshPhongMaterial({ color: 0xff2200 });
+const mesh = new THREE.Mesh(sphere, material);
+scene.add(mesh);
+mesh.add(bopIt_announce);
+mesh.add(twistIt_announce);
+mesh.add(pullIt_announce);
+mesh.add(failSound);
 
 // const mesh2 = new THREE.Mesh( sphere, material );
 // scene.add( mesh2 );
-mesh.add( drumLoop );
-mesh.add( bopItSound );
-mesh.add( twistItSound );
-mesh.add( pullItSound );
+mesh.add(drumLoop);
+mesh.add(bopItSound);
+mesh.add(twistItSound);
+mesh.add(pullItSound);
 
-audioLoader.load( 'assets/audio/Bop_R.wav', function( buffer ) {
-	bopItSound.setBuffer( buffer );
+audioLoader.load('assets/audio/Bop_R.wav', function (buffer) {
+	bopItSound.setBuffer(buffer);
 });
 
-audioLoader.load( 'assets/audio/Twist_R.wav', function( buffer ) {
-	twistItSound.setBuffer( buffer );
+audioLoader.load('assets/audio/Twist_R.wav', function (buffer) {
+	twistItSound.setBuffer(buffer);
 });
 
-audioLoader.load( 'assets/audio/Pull_R.wav', function( buffer ) {
-	pullItSound.setBuffer( buffer );
+audioLoader.load('assets/audio/Pull_R.wav', function (buffer) {
+	pullItSound.setBuffer(buffer);
 });
 
-audioLoader.load( 'assets/audio/drum_loop.mp3', function( buffer ) {
-	drumLoop.setBuffer( buffer );
-	drumLoop.setLoop( true );
+audioLoader.load('assets/audio/drum_loop.mp3', function (buffer) {
+	drumLoop.setBuffer(buffer);
+	drumLoop.setLoop(true);
 	// drumLoop.play();
 	// console.log(drumLoop);
 });
 
-audioLoader.load( 'assets/audio/jigsaw/bop_it.mp3', function( buffer ) {
-	bopIt_announce.setBuffer( buffer );
+audioLoader.load('assets/audio/jigsaw/bop_it.mp3', function (buffer) {
+	bopIt_announce.setBuffer(buffer);
 });
 
-audioLoader.load( 'assets/audio/jigsaw/twist_it.mp3', function( buffer ) {
-	twistIt_announce.setBuffer( buffer );
+audioLoader.load('assets/audio/jigsaw/twist_it.mp3', function (buffer) {
+	twistIt_announce.setBuffer(buffer);
 });
 
-audioLoader.load( 'assets/audio/jigsaw/pull_it.mp3', function( buffer ) {
-	pullIt_announce.setBuffer( buffer );
+audioLoader.load('assets/audio/jigsaw/pull_it.mp3', function (buffer) {
+	pullIt_announce.setBuffer(buffer);
 });
 
-audioLoader.load( 'assets/audio/jigsaw/fail.mp3', function( buffer ) {
-	failSound.setBuffer( buffer );
+audioLoader.load('assets/audio/jigsaw/fail.mp3', function (buffer) {
+	failSound.setBuffer(buffer);
 });
 
 var inGame = false;
 
 function boppedit() {
-	if(introFinished === true && failSound.isPlaying === false) {
-		if(inGame == false) {
+	if (introFinished === true && failSound.isPlaying === false) {
+		if (inGame == false) {
 			startGame();
 		} else {
 			playAction("bopit");
@@ -379,14 +379,14 @@ function boppedit() {
 }
 
 function twistedIt() {
-	if(inGame == true) {
+	if (inGame == true) {
 		playAction("twistit");
 	}
 	// console.log("TWIST5ED ASDJHKGADKJAWDLAWKJ")
 }
 
 function pulledIt() {
-	if(inGame == true) {
+	if (inGame == true) {
 		playAction("pullit");
 	}
 	console.log("TWIST5ED ASDJHKGADKJAWDLAWKJ");
@@ -404,7 +404,7 @@ var win = false;
 
 function startGame() {
 	playedAction = false;
-	if(playcooldown == false) {
+	if (playcooldown == false) {
 		score = 0;
 		speed = 5;
 		inGame = true;
@@ -415,30 +415,30 @@ function startGame() {
 function continueGame() {
 	console.log("Speed is ", speed);
 	expectedAction = null;
-	drumLoop.setPlaybackRate((speed - 3)/3);
+	drumLoop.setPlaybackRate((speed - 3) / 3);
 	drumLoop.play();
 	setTimeout(() => {
-		if(inGame == true) {
+		if (inGame == true) {
 			drumLoop.pause();
 			switch (randomIntFromInterval(0, 2)) {
 				case 0:
 					bopIt_announce.play();
 					expectedAction = "bopit";
-					break;				
+					break;
 				case 1:
 					twistIt_announce.play();
 					expectedAction = "twistit";
-					break;				
+					break;
 				case 2:
 					pullIt_announce.play();
 					expectedAction = "pullit";
 					break;
-			
+
 				default:
 					throw new Error("Invalid action generated!!");
 			}
 			setTimeout(() => {
-				if(playedAction != true) {
+				if (playedAction != true) {
 					playedAction = false;
 					failSound.play();
 					drumLoop.stop();
@@ -460,16 +460,16 @@ function continueGame() {
 }
 
 function playAction(action) {
-	if(playcooldown == false) {
+	if (playcooldown == false) {
 		playedAction = true;
-		if(expectedAction == action) {
+		if (expectedAction == action) {
 			switch (action) {
 				case "bopit":
 					bopItSound.play();
-					break;			
+					break;
 				case "twistit":
 					twistItSound.play();
-					break;			
+					break;
 				case "pullit":
 					pullItSound.play();
 					break;
@@ -478,20 +478,20 @@ function playAction(action) {
 			}
 			speed += 0.1;
 			score += 1;
-			if(score > 24) {
+			if (score > 24) {
 				drumLoop.stop();
 				music.stop();
 				inGame = false;
 				win = true;
 				document.getElementById("winscreen").style.display = "block";
-				document.getElementById("winscreen").style.opacity = 1; 
+				document.getElementById("winscreen").style.opacity = 1;
 				setTimeout(() => {
 					partyHorn.play();
 				}, 4000);
 			} else {
 				continueGame();
 			}
-			
+
 		} else {
 			failSound.play();
 			drumLoop.stop();
@@ -527,7 +527,7 @@ console.log(cameraControls);
 // 	console.log(tv);
 // 	console.log(tv.material);
 
-const ipadLight = new THREE.RectAreaLight( 0xffffff );
+const ipadLight = new THREE.RectAreaLight(0xffffff);
 ipadLight.width = 1.01;
 ipadLight.height = 1.01;
 ipadLight.intensity = 0.24;
@@ -543,7 +543,7 @@ ipadLight.rotation.z = 3.3;
 // ipadLight.add( rectLightHelper );
 scene.add(ipadLight);
 
-const tvLight01 = new THREE.RectAreaLight( 0xffffff );
+const tvLight01 = new THREE.RectAreaLight(0xffffff);
 tvLight01.width = 1.6;
 tvLight01.height = 1.61;
 tvLight01.position.x = 2.86;
@@ -557,7 +557,7 @@ tvLight01.rotation.z = 3.141;
 // tvLight01.add( rectLightHelper );
 scene.add(tvLight01);
 
-const tvLight02 = new THREE.RectAreaLight( 0xffffff );
+const tvLight02 = new THREE.RectAreaLight(0xffffff);
 tvLight02.width = 1.89;
 tvLight02.height = 1.35;
 tvLight02.position.x = 3.1;
@@ -571,10 +571,10 @@ tvLight02.visible = false;
 // const rectLightHelper = new RectAreaLightHelper( rectLight );
 // rectLight.add( rectLightHelper );
 scene.add(tvLight02);
-	
+
 
 // 	// rectLight.position.set( tv.position.x, tv.position.y, tv.position.z );
-	
+
 // 	// rectLight.lookAt( tv.position );
 // 	console.log(rectLight);
 // 	rectLight.position.y = 1.05;
@@ -613,10 +613,10 @@ scene.add(tvLight02);
 // 	const rectLight = new THREE.RectAreaLight( 0xffffff, 1.0, 2.3, 1.9 );
 // 	const rectLightHelper = new RectAreaLightHelper( rectLight );
 // 	rectLight.add( rectLightHelper );
-	
+
 
 // 	// rectLight.position.set( tv.position.x, tv.position.y, tv.position.z );
-	
+
 // 	// rectLight.lookAt( tv.position );
 // 	console.log(rectLight);
 // 	rectLight.position.y = 1.05;
@@ -671,20 +671,20 @@ scene.add(tvLight02);
 // 	table.position.x = -1;
 // 	table.position.z = -2.25;
 
-	// const spotLight = new THREE.SpotLight( 0xffffff );
-	// spotLight.target.position.y = -6;
-	// spotLight.target.position.x = -1;
-	// spotLight.target.position.z = -2.25;
-	// spotLight.position.z = 9.75;
-	// spotLight.position.y = 2;
-	// spotLight.angle = 0.7471975511965978;
-	// spotLight.penumbra = 1;
-	// spotLight.intensity = 0.25;
-	// scene.add( spotLight );
-	// console.log(spotLight);
+// const spotLight = new THREE.SpotLight( 0xffffff );
+// spotLight.target.position.y = -6;
+// spotLight.target.position.x = -1;
+// spotLight.target.position.z = -2.25;
+// spotLight.position.z = 9.75;
+// spotLight.position.y = 2;
+// spotLight.angle = 0.7471975511965978;
+// spotLight.penumbra = 1;
+// spotLight.intensity = 0.25;
+// scene.add( spotLight );
+// console.log(spotLight);
 
-	// const spotLightHelper = new THREE.SpotLightHelper( spotLight );
-	// scene.add( spotLightHelper );
+// const spotLightHelper = new THREE.SpotLightHelper( spotLight );
+// scene.add( spotLightHelper );
 
 // }, undefined, function ( error ) {
 // 	console.error( error );
@@ -699,14 +699,14 @@ scene.add(tvLight02);
 // scene.add( cube );
 
 var fbxLoader = new FBXLoader();
-fbxLoader.load( 'assets/models/RoomTest/room.fbx', function ( fbx ) {
-	fbx.traverse( function( node ) { 
-		if ( node instanceof THREE.PointLight ) { 
+fbxLoader.load('assets/models/RoomTest/room.fbx', function (fbx) {
+	fbx.traverse(function (node) {
+		if (node instanceof THREE.PointLight) {
 			node.castShadow = true;
 			node.shadow.mapSize.width = 2048;
 			node.shadow.mapSize.height = 2048;
 			node.shadow.bias = -0.0001;
-			if(node.name == "pointLight1") {
+			if (node.name == "pointLight1") {
 				node.intensity = 0.482;
 				node.position.x = 8;
 				node.power = 1;
@@ -724,28 +724,28 @@ fbxLoader.load( 'assets/models/RoomTest/room.fbx', function ( fbx ) {
 			// node.shadow.camera.zoom = 1;
 			// console.log(node.shadow.camera);
 			// scene.add(cameraHelper);
-			scene.add(node); 
-		} 
+			scene.add(node);
+		}
 		// if ( node.isMesh ) { 
 		// 	console.log(node);
 		// 	node.castShadow = true; 
 		// 	node.receiveShadow = true; 
 		// 	// var prevMaterial = node.material;
 		// 	// node.material = new THREE.MeshPhongMaterial();
-			  
+
 		// 	// THREE.MeshBasicMaterial.prototype.copy.call( node.material, prevMaterial );
 		// 	// // node.material = material;
 		// }
-	} );
+	});
 	// fbx.castShadow = true;
 	// fbx.receiveShadow = true;
 	// scene.add(fbx);
 	// console.log(fbx);
 	// var main = fbx.scene.children[0];
 	// bopItGroup.add(main);
-}, undefined, function ( error ) {
-	console.error( error );
-} );
+}, undefined, function (error) {
+	console.error(error);
+});
 
 // var lightbulbLight = new THREE.SpotLight(0xffffff, 4, 13, 0.7, 1, 1)
 // lightbulbLight.power = 4;
@@ -785,144 +785,144 @@ image.onload = function () {
 var logoImage;
 const logo = new Image(); // Using optional size for image
 logo.src = 'assets/sawpit3.png';
-logo.onload = function() {
+logo.onload = function () {
 	logoImage = this;
 }
 
 var f = new FontFace('Wallpoet', 'url(./assets/fonts/wallpoet-v12-latin-regular.woff2)');
-f.load().then(function(fontasd) {
+f.load().then(function (fontasd) {
 	document.fonts.add(fontasd);
 });
 
 function update() {
 	n -= 2083.333;
-	if(n > 0) {
+	if (n > 0) {
 		odo.setValue(n);
 	} else {
 		odo.setValue(Math.abs(n));
 		ctxText.font = "33.75px Wallpoet";
 		ctxText.fillStyle = 'black';
-		ctxText.fillRect(50, 180, 300, 50); 
+		ctxText.fillRect(50, 180, 300, 50);
 		ctxText.fillStyle = "red";
 		ctxText.fillText("Debt Added", 100, 217.5);
 		ctxText.fillText("Upon Completion", 46.25, 242.5);
 	}
-	if(win === false) {
+	if (win === false) {
 		setTimeout(() => {
 			update();
 		}, 1.66);
 	}
-}	
+}
 
 const canvasTexture = new THREE.CanvasTexture(ctxText.canvas);
 canvasTexture.flipY = false;
 canvasTexture.encoding = THREE.sRGBEncoding;
 
-const video = document.getElementById( 'video' );
-const videoTexture = new THREE.VideoTexture( video );
+const video = document.getElementById('video');
+const videoTexture = new THREE.VideoTexture(video);
 videoTexture.flipY = false;
 
-loader.load( 'assets/models/RoomTest/untitled.gltf', function ( gltf ) {
+loader.load('assets/models/RoomTest/untitled.gltf', function (gltf) {
 	gltf.castShadow = true;
-	gltf.scene.traverse( function( node ) {
-        if ( node.isMesh ) { 
+	gltf.scene.traverse(function (node) {
+		if (node.isMesh) {
 			console.log(node);
-			node.castShadow = true; 
-			node.receiveShadow = true; 
+			node.castShadow = true;
+			node.receiveShadow = true;
 			// var prevMaterial = node.material;
 			// node.material = new THREE.MeshPhongMaterial();
-			  
+
 			// THREE.MeshBasicMaterial.prototype.copy.call( node.material, prevMaterial );
 			// // node.material = material;
 		}
-    } );
-	gltf.scene.getObjectByName( "Mesh044" ).castShadow = false;
-	gltf.scene.getObjectByName( "Mesh044_1" ).castShadow = false;
-	gltf.scene.getObjectByName( "pCylinder24" ).castShadow = false;
-	gltf.scene.getObjectByName( "pCube31" ).castShadow = false;
-	gltf.scene.getObjectByName( "pCube31" ).renderOrder = 1;
-	gltf.scene.getObjectByName( "pCube32" ).castShadow = false;
-	gltf.scene.getObjectByName( "pCube32" ).renderOrder = 1;
-	gltf.scene.getObjectByName( "pCube33" ).castShadow = false;
-	gltf.scene.getObjectByName( "pCube33" ).renderOrder = 1;	
-	gltf.scene.getObjectByName( "pCube34" ).castShadow = false;
-	gltf.scene.getObjectByName( "pCube34" ).renderOrder = 1;
+	});
+	gltf.scene.getObjectByName("Mesh044").castShadow = false;
+	gltf.scene.getObjectByName("Mesh044_1").castShadow = false;
+	gltf.scene.getObjectByName("pCylinder24").castShadow = false;
+	gltf.scene.getObjectByName("pCube31").castShadow = false;
+	gltf.scene.getObjectByName("pCube31").renderOrder = 1;
+	gltf.scene.getObjectByName("pCube32").castShadow = false;
+	gltf.scene.getObjectByName("pCube32").renderOrder = 1;
+	gltf.scene.getObjectByName("pCube33").castShadow = false;
+	gltf.scene.getObjectByName("pCube33").renderOrder = 1;
+	gltf.scene.getObjectByName("pCube34").castShadow = false;
+	gltf.scene.getObjectByName("pCube34").renderOrder = 1;
 
 
-	gltf.scene.getObjectByName( "pCube25" ).children[0].material.map = canvasTexture;
-	gltf.scene.getObjectByName( "pCube28" ).children[1].material.map = videoTexture;
+	gltf.scene.getObjectByName("pCube25").children[0].material.map = canvasTexture;
+	gltf.scene.getObjectByName("pCube28").children[1].material.map = videoTexture;
 
 	gltf.scene.scale.x = 100;
 	gltf.scene.scale.y = 100;
 	gltf.scene.scale.z = 100;
 	console.log(gltf.scene);
-	scene.add( gltf.scene );
-}, undefined, function ( error ) {
-	console.error( error );
-} );
+	scene.add(gltf.scene);
+}, undefined, function (error) {
+	console.error(error);
+});
 
-window.addEventListener( 'resize', onWindowResize, false );
+window.addEventListener('resize', onWindowResize, false);
 function onWindowResize() {
 
 	camera.aspect = window.innerWidth / window.innerHeight;
 	camera.updateProjectionMatrix();
 
-	renderer.setSize( window.innerWidth, window.innerHeight );
+	renderer.setSize(window.innerWidth, window.innerHeight);
 
 }
 
-const jigsawSounds = new THREE.Mesh( sphere, material );
-scene.add( jigsawSounds );
+const jigsawSounds = new THREE.Mesh(sphere, material);
+scene.add(jigsawSounds);
 
-const monologue = new THREE.PositionalAudio( listener );
-monologue.setVolume( 15 );
+const monologue = new THREE.PositionalAudio(listener);
+monologue.setVolume(15);
 monologue.onEnded = (function () {
 	offer.play();
 })
 
 jigsawSounds.add(monologue);
 
-audioLoader.load( 'assets/audio/jigsaw/monologue.mp3', function( buffer ) {
-	monologue.setBuffer( buffer );
-});	
+audioLoader.load('assets/audio/jigsaw/monologue.mp3', function (buffer) {
+	monologue.setBuffer(buffer);
+});
 
 var introFinished = false;
 
-const offer = new THREE.PositionalAudio( listener );
-offer.setVolume( 15 );
+const offer = new THREE.PositionalAudio(listener);
+offer.setVolume(15);
 jigsawSounds.add(offer);
 
-const music = new THREE.Audio( listener );
-scene.add( music );
-music.setLoop( true );
+const music = new THREE.Audio(listener);
+scene.add(music);
+music.setLoop(true);
 
-audioLoader.load( 'assets/audio/sawmusic.mp3', function( buffer ) {
-	music.setBuffer( buffer );
-});	
+audioLoader.load('assets/audio/sawmusic.mp3', function (buffer) {
+	music.setBuffer(buffer);
+});
 
-const partyHorn = new THREE.Audio( listener );
+const partyHorn = new THREE.Audio(listener);
 partyHorn.onEnded = (function () {
 	jigsawWin.play();
 })
 
-scene.add( partyHorn );
+scene.add(partyHorn);
 
-audioLoader.load( 'assets/audio/party_horn.mp3', function( buffer ) {
-	partyHorn.setBuffer( buffer );
-});	
+audioLoader.load('assets/audio/party_horn.mp3', function (buffer) {
+	partyHorn.setBuffer(buffer);
+});
 
-const jigsawWin = new THREE.Audio( listener );
-jigsawWin.setVolume( 1 );
+const jigsawWin = new THREE.Audio(listener);
+jigsawWin.setVolume(1);
 jigsawWin.onEnded = (function () {
 	document.getElementById("money-tally").innerHTML = "$" + Math.round(n);
 	document.getElementById("wincontainer").style.display = "flex";
 })
 
-scene.add( jigsawWin );
+scene.add(jigsawWin);
 
-audioLoader.load( 'assets/audio/jigsaw/win.mp3', function( buffer ) {
-	jigsawWin.setBuffer( buffer );
-});	
+audioLoader.load('assets/audio/jigsaw/win.mp3', function (buffer) {
+	jigsawWin.setBuffer(buffer);
+});
 
 offer.onEnded = (function () {
 	introFinished = true;
@@ -954,20 +954,20 @@ offer.onEnded = (function () {
 
 
 
-audioLoader.load( 'assets/audio/jigsaw/offer.mp3', function( buffer ) {
-	offer.setBuffer( buffer );
-});	
-
-const fail = new THREE.PositionalAudio( listener );
-fail.setVolume( 15 );
-jigsawSounds.add(fail);
-
-audioLoader.load( 'assets/audio/jigsaw/fail.mp3', function( buffer ) {
-	fail.setBuffer( buffer );
+audioLoader.load('assets/audio/jigsaw/offer.mp3', function (buffer) {
+	offer.setBuffer(buffer);
 });
 
-document.getElementById("testbutton").addEventListener("click", function() {
-	document.getElementById("introscreen").classList.add( 'fade-out' );
+const fail = new THREE.PositionalAudio(listener);
+fail.setVolume(15);
+jigsawSounds.add(fail);
+
+audioLoader.load('assets/audio/jigsaw/fail.mp3', function (buffer) {
+	fail.setBuffer(buffer);
+});
+
+document.getElementById("testbutton").addEventListener("click", function () {
+	document.getElementById("introscreen").classList.add('fade-out');
 
 	monologue.play();
 	setTimeout(() => {
@@ -980,7 +980,7 @@ const animate = function () {
 	objects.forEach(o => {
 		o.userData.update();
 	})
-	requestAnimationFrame( animate );
+	requestAnimationFrame(animate);
 	// myOdometer.setValue(myOdometer.getValue() - 0.1);
 	// ctx.drawImage(odometerCtx.canvas, 510, 595);
 	renderer.shadowMap.enabled = true;
@@ -990,7 +990,7 @@ const animate = function () {
 	canvasTexture.needsUpdate = true;
 	// canvasTextureJigsaw.needsUpdate = true;
 	const delta = clock.getDelta();
-	cameraControls.update( delta );
-	renderer.render( scene, camera );
+	cameraControls.update(delta);
+	renderer.render(scene, camera);
 };
 animate();
