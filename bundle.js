@@ -19838,19 +19838,20 @@ console.log(cameraControls); // const canvas = document.getElementById('texture'
 // 	tvGroup.add(gltf.scene);
 // 	console.log(tv);
 // 	console.log(tv.material);
-// const ipadLight = new THREE.RectAreaLight( 0xffffff );
-// ipadLight.width = 1.6;
-// ipadLight.height = 1.61;
-// ipadLight.position.x = 2.86;
-// ipadLight.position.y = 4.52;
-// ipadLight.position.z = 1.84;
-// ipadLight.rotation.x = 3.141;
-// ipadLight.rotation.y = 1.357;
-// ipadLight.rotation.z = 3.141;
-// const rectLightHelper = new RectAreaLightHelper( ipadLight );
-// ipadLight.add( rectLightHelper );
-// scene.add(ipadLight);
 
+const ipadLight = new THREE.RectAreaLight(0xffffff);
+ipadLight.width = 1.01;
+ipadLight.height = 1.01;
+ipadLight.intensity = 0.24;
+ipadLight.position.x = 3.09;
+ipadLight.position.y = 3.85;
+ipadLight.position.z = 3.160;
+ipadLight.rotation.x = -0.28;
+ipadLight.rotation.y = 0.89;
+ipadLight.rotation.z = 3.3; // const rectLightHelper = new RectAreaLightHelper( ipadLight );
+// ipadLight.add( rectLightHelper );
+
+scene.add(ipadLight);
 const tvLight01 = new THREE.RectAreaLight(0xffffff);
 tvLight01.width = 1.6;
 tvLight01.height = 1.61;
