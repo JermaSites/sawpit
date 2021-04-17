@@ -20,22 +20,22 @@ var odometer = function (ctx, parameters) {
 
     var doc = document;
     var initialized = false;
-    
+
     // Cannot display negative values yet
     if (value < 0) {
         value = 0;
     }
 
     var digitHeight = Math.floor(height * 0.85);
-    
+
     var stdFont = '600 ' + digitHeight + 'px ' + font;
-    
+
     var digitWidth = Math.floor(height * 0.68);
     var width = digitWidth * (digits + decimals);
     var columnHeight = digitHeight * 11;
     var verticalSpace = columnHeight / 12;
     var zeroOffset = verticalSpace * 0.85;
-    
+
     var wobble = [];
 
     // Resize and clear the main context
@@ -45,19 +45,19 @@ var odometer = function (ctx, parameters) {
     // Create buffers
     var backgroundBuffer = createBuffer(width, height);
     var backgroundContext = backgroundBuffer.getContext('2d');
-    
+
     var foregroundBuffer = createBuffer(width, height);
     var foregroundContext = foregroundBuffer.getContext('2d');
-    
+
     var digitBuffer = createBuffer(digitWidth, columnHeight * 1.1);
     var digitContext = digitBuffer.getContext('2d');
 
     var decimalBuffer = createBuffer(digitWidth, columnHeight * 1.1);
     var decimalContext = decimalBuffer.getContext('2d');
 
-    
+
     function init() {
-        
+
         initialized = true;
 
         // Create the foreground
@@ -94,10 +94,10 @@ var odometer = function (ctx, parameters) {
         digitContext.font = stdFont;
         digitContext.fillStyle = valueForeColor;
         // put the digits 901234567890 vertically into the buffer
-        for (var i=9; i<21; i++) {
-            digitContext.fillText(i % 10, digitWidth * 0.5, verticalSpace * (i-9) + verticalSpace / 2);
+        for (var i = 9; i < 21; i++) {
+            digitContext.fillText(i % 10, digitWidth * 0.5, verticalSpace * (i - 9) + verticalSpace / 2);
         }
-        
+
         // Create a decimal column
         if (decimals > 0) {
             // background
@@ -118,26 +118,26 @@ var odometer = function (ctx, parameters) {
             decimalContext.textAlign = 'center';
             decimalContext.textBaseline = 'middle';
             decimalContext.font = stdFont;
-            decimalContext.fillStyle = decimalForeColor;       
+            decimalContext.fillStyle = decimalForeColor;
             // put the digits 901234567890 vertically into the buffer
-            for (var i=9; i<21; i++) {
-                decimalContext.fillText(i % 10, digitWidth * 0.5, verticalSpace * (i-9) + verticalSpace / 2);
+            for (var i = 9; i < 21; i++) {
+                decimalContext.fillText(i % 10, digitWidth * 0.5, verticalSpace * (i - 9) + verticalSpace / 2);
             }
         }
         // wobble factors
-        for (var i=0; i<(digits + decimals); i++) {
-            wobble[i] = Math.random() * wobbleFactor * height - wobbleFactor * height /2;
+        for (var i = 0; i < (digits + decimals); i++) {
+            wobble[i] = Math.random() * wobbleFactor * height - wobbleFactor * height / 2;
         }
-        
+
     }
 
-    function drawDigits(){
+    function drawDigits() {
         var pos = 1;
         var val;
-        
+
         val = value;
         // do not use Math.pow() - rounding errors!
-        for (var i=0; i<decimals; i++) {
+        for (var i = 0; i < decimals; i++) {
             val *= 10;
         }
 
@@ -161,32 +161,32 @@ var odometer = function (ctx, parameters) {
         }
     }
 
-    this.setValue = function(newVal) {
+    this.setValue = function (newVal) {
         value = newVal;
         if (value < 0) {
             value = 0;
         }
         this.repaint();
     }
-    
-    this.getValue = function() {
+
+    this.getValue = function () {
         return value;
     }
 
-    this.repaint = function() {
+    this.repaint = function () {
         if (!initialized) {
             init();
         }
-        
+
         // draw digits
         drawDigits();
-        
+
         // draw the foreground
         backgroundContext.drawImage(foregroundBuffer, 0, 0);
-        
+
         // paint back to the main context
         ctx.drawImage(backgroundBuffer, 0, 0);
-        
+
     }
 
     this.repaint();
@@ -197,5 +197,5 @@ var odometer = function (ctx, parameters) {
         buffer.width = width;
         buffer.height = height;
         return buffer;
-    }    
+    }
 }
