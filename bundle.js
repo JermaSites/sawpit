@@ -20163,7 +20163,7 @@ const offer = new THREE.PositionalAudio(listener);
 offer.setVolume(15);
 jigsawSounds.add(offer);
 const music = new THREE.Audio(listener);
-music.setVolume(.1);
+music.setVolume(.2);
 scene.add(music);
 music.setLoop(true);
 audioLoader.load("assets/audio/sawmusic.mp3", function (buffer) {
