@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title>test</title>
+		<style>
+			body { margin: 0; }
+		</style>
+		<link rel="preconnect" href="https://fonts.gstatic.com">
+		<link href="https://fonts.googleapis.com/css2?family=Wallpoet&display=swap" rel="stylesheet"> 
+		<script>
+			
+		</script>
+		<script src="odometer.js"></script>
+	</head>
+	<body>
+		<canvas id="odoCanvas" height="50" width="300">No canvas support!</canvas><br/><br/>
+		<script>
+			var n = 25000000;
+			var odo;
+			var ctx = document.getElementById('odoCanvas').getContext('2d');
+			var f = new FontFace('Wallpoet', 'url(https://fonts.gstatic.com/s/wallpoet/v12/f0X10em2_8RnXVVdUObp58Q.woff2)');
+    		f.load().then(function(fontasd) {
+				document.fonts.add(fontasd);
+				odo = new odometer(ctx, {
+					height: 100,
+					digits: 8,
+					decimals: 0,
+					value: n,
+					wobbleFactor: 0,
+					font: "Wallpoet",
+					decimalBackColor: "#150101",
+					valueBackColor: "#010e15"
+				});
+				update();
+			});
+			
+			function update() {
+				n -= 208.333333;
+				odo.setValue(n);
+				setTimeout("update()", 16.6);
+			}
+		</script>
+	</body>
+</html>

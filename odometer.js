@@ -27,6 +27,7 @@ var odometer = function (ctx, parameters) {
     }
 
     var digitHeight = Math.floor(height * 0.85);
+    
     var stdFont = '600 ' + digitHeight + 'px ' + font;
     
     var digitWidth = Math.floor(height * 0.68);
@@ -187,17 +188,14 @@ var odometer = function (ctx, parameters) {
         ctx.drawImage(backgroundBuffer, 0, 0);
         
     }
-  
+
     this.repaint();
-  
+
 
     function createBuffer(width, height) {
         var buffer = doc.createElement('canvas');
         buffer.width = width;
         buffer.height = height;
         return buffer;
-    }
+    }    
 }
-
-
-
