@@ -19622,9 +19622,9 @@ loader.load('assets/models/twistIt_newOrigin.glb', function (gltf) {
 bopItGroup.position.x = 6.370;
 bopItGroup.position.y = 3.070;
 bopItGroup.position.z = -0.5;
-bopItGroup.rotation.x = 1.510;
-bopItGroup.rotation.y = 0.000;
-bopItGroup.rotation.z = 1.129;
+bopItGroup.rotation.x = 1.44;
+bopItGroup.rotation.y = 5.5;
+bopItGroup.rotation.z = 1.5;
 bopItGroup.castShadow = true;
 bopItGroup.receiveShadow = true;
 scene.add(bopItGroup);
@@ -19985,6 +19985,7 @@ fbxLoader.load('assets/models/RoomTest/room.fbx', function (fbx) {
 
       if (node.name == "pointLight1") {
         node.intensity = 0.482;
+        node.position.x = 8;
         node.power = 1;
       } // node.shadow.radius = 3;
       // var helper = new THREE.CameraHelper( node.shadow.camera );
@@ -20043,22 +20044,27 @@ var texture = document.getElementById('texture');
 var ctxText = document.getElementById('texture').getContext('2d');
 const image = new Image(); // Using optional size for image
 
-image.onload = drawImageActualSize; // Draw when image has loaded
-
 image.src = 'assets/models/RoomTest/Textures/analog.png';
 
-function drawImageActualSize() {
+image.onload = function () {
   texture.width = 513.75;
   texture.height = 369.25;
   ctxText.drawImage(this, 0, 0, 513.75, 369.25);
   ctxText.font = stdFont;
   ctxText.fillStyle = "red";
-  ctxText.fillText("$", 45, 191.25);
+  ctxText.fillText("$", 45, 296.25);
   ctxText.font = "33.75px Wallpoet";
   ctxText.fillStyle = "lightgreen";
-  ctxText.fillText("Debt Removed", 63.75, 112.5);
-  ctxText.fillText("Upon Completion", 46.25, 137.5);
-}
+  ctxText.fillText("Debt Removed", 63.75, 217.5);
+  ctxText.fillText("Upon Completion", 46.25, 242.5);
+  const logo = new Image(); // Using optional size for image
+
+  logo.src = 'assets/sawpit3.png';
+
+  logo.onload = function () {
+    ctxText.drawImage(this, 100, 45, 250, 150.25);
+  };
+};
 
 var f = new FontFace('Wallpoet', 'url(https://fonts.gstatic.com/s/wallpoet/v12/f0X10em2_8RnXVVdUObp58Q.woff2)');
 f.load().then(function (fontasd) {
@@ -20077,8 +20083,20 @@ f.load().then(function (fontasd) {
 });
 
 function update() {
-  n -= 208.3333;
-  odo.setValue(n);
+  n -= 2083.333;
+
+  if (n > 0) {
+    odo.setValue(n);
+  } else {
+    odo.setValue(Math.abs(n));
+    ctxText.font = "33.75px Wallpoet";
+    ctxText.fillStyle = 'black';
+    ctxText.fillRect(50, 180, 300, 50);
+    ctxText.fillStyle = "red";
+    ctxText.fillText("Debt Added", 100, 217.5);
+    ctxText.fillText("Upon Completion", 46.25, 242.5);
+  }
+
   setTimeout(() => {
     update();
   }, 1.66);
@@ -20131,7 +20149,7 @@ const animate = function () {
   renderer.shadowMap.type = THREE.PCFSoftShadowMapping; // default THREE.PCFShadowMap
 
   TWEEN.update();
-  ctxText.drawImage(ctx.canvas, 80, 152.5);
+  ctxText.drawImage(ctx.canvas, 80, 257.5);
   canvasTexture.needsUpdate = true; // canvasTextureJigsaw.needsUpdate = true;
 
   const delta = clock.getDelta();
