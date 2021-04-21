@@ -484,7 +484,7 @@ function continueGame() {
 						playcooldown = false;
 					}, 100);
 				}
-			}, 1000 - (speed - 4.5) * 10);
+			}, 2000 - ((speed - 5) * 740));
 		}
 	}, randomIntFromInterval(1200 - (speed - 4.5) * 100, 2000 - (speed - 4.5) * 100));
 }
@@ -1008,6 +1008,7 @@ audioLoader.load("assets/audio/jigsaw/fail.mp3", function (buffer) {
 document.getElementById("testbutton").addEventListener("click", function () {
 	document.getElementById("introscreen").classList.add("fade-out");
 
+	// offer.play();
 	monologue.play();
 	setTimeout(() => {
 		music.play();
