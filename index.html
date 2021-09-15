@@ -1,70 +1,73 @@
 <!DOCTYPE html>
 <html>
-	<head>
-		<meta charset="utf-8" />
-		<title>Jigsaw's 'Saw-Pit'</title>
-		<meta name="description" content="jigsaws getting sick of jermas shit" />
 
-		<meta property="og:title" content="Jigsaw's 'Saw-Pit'" />
-		<meta property="og:image" content="assets/sawpit3.png" />
+<head>
+	<meta charset="utf-8" />
+	<title>Jigsaw's 'Saw-Pit'</title>
+	<meta name="description" content="jigsaws getting sick of jermas shit" />
 
-		<link rel="icon" type="image/png" href="assets/sawpit3.png" />
-		<link rel="preload" href="./assets/jigsaw_animation.mp4" as="video">
-		<link href="./assets/fonts/wallpoet-v12-latin-regular.woff2" rel="font" />
-		<link href="loadingscreen.css" rel="stylesheet" />
-		<link href="./assets/fonts/ubuntu-v15-latin-regular.woff2" rel="font" />
-		<style>
-			body {
-				margin: 0;
-			}
-		</style>
-	</head>
-	<body>
-		<section id="loading-screen">
-			<div id="loader"></div>
-		</section>
-		<div id="introscreen">
-			<button id="testbutton" style="position: absolute">click to wake up</button>
-			<font color="darkgray" font-family="Ubuntu">
-				<br> <br> <br> Use firefox for the best results
-			</font>
-		</div>
-		<div id="score-display">
-			<div id="info">Get 25 points to win!</div>
-			<div id="currentscore">Current Score: 00</div>
-			<div id="best-score">Best Score: 00</div>
-		</div>
-		<div id="winscreen">
-			<div id="wincontainer">
-				<div id="winText">
-					Final Tally
-					<div id="money-tally"></div>
+	<meta property="og:title" content="Jigsaw's 'Saw-Pit'" />
+	<meta property="og:image" content="assets/sawpit3.png" />
+
+	<link rel="icon" type="image/png" href="assets/sawpit3.png" />
+	<link rel="preload" href="./assets/jigsaw_animation.mp4" as="video">
+	<link href="./assets/fonts/wallpoet-v12-latin-regular.woff2" rel="font" />
+	<link href="loadingscreen.css" rel="stylesheet" />
+	<link href="./assets/fonts/ubuntu-v15-latin-regular.woff2" rel="font" />
+	<style>
+		body {
+			margin: 0;
+		}
+	</style>
+</head>
+
+<body>
+	<section id="loading-screen">
+		<div id="loader"></div>
+	</section>
+	<div id="introscreen">
+		<button id="testbutton" style="position: absolute">click to wake up</button>
+		<font color="darkgray" font-family="Ubuntu">
+			<br> <br> <br> Use firefox for the best results
+		</font>
+	</div>
+	<div id="score-display">
+		<div id="info">Get 25 points to win!</div>
+		<div id="currentscore">Current Score: 00</div>
+		<div id="best-score">Best Score: 00</div>
+	</div>
+	<div id="winscreen">
+		<div id="wincontainer">
+			<div id="winText">
+				Final Tally
+				<div id="money-tally"></div>
+			</div>
+
+			<div id="credits">
+				<div><a href="https://twitter.com/stick_twt">stick</a> - Code (learned an entire framework for this
+					OMEGALUL)</div>
+				<div><a href="https://www.deviantart.com/thomthommo">ThomThommo</a> - 3D Modeling and Art</div>
+				<div><a href="https://www.instagram.com/blinkence_art/">Blinkence</a> - Textures <br /></div>
+				<div><a href="https://github.com/s-crypt">s-crypt</a> - Voice, Script, and QA (not as much as it seems)
 				</div>
-
-				<div id="credits">
-					<div><a href="https://twitter.com/stick_twt">stick</a> - Code (learned an entire framework for this OMEGALUL)</div>
-					<div><a href="https://www.deviantart.com/thomthommo">ThomThommo</a> - 3D Modeling and Art</div>
-					<div><a href="https://www.instagram.com/blinkence_art/">Blinkence</a> - Textures <br /></div>
-					<div><a href="https://github.com/s-crypt">s-crypt</a> - Voice, Script, and QA (not as much as it seems)</div>
-					<div>The <a href="https://github.com/JermaSites">JermaSites Community</a> for ideas and moral support.</div>
-					<div><a href="https://sketchfab.com/3d-models/retro-bop-it-1996-6ec09c2002fc45d38f0732227e237eae">Bop-it Model</a> by Mike Holce</div>
-					<div><a href="https://github.com/JermaSites/jigsaws-bopit">GitHub</a></div>
+				<div>The <a href="https://github.com/JermaSites">JermaSites Community</a> for ideas and moral support.
 				</div>
-
-				<div style="bottom: 0; right: 0; font-family: 'Ubuntu', sans-serif; font-size: 15px; position: absolute; color: white">
-					<img alt="TransgenderPride" title="TransgenderPride" class="twitch-emote twitch-emote-0" src="https://static-cdn.jtvnw.net/emoticons/v1/1064995/1.0" />&nbsp;trans rights baybee&nbsp;
-					<img alt="TransgenderPride" title="TransgenderPride" class="twitch-emote twitch-emote-0" src="https://static-cdn.jtvnw.net/emoticons/v1/1064995/1.0" />
-				</div>
+				<div><a href="https://sketchfab.com/3d-models/retro-bop-it-1996-6ec09c2002fc45d38f0732227e237eae">Bop-it
+						Model</a> by Mike Holce</div>
+				<div><a href="https://github.com/JermaSites/jigsaws-bopit">GitHub</a></div>
 			</div>
 		</div>
-		<canvas id="odometer" style="display: none"></canvas>
-		<canvas id="texture" style="display: none"></canvas>
-		<video id="video" autoplay controls muted loop src="assets/jigsaw_animation.mp4" style="display: none"></video>
-		<canvas id="texture_jigsaw" style="display: none"></canvas>
-		<script src="odometer.js"></script>
-		<script src="bundle.js"></script>
-		<!-- Cloudflare Web Analytics -->
-		<script defer src="https://static.cloudflareinsights.com/beacon.min.js" data-cf-beacon='{"token": "8a624e372b2b42baa0649413c7246f5e"}'></script>
-		<!-- End Cloudflare Web Analytics -->
-	</body>
+	</div>
+	<canvas id="odometer" style="display: none"></canvas>
+	<canvas id="texture" style="display: none"></canvas>
+	<video id="video" autoplay controls muted loop src="assets/jigsaw_animation.mp4" style="display: none"></video>
+	<canvas id="texture_jigsaw" style="display: none"></canvas>
+	<script src="odometer.js"></script>
+	<script src="bundle.js"></script>
+	<!-- Cloudflare Web Analytics -->
+	<script defer src="https://static.cloudflareinsights.com/beacon.min.js"
+		data-cf-beacon='{"token": "8a624e372b2b42baa0649413c7246f5e"}'></script>
+	<!-- End Cloudflare Web Analytics -->
+</body>
+
 </html>

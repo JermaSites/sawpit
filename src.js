@@ -1,18 +1,18 @@
 // Find the latest version by visiting https://unpkg.com/three.
 
 import * as THREE from "three";
-import {OrbitControls} from "three/examples/jsm/controls/OrbitControls.js";
-import {DragControls} from "three/examples/jsm/controls/DragControls.js";
+import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
+import { DragControls } from "three/examples/jsm/controls/DragControls.js";
 // import { FlyControls } from 'three/examples/jsm/controls/FlyControls.js ';
 import ThreeDragger from "three-dragger";
-import {GLTFLoader} from "three/examples/jsm/loaders/GLTFLoader.js";
-import {FBXLoader} from "three/examples/jsm/loaders/FBXLoader.js";
-import {Interaction} from "three.interaction";
-import {RectAreaLightUniformsLib} from "three/examples/jsm/lights/RectAreaLightUniformsLib.js";
-import {RectAreaLightHelper} from "three/examples/jsm/helpers/RectAreaLightHelper.js";
+import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader.js";
+import { FBXLoader } from "three/examples/jsm/loaders/FBXLoader.js";
+import { Interaction } from "three.interaction";
+import { RectAreaLightUniformsLib } from "three/examples/jsm/lights/RectAreaLightUniformsLib.js";
+import { RectAreaLightHelper } from "three/examples/jsm/helpers/RectAreaLightHelper.js";
 RectAreaLightUniformsLib.init();
 import CameraControls from "./camera-controls";
-CameraControls.install({THREE: THREE});
+CameraControls.install({ THREE: THREE });
 const TWEEN = require("@tweenjs/tween.js");
 
 const scene = new THREE.Scene();
@@ -177,8 +177,8 @@ loader.load(
 		mouseDragger.on("dragend", function (event) {
 			cameraControls.enabled = true;
 			pullIt.position.clamp(pullIt.userData.limit.min, pullIt.userData.limit.max);
-			var position = {x: pullIt.position.x};
-			var target = {x: 0};
+			var position = { x: pullIt.position.x };
+			var target = { x: 0 };
 			var tween = new TWEEN.Tween(position).to(target, 250);
 			tween.onUpdate(function () {
 				pullIt.position.clamp(pullIt.userData.limit.min, pullIt.userData.limit.max);
@@ -196,7 +196,7 @@ loader.load(
 		});
 
 		mouseDragger.on("drag", function (data) {
-			const {target, position} = data;
+			const { target, position } = data;
 
 			target.position.set(-Math.abs(position.x), position.y, position.z);
 		});
@@ -265,8 +265,8 @@ loader.load(
 					dragRotate = false;
 					console.log(twistIt.userData.rotationNess);
 					renderer.domElement.style.cursor = "default";
-					var rotation = {x: twistIt.userData.rotationNess};
-					var target = {x: 0};
+					var rotation = { x: twistIt.userData.rotationNess };
+					var target = { x: 0 };
 					var tween = new TWEEN.Tween(rotation).to(target, 250);
 					if (twistIt.userData.rotationNess > 5 || twistIt.userData.rotationNess < -5) {
 						twistedIt();
@@ -338,7 +338,7 @@ failSound.setVolume(15);
 const audioLoader = new THREE.AudioLoader();
 
 const sphere = new THREE.SphereGeometry(0.01, 0.01, 0.01);
-const material = new THREE.MeshPhongMaterial({color: 0xff2200});
+const material = new THREE.MeshPhongMaterial({ color: 0xff2200 });
 const mesh = new THREE.Mesh(sphere, material);
 scene.add(mesh);
 mesh.add(bopIt_announce);
