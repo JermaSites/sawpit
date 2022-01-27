@@ -8,7 +8,7 @@
 		"babelify": "^10.0.0",
 		"browserify-shim": "^3.8.14",
 		"esmify": "^2.1.1",
-		"three": "^0.127.0",
+		"three": "^0.137.0",
 		"three-dragger": "^1.0.1",
 		"three.interaction": "^0.2.3",
 		"threejs-object-controls": "^1.2.6",
